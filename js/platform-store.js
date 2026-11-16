@@ -740,6 +740,53 @@
         }
       ]
     },
+    // MEISO (Exact match to PDKI DJKI / Mebiso reference screenshot)
+    {
+      keywords: ['meiso', 'aeiso', 'kenko'],
+      totalFound: 218,
+      items: [
+        {
+          brand: 'MEISO',
+          niceClass: '44',
+          appNo: 'J002014027996',
+          owner: 'PT. KENKO INDONESIA',
+          status: '(TM) DIDAFTAR',
+          statusKey: 'didaftar',
+          similarityPct: 100,
+          etiquetteSvg: `<div style="text-align:center;font-family:sans-serif;font-weight:500;font-size:1.55rem;color:#5B7FA6;letter-spacing:0.03em;position:relative;">me<span style="color:#E5A93C;">i</span>so</div>`
+        },
+        {
+          brand: 'MEISO REFLEXIOLOGY BY KENKO',
+          niceClass: '44',
+          appNo: 'J002010035346',
+          owner: 'PT KENKO INDONESIA',
+          status: '(TM) DITOLAK',
+          statusKey: 'ditolak',
+          similarityPct: 92,
+          etiquetteSvg: `<div style="text-align:center;font-family:sans-serif;color:#5B7FA6;"><div style="font-size:1.35rem;font-weight:500;">me<span style="color:#E5A93C;">i</span>so</div><div style="font-size:0.42rem;letter-spacing:0.12em;color:#888;">REFLEXIOLOGY BY KENKO</div></div>`
+        },
+        {
+          brand: 'AEISO',
+          niceClass: '25',
+          appNo: 'DID2023115658',
+          owner: 'agung sugiarto',
+          status: '(TM) DIDAFTAR',
+          statusKey: 'didaftar',
+          similarityPct: 84,
+          etiquetteSvg: `<div style="text-align:center;font-family:sans-serif;font-weight:900;color:#111;"><div style="font-size:1.6rem;line-height:0.95;">œ</div><div style="font-size:1.1rem;letter-spacing:0.02em;">aeiso</div></div>`
+        },
+        {
+          brand: 'MEISO FOOT REFLEXOLOGY',
+          niceClass: '44',
+          appNo: 'JID2018041920',
+          owner: 'PT. KENKO INDONESIA',
+          status: '(TM) DIDAFTAR',
+          statusKey: 'didaftar',
+          similarityPct: 88,
+          etiquetteSvg: `<div style="text-align:center;font-family:sans-serif;font-weight:700;font-size:0.95rem;color:#5B7FA6;">MEISO<br/><span style="font-size:0.55rem;">REFLEXOLOGY</span></div>`
+        }
+      ]
+    },
     // ZENOVA
     {
       keywords: ['zenova', 'zennova', 'xenova'],
@@ -789,7 +836,7 @@
     }
   ];
 
-  // Dynamic Phonetic & Contextual PDKI Directory Search
+  // Dynamic Phonetic & Contextual PDKI Directory Search (No Fabricated Records)
   function searchPdkiDirectory(rawQuery, filters, logoMeta) {
     const clean = (rawQuery || (logoMeta ? logoMeta.name.replace(/\.[^.]+$/, '') : 'MEREK')).trim();
     const lower = clean.toLowerCase();
@@ -799,81 +846,21 @@
 
     // 1. Check if query matches any verified cluster in PDKI_DIRECTORY_DB
     let matchedCluster = PDKI_DIRECTORY_DB.find((cluster) =>
-      cluster.keywords.some((kw) => lower.includes(kw) || kw.includes(lower))
+      cluster.keywords.some((kw) => lower === kw || lower.includes(kw) || kw.includes(lower))
     );
 
     let items = [];
     let totalFound = 0;
-    let isContextualSimulation = false;
+    let isUnindexedQuery = false;
 
     if (matchedCluster) {
       items = matchedCluster.items.map((it) => Object.assign({}, it));
       totalFound = matchedCluster.totalFound;
     } else {
-      // Generate contextually relevant phonetic/orthographic records based on the user's exact query (never unrelated coffee/cosmetic items!)
-      isContextualSimulation = true;
-      const baseUpper = clean.toUpperCase().replace(/[^A-Z0-9 ]/g, '') || 'BRAND';
-      const firstWord = baseUpper.split(/\s+/)[0] || baseUpper;
-      const recCls = recommendClasses(clean)[0]?.num || '35';
-      const numCls = String(parseInt(recCls, 10) || 35);
-
-      // Create realistic phonetic variants of the exact query
-      const phoneticVar1 = firstWord.length > 4
-        ? firstWord.slice(0, -1) + (firstWord.endsWith('O') ? 'OO' : firstWord.endsWith('A') ? 'IA' : 'O')
-        : firstWord + ' PRO';
-      const phoneticVar2 = firstWord.replace(/[AEIOU]/, (m) => (m === 'A' ? 'E' : 'A')) + ' INDONESIA';
-
-      // deterministic hash from query for stable application numbers
-      let hash = 0;
-      for (let i = 0; i < baseUpper.length; i++) hash = (hash * 31 + baseUpper.charCodeAt(i)) % 900000;
-      const n1 = String(100000 + (hash % 899999));
-      const n2 = String(100000 + ((hash * 7) % 899999));
-      const n3 = String(100000 + ((hash * 13) % 899999));
-      const n4 = String(100000 + ((hash * 19) % 899999));
-
-      totalFound = 12 + (hash % 45);
-      items = [
-        {
-          brand: phoneticVar1,
-          niceClass: numCls,
-          appNo: `DID2023${n1}`,
-          owner: `PT ${firstWord} GLOBAL NUSANTARA`,
-          status: '(TM) DIDAFTAR',
-          statusKey: 'didaftar',
-          similarityPct: 88,
-          etiquetteSvg: `<div style="font-family:'Instrument Serif',Georgia,serif;font-size:1.25rem;letter-spacing:0.12em;color:#222;text-align:center;">${phoneticVar1}</div>`
-        },
-        {
-          brand: baseUpper,
-          niceClass: '35',
-          appNo: `JID2022${n2}`,
-          owner: `PT. ${firstWord} EKOSISTEM MANDIRI`,
-          status: '(TM) DIDAFTAR',
-          statusKey: 'didaftar',
-          similarityPct: 95,
-          etiquetteSvg: `<div style="font-family:Georgia,serif;font-weight:900;font-size:1.2rem;letter-spacing:0.04em;color:#111;text-align:center;">${baseUpper}</div>`
-        },
-        {
-          brand: `${firstWord} OFFICIAL`,
-          niceClass: '42',
-          appNo: `JID2024${n3}`,
-          owner: `CV ${firstWord} KARYA DIGITAL`,
-          status: 'DALAM PROSES',
-          statusKey: 'dalam_proses',
-          similarityPct: 82,
-          etiquetteSvg: `<div style="font-family:sans-serif;font-weight:800;font-size:0.95rem;color:#315B4C;text-align:center;">${firstWord}<br/><span style="font-size:0.6rem;letter-spacing:0.14em;color:#666;">OFFICIAL</span></div>`
-        },
-        {
-          brand: phoneticVar2,
-          niceClass: numCls,
-          appNo: `DID2021${n4}`,
-          owner: `PT MITRA NIAGA INTERNASIONAL`,
-          status: 'DITOLAK',
-          statusKey: 'ditolak',
-          similarityPct: 74,
-          etiquetteSvg: `<div style="font-family:sans-serif;font-weight:700;font-size:0.9rem;color:#777;text-align:center;">${phoneticVar2}</div>`
-        }
-      ];
+      // Do NOT invent fake PT names or fake DID numbers — return empty items with isUnindexedQuery = true so we show an honest PDKI API status notice
+      isUnindexedQuery = true;
+      totalFound = 0;
+      items = [];
     }
 
     // Apply Sidebar Filters (Status, Kelas Merek, Nama Pemohon)
@@ -888,7 +875,7 @@
       query: clean,
       totalFound: fStatus.length || fClass || fOwner ? filtered.length : totalFound,
       items: filtered,
-      isContextualSimulation
+      isUnindexedQuery
     };
   }
 
@@ -2152,15 +2139,41 @@
           <div>
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.85rem;">
               <div style="font-size:0.88rem;color:#334155;">
-                Menampilkan <strong>1-${visibleItems.length}</strong> dari <strong>${res.totalFound} Merek</strong> untuk <strong>"${qDisplay}"</strong>
+                ${
+                  res.isUnindexedQuery
+                    ? `Hasil Penelusuran Database Lokal untuk <strong>"${qDisplay}"</strong>`
+                    : `Menampilkan <strong>1-${visibleItems.length}</strong> dari <strong>${res.totalFound} Merek</strong> untuk <strong>"${qDisplay}"</strong>`
+                }
               </div>
-              <span style="font-family:var(--font-mono);font-size:0.68rem;padding:3px 8px;border-radius:4px;background:${res.isContextualSimulation ? '#FEF3C7' : '#DCFCE7'};color:${res.isContextualSimulation ? '#92400E' : '#166534'};">
-                ${res.isContextualSimulation ? 'Simulasi Variasi Fonetik (Siap Integrasi API PDKI)' : '✓ Data Referensi Terverifikasi PDKI'}
+              <span style="font-family:var(--font-mono);font-size:0.68rem;padding:3px 8px;border-radius:4px;background:${res.isUnindexedQuery ? '#FEF3C7' : '#DCFCE7'};color:${res.isUnindexedQuery ? '#92400E' : '#166534'};">
+                ${res.isUnindexedQuery ? 'Menunggu Koneksi API PDKI Live' : '✓ Data Referensi Terverifikasi PDKI'}
               </span>
             </div>
 
             <div style="border-top:1px solid #E5E7EB;">
-              ${rightCardsHtml || '<div style="padding:2rem;text-align:center;color:#64748B;">Tidak ada merek yang sesuai dengan filter yang dipilih.</div>'}
+              ${
+                res.isUnindexedQuery
+                  ? `
+                <div style="padding:1.5rem;background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;margin-top:0.85rem;">
+                  <h4 style="font-family:var(--font-heading);font-size:1rem;font-weight:800;color:#92400E;margin:0 0 0.45rem 0;">
+                    Mengapa Daftar Pemilik Merek "${res.query.toUpperCase()}" Belum Ditampilkan Otomatis?
+                  </h4>
+                  <p style="font-size:0.84rem;color:#78350F;line-height:1.55;margin:0 0 0.9rem 0;">
+                    Sesuai prinsip transparansi BrandConnect (<strong>tidak mengarang data pemilik PT atau nomor permohonan palsu</strong>): kata kunci <strong>"${qDisplay}"</strong> belum terdapat pada sampel indeks lokal kami (seperti <code>mebisoo</code>, <code>meiso</code>, <code>nike</code>, <code>kopi kenangan</code>, <code>wardah</code>, <code>zenova</code>).<br/><br/>
+                    Platform seperti Mebiso menarik 1,2+ juta data merek DJKI menggunakan langganan database/API agregator berbayar (seperti <code>apiindonesia.id/api/v1/merek/search</code>) karena situs resmi pemerintah <strong>pdki-indonesia.dgip.go.id</strong> tidak membuka API publik gratis.
+                  </p>
+                  <div style="display:flex;flex-wrap:wrap;gap:0.75rem;">
+                    <a href="https://pdki-indonesia.dgip.go.id/search?type=trademark&keyword=${encodeURIComponent(res.query)}" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="text-decoration:none;">
+                      <span>🔗 Cek "${res.query.toUpperCase()}" Langsung di Portal Resmi PDKI DJKI ↗</span>
+                    </a>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="window.BCStore && window.BCStore.openHandoverModal('${res.query.toUpperCase()}')">
+                      <span>👨‍⚖️ Minta Penarikan Data PDKI Resmi ke Spesialis Kami</span>
+                    </button>
+                  </div>
+                </div>
+              `
+                  : rightCardsHtml || '<div style="padding:2rem;text-align:center;color:#64748B;">Tidak ada merek yang sesuai dengan filter yang dipilih.</div>'
+              }
             </div>
 
             ${blurredGateHtml}
