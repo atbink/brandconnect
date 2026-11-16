@@ -175,8 +175,16 @@
             reader.onload = (ev) => {
               const img = new Image();
               img.onload = () => {
-                uploadedMeta = { name: f.name, sizeKB, width: img.naturalWidth, height: img.naturalHeight };
-                fileStatus.innerHTML = `<strong style="color:var(--green);">✓ Dokumen/Logo Terbaca:</strong> ${f.name} (${img.naturalWidth}×${img.naturalHeight} px · ${sizeKB} KB) — Memenuhi syarat format etiket DJKI.`;
+                uploadedMeta = window.BCStore.analyzeLogoPixels(img, f.name, sizeKB);
+                const swatches = (uploadedMeta.dominantColors || [])
+                  .map((c) => `<span style="display:inline-flex;align-items:center;gap:4px;margin-right:8px;"><span style="width:11px;height:11px;border-radius:2px;background:${c.hex};border:1px solid #333;display:inline-block;"></span>${c.nameId} (${c.hex})</span>`)
+                  .join('');
+                fileStatus.innerHTML = `
+                  <div style="color:var(--green);font-weight:700;">✓ Analisis Piksel Logo Selesai: ${f.name} (${uploadedMeta.width}×${uploadedMeta.height} px · ${sizeKB} KB)</div>
+                  <div style="margin-top:4px;color:var(--charcoal);"><strong>Palet Warna Dominan:</strong> ${swatches}</div>
+                  <div style="margin-top:2px;color:var(--charcoal);"><strong>Sidik Jari Visual (64-bit dHash):</strong> <code>${uploadedMeta.dHash}</code> · <strong>Kompleksitas Bentuk:</strong> ${uploadedMeta.edgeComplexityPct}% · <strong>Background:</strong> ${uploadedMeta.bgVerdict}</div>
+                  <div style="margin-top:2px;color:var(--green);font-weight:600;"><strong>Auto-Draft Uraian Warna DJKI:</strong> "${uploadedMeta.djkiColorDescription}"</div>
+                `;
               };
               img.src = ev.target.result;
             };

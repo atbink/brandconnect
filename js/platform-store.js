@@ -540,7 +540,160 @@
   // AI INTELLIGENCE ENGINE (6 MODULAR CAPABILITIES)
   // =========================================================================
 
-  // 1. AI Class Recommendation Engine
+  // 1B. REAL HTML5 CANVAS COMPUTER VISION LOGO ANALYZER
+  function classifyColorNameId(r, g, b) {
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const l = (max + min) / 2;
+    if (l > 235) return 'Putih';
+    if (l < 35) return 'Hitam';
+    if (max - min < 22) return l > 150 ? 'Abu-abu Muda (Silver)' : 'Abu-abu Tua';
+    if (r >= g && r >= b) {
+      if (g > 160 && b < 100) return 'Kuning / Emas';
+      if (g > 90 && b < 80) return 'Oranye / Jingga';
+      return 'Merah';
+    }
+    if (g >= r && g >= b) {
+      return l < 100 ? 'Hijau Tua' : 'Hijau';
+    }
+    if (b >= r && b >= g) {
+      if (r > 110) return 'Ungu';
+      return l < 100 ? 'Biru Tua (Navy)' : 'Biru';
+    }
+    return 'Coklat / Kombinasi';
+  }
+
+  function rgbToHex(r, g, b) {
+    return '#' + [r, g, b].map((x) => Math.max(0, Math.min(255, Math.round(x))).toString(16).padStart(2, '0')).join('').toUpperCase();
+  }
+
+  function analyzeLogoPixels(imgObj, fileName, sizeKB) {
+    const width = imgObj.naturalWidth || imgObj.width || 500;
+    const height = imgObj.naturalHeight || imgObj.height || 500;
+    const aspectRatio = (width / height).toFixed(2);
+    const isSquare = Math.abs(width / height - 1) <= 0.15;
+    const resolutionOk = width >= 400 && height >= 400;
+
+    // 1. 64x64 Canvas for Color Histogram, Alpha/Background, & Edge Complexity
+    const canvas = document.createElement('canvas');
+    const S = 64;
+    canvas.width = S;
+    canvas.height = S;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(imgObj, 0, 0, S, S);
+    const data = ctx.getImageData(0, 0, S, S).data;
+
+    let transparentPixels = 0;
+    let whiteBgPixels = 0;
+    const colorBuckets = {};
+    const gray = new Float32Array(S * S);
+
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+      const a = data[i + 3];
+      const pxIdx = i / 4;
+
+      gray[pxIdx] = 0.299 * r + 0.587 * g + 0.114 * b;
+
+      if (a < 128) {
+        transparentPixels++;
+        continue;
+      }
+      if (r > 240 && g > 240 && b > 240) {
+        whiteBgPixels++;
+      }
+
+      // Quantize RGB into 32-step buckets
+      const qr = Math.round(r / 32) * 32;
+      const qg = Math.round(g / 32) * 32;
+      const qb = Math.round(b / 32) * 32;
+      const key = `${qr},${qg},${qb}`;
+      if (!colorBuckets[key]) {
+        colorBuckets[key] = { count: 0, rSum: 0, gSum: 0, bSum: 0 };
+      }
+      colorBuckets[key].count++;
+      colorBuckets[key].rSum += r;
+      colorBuckets[key].gSum += g;
+      colorBuckets[key].bSum += b;
+    }
+
+    // Compute Edge Density (Gradient Magnitude)
+    let edgePixels = 0;
+    for (let y = 1; y < S - 1; y++) {
+      for (let x = 1; x < S - 1; x++) {
+        const idx = y * S + x;
+        const gx = Math.abs(gray[idx + 1] - gray[idx - 1]);
+        const gy = Math.abs(gray[idx + S] - gray[idx - S]);
+        if (gx + gy > 38) edgePixels++;
+      }
+    }
+    const edgeComplexityPct = Math.min(98, Math.max(18, Math.round((edgePixels / (S * S)) * 280)));
+
+    // Sort dominant colors
+    const sortedColors = Object.values(colorBuckets)
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 4)
+      .map((b) => {
+        const r = Math.round(b.rSum / b.count);
+        const g = Math.round(b.gSum / b.count);
+        const bl = Math.round(b.bSum / b.count);
+        const hex = rgbToHex(r, g, bl);
+        const nameId = classifyColorNameId(r, g, bl);
+        const pct = Math.round((b.count / (S * S)) * 100);
+        return { hex, nameId, pct };
+      });
+
+    // 2. 9x8 Canvas for Real 64-bit Perceptual dHash
+    const hc = document.createElement('canvas');
+    hc.width = 9;
+    hc.height = 8;
+    const hctx = hc.getContext('2d');
+    hctx.drawImage(imgObj, 0, 0, 9, 8);
+    const hdata = hctx.getImageData(0, 0, 9, 8).data;
+    let bits = '';
+    for (let y = 0; y < 8; y++) {
+      for (let x = 0; x < 8; x++) {
+        const i1 = (y * 9 + x) * 4;
+        const i2 = (y * 9 + (x + 1)) * 4;
+        const l1 = 0.299 * hdata[i1] + 0.587 * hdata[i1 + 1] + 0.114 * hdata[i1 + 2];
+        const l2 = 0.299 * hdata[i2] + 0.587 * hdata[i2 + 1] + 0.114 * hdata[i2 + 2];
+        bits += l1 < l2 ? '1' : '0';
+      }
+    }
+    let dHashHex = '';
+    for (let i = 0; i < 64; i += 4) {
+      dHashHex += parseInt(bits.slice(i, i + 4), 2).toString(16);
+    }
+
+    const totalPx = S * S;
+    const hasTransparentBg = transparentPixels / totalPx > 0.12;
+    const hasCleanWhiteBg = whiteBgPixels / totalPx > 0.2;
+    const bgVerdict = hasTransparentBg
+      ? 'Transparan (PNG Alpha) — Disarankan latar putih saat ekspor etiket DJKI'
+      : hasCleanWhiteBg
+      ? 'Latar Belakang Putih Bersih (Sesuai Standar Etiket DJKI)'
+      : 'Latar Belakang Berwarna Penuh';
+
+    const uniqueColorNames = [...new Set(sortedColors.map((c) => `${c.nameId} (${c.hex})`))];
+    const djkiColorDescription = `Unsur warna pada etiket merek terdiri dari: ${uniqueColorNames.join(', ')}.`;
+
+    return {
+      name: fileName,
+      sizeKB,
+      width,
+      height,
+      aspectRatio,
+      isSquare,
+      resolutionOk,
+      edgeComplexityPct,
+      dominantColors: sortedColors,
+      dHash: dHashHex.toUpperCase(),
+      bgVerdict,
+      djkiColorDescription
+    };
+  }
   function recommendClasses(productDesc) {
     if (!productDesc || !productDesc.trim()) {
       return [NICE_CLASSES_DB[34], NICE_CLASSES_DB[29], NICE_CLASSES_DB[24]];
@@ -597,11 +750,11 @@
     let verdict = 'DAYA PEMBEDA KUAT (POTENSI POSITIF)';
     let phoneticStatus = 'Distingtif // Unik';
     let phoneticDetail = 'Struktur bunyi pengucapan memiliki karakter pembeda yang jelas.';
-    let visualStatus = mode === 'logo' && logoMeta
-      ? `Etiket Terunggah (${logoMeta.width}×${logoMeta.height}px)`
+    let visualStatus = logoMeta
+      ? `dHash: ${logoMeta.dHash || 'OK'} · Kompleksitas ${logoMeta.edgeComplexityPct || 80}%`
       : 'Susunan Huruf Khas';
-    let visualDetail = mode === 'logo' && logoMeta
-      ? `File "${logoMeta.name}" (${logoMeta.sizeKB} KB) memenuhi syarat evaluasi visual awal.`
+    let visualDetail = logoMeta
+      ? `${logoMeta.djkiColorDescription || ''} (${logoMeta.width}×${logoMeta.height}px · ${logoMeta.bgVerdict || ''})`
       : 'Komposisi ejaan tidak bersifat deskriptif murni.';
     let statuteStatus = 'Memenuhi Kriteria Pasal 20';
     let statuteDetail = 'Bukan merupakan kata umum/milik publik yang dilarang secara absolut.';
@@ -1302,6 +1455,7 @@
           • <strong>Rekomendasi Kelas (Nice Classification):</strong> ${log.recommendedClasses}<br/>
           • <strong>Evaluasi Fonetik:</strong> ${log.phoneticStatus} &nbsp;|&nbsp; <strong>Evaluasi Visual:</strong> ${log.visualStatus}<br/>
           • <strong>Kepatuhan UU Merek:</strong> ${log.statuteStatus}
+          ${log.logoMeta && log.logoMeta.djkiColorDescription ? `<br/>• <strong>Sidik Jari Visual (dHash 64-bit):</strong> <code>${log.logoMeta.dHash}</code> &nbsp;|&nbsp; <strong>Kompleksitas Bentuk:</strong> ${log.logoMeta.edgeComplexityPct}%<br/>• <strong>Draf Uraian Warna Etiket DJKI:</strong> ${log.logoMeta.djkiColorDescription}` : ''}
         </p>
 
         <h4 style="font-family:var(--font-mono);font-size:0.72rem;letter-spacing:0.1em;color:var(--green);margin-bottom:0.4rem;">2. INTERPRETASI PRA-SKRINING AI (AI INTERPRETATION)</h4>
@@ -1344,6 +1498,7 @@
     logActivity,
     formatIDR,
     NICE_CLASSES_DB,
+    analyzeLogoPixels,
     recommendClasses,
     analyzeTrademark,
     generateAiAssistantReply,

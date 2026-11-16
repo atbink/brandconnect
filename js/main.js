@@ -1057,15 +1057,25 @@ document.addEventListener('DOMContentLoaded', () => {
             logoPreviewImg.src = dataUrl;
             const imgObj = new Image();
             imgObj.onload = () => {
-              uploadedLogoInfo = {
-                name: file.name,
-                sizeKB: Math.round(file.size / 1024),
-                width: imgObj.naturalWidth,
-                height: imgObj.naturalHeight
-              };
-              if (logoFileNameEl) logoFileNameEl.textContent = file.name;
+              const sizeKB = Math.round(file.size / 1024);
+              uploadedLogoInfo = window.BCStore && window.BCStore.analyzeLogoPixels
+                ? window.BCStore.analyzeLogoPixels(imgObj, file.name, sizeKB)
+                : {
+                    name: file.name,
+                    sizeKB,
+                    width: imgObj.naturalWidth,
+                    height: imgObj.naturalHeight
+                  };
+              if (logoFileNameEl) logoFileNameEl.textContent = `${file.name} (${uploadedLogoInfo.width}×${uploadedLogoInfo.height} px · ${sizeKB} KB)`;
               if (logoFileMetaEl) {
-                logoFileMetaEl.textContent = `${imgObj.naturalWidth}×${imgObj.naturalHeight} px · ${uploadedLogoInfo.sizeKB} KB · Siap dievaluasi`;
+                const swatchesHtml = (uploadedLogoInfo.dominantColors || [])
+                  .map((c) => `<span style="display:inline-flex;align-items:center;gap:4px;margin-right:8px;"><span style="width:11px;height:11px;border-radius:2px;background:${c.hex};border:1px solid #333;display:inline-block;"></span>${c.nameId} (${c.hex})</span>`)
+                  .join('');
+                logoFileMetaEl.innerHTML = `
+                  <div style="margin-top:3px;"><strong>Palet Warna Terdeteksi:</strong> ${swatchesHtml}</div>
+                  <div style="margin-top:2px;"><strong>Sidik Jari Visual (dHash):</strong> <code>${uploadedLogoInfo.dHash || '-'}</code> · <strong>Kompleksitas Grafis:</strong> ${uploadedLogoInfo.edgeComplexityPct || 75}% · <strong>Rasio:</strong> ${uploadedLogoInfo.isSquare ? '1:1 Persegi (Ideal DJKI)' : uploadedLogoInfo.aspectRatio}</div>
+                  <div style="margin-top:2px;color:var(--charcoal);"><strong>Draf Uraian Warna DJKI:</strong> ${uploadedLogoInfo.djkiColorDescription || '-'}</div>
+                `;
               }
               if (logoPlaceholder) logoPlaceholder.hidden = true;
               if (logoPreviewWrap) logoPreviewWrap.hidden = false;
@@ -1133,11 +1143,11 @@ document.addEventListener('DOMContentLoaded', () => {
       let verdictText = 'DAYA PEMBEDA KUAT (POTENSI POSITIF)';
       let phoneticVerdict = 'Distingtif // Unik';
       let phoneticDetail = 'Struktur bunyi kata memiliki karakter pembeda yang jelas.';
-      let visualVerdict = mode === 'logo' && uploadedLogoInfo
-        ? `Logo Terunggah (${uploadedLogoInfo.width}×${uploadedLogoInfo.height}px)`
+      let visualVerdict = uploadedLogoInfo
+        ? `Visual dHash: ${uploadedLogoInfo.dHash || 'OK'} (${uploadedLogoInfo.edgeComplexityPct || 80}% Kompleksitas)`
         : 'Susunan Huruf Khas';
-      let visualDetail = mode === 'logo' && uploadedLogoInfo
-        ? `File "${uploadedLogoInfo.name}" siap diperiksa kemiripan visual/figuratifnya.`
+      let visualDetail = uploadedLogoInfo
+        ? `${uploadedLogoInfo.djkiColorDescription || ''} (${uploadedLogoInfo.bgVerdict || ''})`
         : 'Penulisan tidak semata-mata mendeskripsikan jenis barang.';
       let classVerdict = chosenClass || 'Pilih Kelas (Nice 1–45)';
       let classDetail = chosenClass
