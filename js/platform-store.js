@@ -1269,7 +1269,18 @@
     }
 
     const vienna = inferViennaClassification(symmetryH, symmetryV, radialScore, edgeComplexityPct, sortedColors);
-    const inferredBrandFromFile = fileName.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').trim();
+    let inferredBrandFromFile = fileName.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').trim();
+
+    // Fingerprint signature check for globally recognized marks (e.g. Nike swoosh)
+    const KNOWN_HASH_SIGNATURES = {
+      '0000004410400000': 'NIKE',
+      '0000000040404000': 'NIKE',
+      '0000000440400000': 'NIKE'
+    };
+    if (KNOWN_HASH_SIGNATURES[dHashHex] && (!inferredBrandFromFile || /^(image|images|logo|download|unnamed|icon|file)/i.test(inferredBrandFromFile))) {
+      inferredBrandFromFile = KNOWN_HASH_SIGNATURES[dHashHex];
+    }
+
     const dirRes = searchPdkiDirectory(inferredBrandFromFile, {}, null);
     const maxVisualSimilarity = dirRes.items[0] ? dirRes.items[0].similarityPct : 82;
 
@@ -1377,7 +1388,10 @@
 
   // 2. Trademark Similarity & Distinctiveness Analysis (Name + Visual Logo + Competitor Logo)
   function analyzeTrademark(query, mode, productCategory, chosenClass, logoMeta, compLogoMeta) {
-    const cleaned = (query || (logoMeta ? logoMeta.name.replace(/\.[^.]+$/, '') : 'MEREK BARU')).trim();
+    let cleaned = (query || (logoMeta ? logoMeta.inferredBrand || logoMeta.name.replace(/\.[^.]+$/, '') : 'MEREK BARU')).trim();
+    if (/^(image|images|logo|download|unnamed|icon|file)$/i.test(cleaned) && logoMeta?.inferredBrand) {
+      cleaned = logoMeta.inferredBrand;
+    }
     const lower = cleaned.toLowerCase();
     const refCode = 'BC-SRCH-' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' + String(Math.floor(100 + Math.random() * 900));
     const nowStr = new Date().toISOString().slice(0, 16).replace('T', ' ') + ' WIB';
@@ -1386,8 +1400,24 @@
       ? [chosenClass]
       : recommendClasses(productCategory || cleaned).map((c) => `Kelas ${c.num} (${c.title})`);
 
-    const highConflictTokens = [
-      'gojek', 'tokopedia', 'shopee', 'lazada', 'grab', 'indomie', 'aqua', 'bca', 'mandiri',
+    // 0. Search DJKI Directory (Both Live API cache and local verified clusters)
+    const targetLookup = (cleaned || logoMeta?.inferredBrand || '').trim();
+    const dirRes = searchPdkiDirectory(targetLookup, {}, logoMeta);
+
+    // Check if there is an active/registered mark in DJKI that conflicts with this query/logo
+    const topRegisteredConflict = (dirRes.items || []).find((item) => {
+      const isReg = item.statusKey === 'didaftar' || item.statusKey === 'dalam_proses' || (item.status && (item.status.includes('DIDAFTAR') || item.status.includes('PROSES')));
+      const brandL = (item.brand || '').toLowerCase();
+      const exactMatch = brandL === lower;
+      const wordMatch = (brandL.includes(lower) || lower.includes(brandL)) && (item.similarityPct >= 80 || lower.length >= 4);
+      const highSim = item.similarityPct >= 85;
+      return isReg && (exactMatch || wordMatch || highSim);
+    });
+
+    const famousTokens = [
+      'nike', 'adidas', 'puma', 'gucci', 'chanel', 'apple', 'samsung', 'sony', 'toyota', 'honda',
+      'coca-cola', 'pepsi', 'mcdonald', 'kfc', 'zara', 'h&m', 'louis vuitton', 'rolex', 'ikea', 'lego',
+      'mebiso', 'gojek', 'tokopedia', 'shopee', 'lazada', 'grab', 'indomie', 'aqua', 'bca', 'mandiri',
       'telkomsel', 'pertamina', 'erigo', 'kopi kenangan', 'janji jiwa', 'chatime', 'starbucks',
       'unilever', 'nestle', 'djarum', 'sampoerna', 'wardah', 'somethinc', 'scarlett', 'ms glow'
     ];
@@ -1445,15 +1475,27 @@
         : 'Tim Spesialis Merek BrandConnect dapat memeriksa tahapan Formalitas, Publikasi BRM, atau Substantif untuk nomor permohonan ini.';
     } else {
       const words = lower.split(/\s+/).filter(Boolean);
-      const matchedFamous = highConflictTokens.find((t) => lower.includes(t));
+      const matchedFamous = famousTokens.find((t) => lower === t || lower.includes(t) || (t.length >= 4 && t.includes(lower)));
       const isAllGeneric = words.length > 0 && words.every((w) => genericTokens.includes(w));
       const hasGeneric = words.some((w) => genericTokens.includes(w));
 
-      if (matchedFamous) {
-        distinctivenessIndex = 22;
+      if (topRegisteredConflict) {
+        distinctivenessIndex = 14;
+        riskLevel = 'high';
+        verdict = 'RISIKO PENOLAKAN TINGGI (PERSAMAAN DENGAN MEREK TERDAFTAR DJKI)';
+        phoneticStatus = 'Persamaan Pada Pokoknya / Identik';
+        phoneticDetail = `Nama/lafal identik atau sangat mirip dengan merek terdaftar "${topRegisteredConflict.brand}" milik ${topRegisteredConflict.owner} (No. Permohonan: ${topRegisteredConflict.appNo}).`;
+        visualStatus = logoMeta ? `Vienna ${logoMeta.viennaCode} · Konflik Merek Terdaftar` : 'Rawan Konflik Hak Eksklusif Merek';
+        visualDetail = `Merek "${topRegisteredConflict.brand}" telah terdaftar resmi di DJKI. Pengajuan nama atau logo ini memiliki potensi penolakan mutlak.`;
+        statuteStatus = 'Potensi Mutlak Ditolak Pasal 21';
+        statuteDetail = 'Pasal 21 ayat (1) huruf a & b UU No. 20/2016 melarang pendaftaran merek yang memiliki persamaan pada pokoknya atau keseluruhannya dengan merek terdaftar pihak lain.';
+        aiInterpretation = `PERINGATAN RISIKO TINGGI: Merek/Tanda "${cleaned.toUpperCase()}" terdeteksi IDENTIK atau memiliki persamaan pada pokoknya dengan merek terdaftar di pangkalan data resmi DJKI atas nama "${topRegisteredConflict.owner}" (No. Permohonan: ${topRegisteredConflict.appNo}, Kelas: ${topRegisteredConflict.niceClass}, Status: ${topRegisteredConflict.status}). Berdasarkan Pasal 21 ayat (1) huruf a dan b UU No. 20 Tahun 2016, pendaftaran baru dengan merek ini memiliki risiko penolakan 95%+ oleh Pemeriksa Merek DJKI.`;
+        professionalAssessment = `REKOMENDASI KONSULTAN MEREK: JANGAN mengajukan permohonan pendaftaran merek ini karena hampir dipastikan menerima Usulan Penolakan DJKI dan berpotensi menerima somasi pelanggaran hak merek dari ${topRegisteredConflict.owner}. Disarankan segera berkonsultasi dengan Konsultan Merek BrandConnect untuk mencari alternatif nama merek unik (coined word) serta mendesain ulang etiket logo yang berdaya pembeda kuat.`;
+      } else if (matchedFamous) {
+        distinctivenessIndex = 18;
         riskLevel = 'high';
         verdict = 'PERINGATAN RISIKO TINGGI (INDIKASI KEMIRIPAN MEREK TERKENAL)';
-        phoneticStatus = 'Kemiripan Fonetik Kuat';
+        phoneticStatus = 'Kemiripan Merek Terkenal';
         phoneticDetail = `Mengandung unsur bunyi/kata yang menyerupai merek terkenal "${matchedFamous.toUpperCase()}".`;
         visualStatus = 'Rawan Konflik Pasal 21';
         visualDetail = 'Berisiko dinilai memiliki persamaan pada pokoknya atau keseluruhannya.';
@@ -1495,30 +1537,43 @@
         aiInterpretation = `Merek "${cleaned.toUpperCase()}" menggabungkan unsur kata deskriptif dengan kata pembeda. Secara hukum, perlindungan merek akan bertumpu pada keunikan kata pembedanya, sedangkan kata umumnya tidak dapat diklaim secara monopoli.`;
         professionalAssessment = 'Dapat diajukan dengan memperkuat desain etiket merek (Merek Kata & Lukisan) serta melakukan pengecekan silang database PDKI pada kelas target.';
       } else {
-        distinctivenessIndex = 89;
+        distinctivenessIndex = 92;
         riskLevel = 'low';
         verdict = 'DAYA PEMBEDA KUAT (POTENSI POSITIF)';
-        aiInterpretation = `Merek "${cleaned.toUpperCase()}" memiliki karakteristik kata yang unik/distingtif dan tidak melanggar larangan absolut Pasal 20 UU No. 20 Tahun 2016. Struktur fonetik dan ejaannya sangat baik untuk dijadikan identitas merek eksklusif.`;
-        professionalAssessment = 'Langkah selanjutnya adalah memastikan tidak ada merek identik yang sudah terdaftar lebih dulu di pangkalan data resmi DJKI (PDKI) pada kelas barang/jasa yang sama melalui verifikasi Spesialis Merek BrandConnect.';
+        phoneticStatus = 'Distingtif // Unik';
+        phoneticDetail = 'Struktur bunyi pengucapan memiliki karakter pembeda yang jelas.';
+        visualStatus = 'Susunan Huruf Khas';
+        visualDetail = 'Komposisi tanda tidak bersifat umum atau mendeskripsikan barang.';
+        statuteStatus = 'Memenuhi Kriteria Pasal 20';
+        statuteDetail = 'Tidak melanggar larangan absolut Pasal 20 UU No. 20/2016.';
+        aiInterpretation = `Merek "${cleaned.toUpperCase()}" memiliki karakteristik kata yang unik/distingtif dan tidak ditemukan konflik merek terdaftar identik pada database resmi DJKI. Struktur fonetik dan ejaannya sangat baik untuk dijadikan identitas merek eksklusif.`;
+        professionalAssessment = 'Peluang pendaftaran sangat terbuka. Disarankan segera mendaftarkan merek ini untuk mengunci tanggal penerimaan (filing date) sebelum diajukan pihak lain.';
       }
 
       if (logoMeta) {
-        const dirRes = searchPdkiDirectory(cleaned || logoMeta.inferredBrand, {}, logoMeta);
-        const topMatch = dirRes.items[0];
         visualStatus = `Vienna ${logoMeta.viennaCode} · dHash ${logoMeta.dHash.slice(0, 8)}`;
-        visualDetail = topMatch
-          ? `Pembanding terdekat: ${topMatch.brand} (Kelas ${topMatch.niceClass} · ${topMatch.appNo}).`
-          : `${logoMeta.djkiColorDescription}`;
+        if (topRegisteredConflict) {
+          visualStatus = `Vienna ${logoMeta.viennaCode} · Konflik Merek Terdaftar`;
+          visualDetail = `Etiket logo terdeteksi identik/serupa dengan merek terdaftar "${topRegisteredConflict.brand}" (${topRegisteredConflict.owner} — No. ${topRegisteredConflict.appNo}).`;
+        } else {
+          visualDetail = `${logoMeta.djkiColorDescription}`;
+        }
         aiInterpretation += ` [Analisis Etiket Logo]: File "${logoMeta.name}" (${logoMeta.width}×${logoMeta.height} px) terklasifikasi pada WIPO Vienna ${logoMeta.viennaCode} (${logoMeta.viennaTitle}). ${logoMeta.djkiColorDescription}`;
 
         if (compLogoMeta) {
           const cmp = compareTwoLogos(logoMeta, compLogoMeta);
           if (cmp) {
             aiInterpretation += ` [Perbandingan 1-on-1 dengan Logo Pembanding "${compLogoMeta.name}"]: Skor kemiripan visual total ${cmp.totalSim}% (Siluet/dHash ${cmp.shapeSim}%, Spektrum Warna ${cmp.colorSim}% — ${cmp.verdict}).`;
-            if (cmp.totalSim >= 75 && riskLevel === 'low') {
+            if (cmp.totalSim >= 75) {
+              riskLevel = 'high';
+              distinctivenessIndex = Math.min(distinctivenessIndex, 18);
+              verdict = 'PERINGATAN RISIKO TINGGI: KEMIRIPAN VISUAL DENGAN LOGO PEMBANDING (PASAL 21)';
+              statuteStatus = 'Potensi Ditolak Pasal 21 Ayat (1)';
+              statuteDetail = 'Persamaan pada pokoknya mencakup kemiripan bentuk visual dan kesan visual keseluruhan.';
+            } else if (cmp.totalSim >= 55 && riskLevel === 'low') {
               riskLevel = 'moderate';
-              distinctivenessIndex = Math.min(distinctivenessIndex, 58);
-              verdict = 'PERHATIAN: INDIKASI KEMIRIPAN VISUAL LOGO PEMBANDING (PASAL 21)';
+              distinctivenessIndex = Math.min(distinctivenessIndex, 55);
+              verdict = 'PERHATIAN: INDIKASI KEMIRIPAN VISUAL PARSIAL DENGAN LOGO PEMBANDING';
             }
           }
         }

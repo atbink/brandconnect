@@ -201,6 +201,10 @@
                 const swatches = (uploadedMeta.dominantColors || [])
                   .map((c) => `<span style="display:inline-flex;align-items:center;gap:4px;margin-right:8px;"><span style="width:11px;height:11px;border-radius:2px;background:${c.hex};border:1px solid #333;display:inline-block;"></span>${c.nameId} (${c.hex})</span>`)
                   .join('');
+                const brandInput = document.getElementById('dc-brand');
+                if (brandInput && !brandInput.value.trim() && uploadedMeta.inferredBrand) {
+                  brandInput.value = uploadedMeta.inferredBrand;
+                }
                 fileStatus.innerHTML = `
                   <div style="color:var(--green);font-weight:700;">✓ Analisis Piksel &amp; Etiket Logo Selesai: ${f.name} (${uploadedMeta.width}×${uploadedMeta.height} px · ${sizeKB} KB)</div>
                   <div style="margin-top:4px;color:var(--charcoal);"><strong>Palet Warna Dominan:</strong> ${swatches}</div>
@@ -243,12 +247,23 @@
       }
 
       if (form) {
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
           e.preventDefault();
-          const brand = document.getElementById('dc-brand').value;
+          const brand = document.getElementById('dc-brand').value.trim();
           const prod = document.getElementById('dc-product').value;
           const mode = document.getElementById('dc-mode').value;
-          const rec = window.BCStore.analyzeTrademark(brand, mode, prod, '', uploadedMeta, uploadedCompMeta);
+          const targetQuery = brand || uploadedMeta?.inferredBrand || 'MEREK BARU';
+
+          // 1. Pre-fetch live PDKI DJKI data if key is configured so conflict check has live database
+          if (window.BCStore && window.BCStore.fetchLivePdkiApi) {
+            try {
+              await window.BCStore.fetchLivePdkiApi(targetQuery);
+            } catch (err) {
+              console.warn('Live API prefetch info:', err);
+            }
+          }
+
+          const rec = window.BCStore.analyzeTrademark(targetQuery, mode, prod, '', uploadedMeta, uploadedCompMeta);
 
           document.getElementById('dc-res-ref').textContent = `LAPORAN ANALISIS // REF: ${rec.referenceCode}`;
           document.getElementById('dc-res-brand').textContent = rec.trademarkName;
@@ -259,6 +274,11 @@
           const badge = document.getElementById('dc-res-badge');
           badge.classList.remove('score-high', 'score-medium', 'score-low');
           badge.classList.add(rec.riskLevel === 'low' ? 'score-high' : rec.riskLevel === 'moderate' ? 'score-medium' : 'score-low');
+
+          const scoreLabelEl = badge.querySelector('.tm-score-label');
+          if (scoreLabelEl) {
+            scoreLabelEl.textContent = rec.riskLevel === 'high' ? 'POTENSI PENOLAKAN DJKI' : 'INDEKS DAYA PEMBEDA';
+          }
 
           document.getElementById('dc-p1').textContent = rec.phoneticStatus;
           document.getElementById('dc-p1-d').textContent = rec.phoneticDetail;

@@ -1173,78 +1173,30 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Case B: Brand Name & Optional Visual Logo Evaluation
-      const words = lower.split(/\s+/);
-      const matchedHighConflict = highConflictTokens.find((tok) => lower.includes(tok));
-      const isPurelyGeneric = words.every((w) => genericTokens.includes(w));
-      const containsGeneric = words.some((w) => genericTokens.includes(w));
-
-      let scoreText = 'Tinggi';
-      let badgeClass = 'score-high';
-      let verdictText = 'DAYA PEMBEDA KUAT (POTENSI POSITIF)';
-      let phoneticVerdict = 'Distingtif // Unik';
-      let phoneticDetail = 'Struktur bunyi kata memiliki karakter pembeda yang jelas.';
-      let visualVerdict = uploadedLogoInfo
-        ? `Kemiripan Visual Maks: ${uploadedLogoInfo.maxVisualSimilarity || 45}% · Vienna ${uploadedLogoInfo.viennaCode || '26.01'}`
-        : 'Susunan Huruf Khas';
-      let visualDetail = uploadedLogoInfo
-        ? `dHash: ${uploadedLogoInfo.dHash || 'OK'} · Simetri H:${uploadedLogoInfo.symmetryH || 80}% · ${uploadedLogoInfo.djkiColorDescription || ''}`
-        : 'Penulisan tidak semata-mata mendeskripsikan jenis barang.';
-      let classVerdict = chosenClass || 'Pilih Kelas (Nice 1–45)';
-      let classDetail = chosenClass
-        ? `Diarahkan untuk perlindungan pada ${chosenClass}.`
-        : 'Gunakan fitur Cari Kelas Merek untuk menentukan nomor kelas yang tepat.';
-      let statuteVerdict = 'Memenuhi Kriteria Pasal 20';
-      let statuteDetail = 'Bukan merupakan kata umum/generik yang dilarang didaftarkan.';
-
-      if (matchedHighConflict) {
-        scoreText = 'Risiko';
-        badgeClass = 'score-low';
-        verdictText = 'PERINGATAN KEMIRIPAN MEREK TERKENAL';
-        phoneticVerdict = 'Indikasi Kemiripan Kuat';
-        phoneticDetail = `Mengandung unsur kata yang menyerupai merek populer "${matchedHighConflict.toUpperCase()}".`;
-        visualVerdict = 'Rawan Konflik Pasal 21';
-        visualDetail = 'Berisiko ditolak karena persamaan pada pokoknya/keseluruhannya.';
-        statuteVerdict = 'Perlu Modifikasi Nama';
-        statuteDetail = 'Pasal 21 UU Merek melarang pendaftaran merek yang mirip merek terdaftar/terkenal.';
-      } else if (isPurelyGeneric) {
-        scoreText = 'Rendah';
-        badgeClass = 'score-low';
-        verdictText = 'BERSIFAT UMUM / DESKRIPTIF (RAWAN DITOLAK)';
-        phoneticVerdict = 'Kata Umum (Generik)';
-        phoneticDetail = 'Hanya menyebutkan nama jenis barang atau sifat langsung produk.';
-        visualVerdict = 'Kurang Daya Pembeda';
-        visualDetail = 'Kata umum milik publik tidak dapat dimonopoli sebagai merek pribadi.';
-        statuteVerdict = 'Melanggar Pasal 20';
-        statuteDetail = 'Pasal 20 UU Merek menolak tanda yang tidak memiliki daya pembeda.';
-      } else if (containsGeneric) {
-        scoreText = 'Sedang';
-        badgeClass = 'score-medium';
-        verdictText = 'KOMBINASI KATA UMUM & UNSUR PEMBEDA';
-        phoneticVerdict = 'Cukup Distingtif';
-        phoneticDetail = 'Terdapat kata deskriptif, namun didampingi kata pembeda.';
-        statuteVerdict = 'Disarankan Tambah Unsur Unik';
-        statuteDetail = 'Kata generik di dalamnya tetap tidak dilindungi secara terpisah.';
+      if (window.BCStore && window.BCStore.analyzeTrademark) {
+        const rec = window.BCStore.analyzeTrademark(cleaned, mode, '', chosenClass, uploadedLogoInfo, uploadedCompLogoInfo);
+        const scoreTxt = rec.riskLevel === 'high' ? 'Risiko' : rec.riskLevel === 'moderate' ? 'Sedang' : 'Tinggi';
+        const badgeCls = rec.riskLevel === 'high' ? 'score-low' : rec.riskLevel === 'moderate' ? 'score-medium' : 'score-high';
+        return {
+          mode,
+          brand: rec.trademarkName,
+          subtitle: uploadedLogoInfo
+            ? `METODE: EVALUASI NAMA & KEMIRIPAN VISUAL LOGO (${uploadedLogoInfo.name.toUpperCase()})`
+            : `METODE: ANALISIS KARAKTERISTIK NAMA MEREK // PRA-SKRINING AI`,
+          scoreText: scoreTxt,
+          badgeClass: badgeCls,
+          verdictText: rec.verdict,
+          honestNotice: rec.aiInterpretation,
+          phoneticVerdict: rec.phoneticStatus,
+          phoneticDetail: rec.phoneticDetail,
+          visualVerdict: rec.visualStatus,
+          visualDetail: rec.visualDetail,
+          classVerdict: rec.recommendedClasses,
+          classDetail: 'Rekomendasi klasifikasi barang/jasa berdasarkan Nice Classification.',
+          statuteVerdict: rec.statuteStatus,
+          statuteDetail: rec.statuteDetail
+        };
       }
-
-      return {
-        mode,
-        brand: cleaned.toUpperCase(),
-        subtitle: uploadedLogoInfo
-          ? `METODE: EVALUASI NAMA & KEMIRIPAN VISUAL LOGO (${uploadedLogoInfo.name.toUpperCase()})`
-          : `METODE: ANALISIS KARAKTERISTIK NAMA MEREK // PRA-SKRINING AI`,
-        scoreText,
-        badgeClass,
-        verdictText,
-        honestNotice: 'Status Analisis Pra-Skrining AI: Evaluasi ini menilai daya pembeda kata, kemiripan fonetik, serta ekstraksi piksel & matriks kemiripan visual logo (64-bit dHash, Geometri Simetri, Klasifikasi Vienna & Komposisi Warna) secara nyata. Untuk pengecekan silang terhadap seluruh merek terdaftar di database resmi DJKI (PDKI), konsultasikan gratis bersama tim Spesialis Merek kami.',
-        phoneticVerdict,
-        phoneticDetail,
-        visualVerdict,
-        visualDetail,
-        classVerdict,
-        classDetail,
-        statuteVerdict,
-        statuteDetail
-      };
     };
 
     const renderResults = (data) => {
@@ -1293,11 +1245,11 @@ document.addEventListener('DOMContentLoaded', () => {
       resultsPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     };
 
-    searchForm.addEventListener('submit', (e) => {
+    searchForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       let val = brandInput.value.trim();
       if (!val && uploadedLogoInfo) {
-        val = uploadedLogoInfo.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').toUpperCase();
+        val = uploadedLogoInfo.inferredBrand || uploadedLogoInfo.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').toUpperCase();
         brandInput.value = val;
       }
       if (!val) {
@@ -1306,9 +1258,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const mode = modeInput ? modeInput.value : 'name';
       const chosenClass = selectedClassHidden ? selectedClassHidden.value : '';
-      if (window.BCStore) {
-        window.BCStore.analyzeTrademark(val, mode, '', chosenClass, uploadedLogoInfo, uploadedCompLogoInfo);
+
+      // Prefetch live PDKI DJKI data if key is configured so conflict check evaluates against live database
+      if (window.BCStore && window.BCStore.fetchLivePdkiApi) {
+        try {
+          await window.BCStore.fetchLivePdkiApi(val);
+        } catch (err) {
+          console.warn('Live API prefetch info:', err);
+        }
       }
+
       const result = evaluateQuery(val, mode, chosenClass);
       renderResults(result);
     });
