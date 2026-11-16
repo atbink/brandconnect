@@ -7512,3 +7512,23 @@ body {
     flex-wrap: wrap;
   }
 }
+
+
+/* Interactive Sample Chips */
+.hp-sample-chip {
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid #D1D5DB;
+  background: #FFFFFF;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #0D3B2E;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.hp-sample-chip:hover {
+  background: #EAF4EE;
+  border-color: #8AC7A4;
+  color: #0D3B2E;
+  transform: translateY(-1px);
+}

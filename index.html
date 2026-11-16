@@ -80,7 +80,7 @@
             Pastikan identitas bisnis Anda terlindungi. Temukan potensi kemiripan merek, pahami kelas pendaftaran, dan dapatkan pendampingan profesional hingga perlindungan hukum.
           </p>
 
-          <form class="bc-hero-search-bar" action="#cek-merek" onsubmit="event.preventDefault(); const q = this.querySelector('input').value; if(q){ document.getElementById('tm-brand-input').value = q; document.getElementById('cek-merek').scrollIntoView({behavior: 'smooth'}); setTimeout(() => document.getElementById('tm-submit-btn').click(), 300); }">
+          <form class="bc-hero-search-bar" action="#cek-merek" onsubmit="event.preventDefault(); const q = this.querySelector('input').value.trim(); if(q){ window.hpRunSample(q); } else { document.getElementById('cek-merek').scrollIntoView({behavior:'smooth'}); document.getElementById('tm-brand-input').focus(); }">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             <input type="text" placeholder="Masukkan nama merek..." required />
             <button type="submit" class="bc-hero-search-btn">
@@ -152,7 +152,7 @@
                 type="text"
                 id="tm-brand-input"
                 placeholder="Masukkan nama merek (contoh: Kopi Nusantara, Zenova, GlowS)"
-                value="kopi kenangan"
+                value=""
                 required
               />
               <button type="submit" class="bc-btn-search-action" id="tm-submit-btn">
@@ -181,6 +181,13 @@
             </div>
           </form>
 
+          <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap;margin:1.15rem 0 0.5rem;font-size:0.84rem;color:#6B7280;">
+            <span style="font-weight:500;">Contoh penelusuran cepat:</span>
+            <button type="button" class="hp-sample-chip" onclick="window.hpRunSample('Kopi Kenangan')">Kopi Kenangan</button>
+            <button type="button" class="hp-sample-chip" onclick="window.hpRunSample('Onitsuka')">Onitsuka</button>
+            <button type="button" class="hp-sample-chip" onclick="window.hpRunSample('Adidas')">Adidas</button>
+            <button type="button" class="hp-sample-chip" onclick="window.hpRunSample('Converse')">Converse</button>
+          </div>
           <p class="bc-footnote" style="margin-top:1.25rem;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
             <span>Mengacu pada Kriteria Pemeriksaan Substantif Pasal 20 &amp; 21 UU Merek No. 20 Tahun 2016 (DJKI)</span>
@@ -285,7 +292,7 @@
     <!-- ==================================================
          SECTION 3 (IMAGE 3): HASIL PENCARIAN & ANALISIS DETAIL LIVE
          ================================================== -->
-    <section class="bc-analysis-section" id="hasil-analisis" style="padding: 2.5rem 0 4.5rem; background:#FAF8F5;">
+    <section class="bc-analysis-section" id="hasil-analisis" style="display:none; padding: 2.5rem 0 4.5rem; background:#FAF8F5; border-top: 1px solid #E5E7EB; border-bottom: 1px solid #E5E7EB;">
       <div class="container" style="max-width:1160px;">
         <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:1.5rem;">
           <div>
@@ -303,6 +310,9 @@
             </button>
             <button type="button" class="btn btn-secondary btn-sm" onclick="navigator.clipboard && navigator.clipboard.writeText(location.href); alert('Tautan hasil telah disalin!');" style="padding:0.6rem 1.15rem;border-radius:9999px;">
               <span>🔗 Bagikan Hasil</span>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" id="hp-close-analysis-btn" style="padding:0.6rem 1.15rem;border-radius:9999px;background:#F3F4F6;border-color:#E5E7EB;color:#4B5563;font-weight:600;display:inline-flex;align-items:center;gap:0.35rem;" title="Tutup hasil analisis">
+              <span>✕ Tutup</span>
             </button>
           </div>
         </div>
