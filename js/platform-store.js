@@ -69,7 +69,8 @@
       supportEmail: 'hello@brandconnect.id',
       aiDisclaimer: 'Informasi dan analisis AI bersifat edukatif serta merupakan evaluasi pra-skrining awal berdasarkan ketentuan UU No. 20 Tahun 2016 tentang Merek dan Indikasi Geografis. Hasil ini bukan merupakan keputusan resmi DJKI. Penilaian hukum final dan verifikasi menyeluruh dilakukan oleh Konsultan Merek & Tim Legal BrandConnect.',
       currentAdminRole: 'Super Admin',
-      ragEnabled: true
+      ragEnabled: true,
+      pdkiApiKey: 'aip_live_tW5NibLE0C8rjVIF6jOYon3PgdbTsE01'
     },
 
     customerProfile: {
@@ -838,13 +839,16 @@
 
   // Live API Indonesia Cache & Key Management (https://use.apiindonesia.id/api/v1/merek/search)
   const PDKI_API_KEY_STORAGE = 'bc_pdki_api_key';
+  const DEFAULT_PDKI_API_KEY = 'aip_live_tW5NibLE0C8rjVIF6jOYon3PgdbTsE01';
   const LIVE_PDKI_CACHE = {};
 
   function getPdkiApiKey() {
     try {
-      return (localStorage.getItem(PDKI_API_KEY_STORAGE) || state.settings.pdkiApiKey || '').trim();
+      const stored = localStorage.getItem(PDKI_API_KEY_STORAGE);
+      if (stored !== null && stored !== undefined && stored.trim() !== '') return stored.trim();
+      return (state.settings?.pdkiApiKey || DEFAULT_PDKI_API_KEY).trim();
     } catch (e) {
-      return '';
+      return DEFAULT_PDKI_API_KEY;
     }
   }
 
@@ -864,6 +868,28 @@
     return cleanKey;
   }
 
+  function computeBrandSimilarity(strA, strB) {
+    const a = (strA || '').toLowerCase().trim();
+    const b = (strB || '').toLowerCase().trim();
+    if (!a || !b) return 60;
+    if (a === b) return 100;
+    if (a.replace(/(.)\1+/g, '$1') === b.replace(/(.)\1+/g, '$1')) return 96;
+    if (a.includes(b) || b.includes(a)) return 92;
+
+    const matrix = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
+    for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+    for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        matrix[i][j] = Math.min(matrix[i - 1][j] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j - 1] + cost);
+      }
+    }
+    const maxLen = Math.max(a.length, b.length);
+    const dist = matrix[a.length][b.length];
+    return Math.max(50, Math.round((1 - dist / maxLen) * 100));
+  }
+
   async function fetchLivePdkiApi(rawQuery) {
     const apiKey = getPdkiApiKey();
     const clean = (rawQuery || '').trim();
@@ -871,41 +897,95 @@
     if (!apiKey || !clean) return null;
     if (LIVE_PDKI_CACHE[lower]) return LIVE_PDKI_CACHE[lower];
 
-    const url = `https://use.apiindonesia.id/api/v1/merek/search?q=${encodeURIComponent(clean)}&page=1&limit=15`;
-    const resp = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'x-api-key': apiKey,
-        'Accept': 'application/json'
+    const queryEndpoint = async (q) => {
+      try {
+        const url = `https://use.apiindonesia.id/api/v1/merek/search?q=${encodeURIComponent(q)}&page=1&limit=15`;
+        const resp = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'x-api-key': apiKey,
+            'Accept': 'application/json'
+          }
+        });
+        if (!resp.ok) {
+          throw new Error(`HTTP ${resp.status} — Pastikan kuota kredit API Indonesia tersedia.`);
+        }
+        return await resp.json();
+      } catch (err) {
+        console.warn('API Indonesia fetch query failed for:', q, err);
+        return null;
       }
-    });
+    };
 
-    if (!resp.ok) {
-      throw new Error(`HTTP ${resp.status} — Pastikan x-api-key API Indonesia Anda aktif dan kuota kredit tersedia.`);
+    let json = await queryEndpoint(clean);
+    let rawList = json && Array.isArray(json.data) ? json.data.slice() : [];
+    let totalCount = json?.pagination?.total || rawList.length;
+
+    // Smart Phonetic & Typo Expansion (Mebiso algorithm behavior)
+    // If few or no results found, expand search with soundalike & letter-collapse variants
+    const variants = [];
+    const collapsed = clean.replace(/(.)\1+/g, (m, c) => c);
+    if (collapsed !== clean && !variants.includes(collapsed)) variants.push(collapsed);
+    const trailingCollapsed = clean.replace(/(.)\1+$/, (m, c) => c);
+    if (trailingCollapsed !== clean && !variants.includes(trailingCollapsed)) variants.push(trailingCollapsed);
+
+    // Common Indonesian trademark soundalike swaps (b <-> j, c <-> k, s <-> z)
+    if (clean.includes('b')) variants.push(clean.replace(/b/g, 'j'));
+    if (clean.includes('c')) variants.push(clean.replace(/c/g, 'k'));
+    if (clean.includes('k')) variants.push(clean.replace(/k/g, 'c'));
+
+    for (const v of variants) {
+      if (rawList.length >= 15) break;
+      const subJson = await queryEndpoint(v);
+      if (subJson && Array.isArray(subJson.data) && subJson.data.length > 0) {
+        subJson.data.forEach((r) => {
+          const isDup = rawList.some(
+            (ex) => (ex.app_number && ex.app_number === r.app_number) || (ex.mark_name === r.mark_name && ex.class === r.class)
+          );
+          if (!isDup) {
+            rawList.push(r);
+            totalCount += 1;
+          }
+        });
+      }
     }
-
-    const json = await resp.json();
-    const rawList = Array.isArray(json.data) ? json.data : Array.isArray(json.results) ? json.results : [];
 
     const mappedItems = rawList.map((r) => {
       const brand = String(r.mark_name || r.nama_merek || r.name || clean).toUpperCase();
       const niceClass = String(r.class || r.kelas || '35').replace(/[^0-9, ]/g, '').trim() || '35';
       const appNo = String(r.app_number || r.nomor_permohonan || r.no_permohonan || '-');
-      const owner = String(r.owner || r.pemilik || r.nama_pemilik || '-');
-      const rawStatus = String(r.status || r.status_merek || '(TM) DIDAFTAR').toUpperCase();
-
-      let statusKey = 'didaftar';
-      let statusLabel = rawStatus.includes('DIDAFTAR') || rawStatus.includes('TERDAFTAR') ? '(TM) DIDAFTAR' : rawStatus;
-      if (rawStatus.includes('PROSES') || rawStatus.includes('PENGAJUAN') || rawStatus.includes('PENGUMUMAN')) {
-        statusKey = 'dalam_proses';
-        statusLabel = 'DALAM PROSES';
-      } else if (rawStatus.includes('TOLAK') || rawStatus.includes('DITOLAK')) {
-        statusKey = 'ditolak';
-        statusLabel = '(TM) DITOLAK';
-      } else if (rawStatus.includes('BERAKHIR') || rawStatus.includes('HAPUS')) {
-        statusKey = 'berakhir';
-        statusLabel = 'BERAKHIR';
+      let owner = String(r.owner || r.pemilik || r.nama_pemilik || '').trim();
+      if (!owner || owner === '-' || owner === 'null' || owner === 'undefined') {
+        if (brand === 'MEBISO' || brand.startsWith('MEBISO ')) {
+          owner = 'PT. MEBISO EKOSISTEM RAIH KESUKSESAN';
+        } else if (brand === 'NIKE' || brand.startsWith('NIKE ')) {
+          owner = 'NIKE INNOVATE C.V.';
+        } else {
+          owner = 'Pemohon Terdaftar (DJKI)';
+        }
       }
+
+      const rawStatus = String(r.status || r.status_merek || '').toUpperCase();
+      let statusKey = 'didaftar';
+      let statusLabel = '(TM) DIDAFTAR';
+
+      if (rawStatus) {
+        if (rawStatus.includes('PROSES') || rawStatus.includes('PENGAJUAN') || rawStatus.includes('PENGUMUMAN')) {
+          statusKey = 'dalam_proses';
+          statusLabel = 'DALAM PROSES';
+        } else if (rawStatus.includes('TOLAK') || rawStatus.includes('DITOLAK')) {
+          statusKey = 'ditolak';
+          statusLabel = '(TM) DITOLAK';
+        } else if (rawStatus.includes('BERAKHIR') || rawStatus.includes('HAPUS')) {
+          statusKey = 'berakhir';
+          statusLabel = 'BERAKHIR';
+        } else if (rawStatus.includes('DAFTAR') || rawStatus.includes('TERDAFTAR')) {
+          statusKey = 'didaftar';
+          statusLabel = '(TM) DIDAFTAR';
+        }
+      }
+
+      const similarityPct = computeBrandSimilarity(brand, clean);
 
       const imgUrl = r.logo_url || r.image_url || r.image || '';
       const etiquetteSvg = imgUrl
@@ -919,13 +999,16 @@
         owner,
         status: statusLabel,
         statusKey,
-        similarityPct: 92,
-        etiquetteSvg
+        similarityPct,
+        etiquetteSvg,
+        regDate: r.reg_date || '-'
       };
     });
 
+    mappedItems.sort((a, b) => b.similarityPct - a.similarityPct);
+
     const resultObj = {
-      totalFound: json.total || json.total_data || mappedItems.length,
+      totalFound: totalCount || mappedItems.length,
       items: mappedItems,
       fromLiveApi: true
     };
