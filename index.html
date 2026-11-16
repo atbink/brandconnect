@@ -294,7 +294,7 @@
          ================================================== -->
     <section class="bc-analysis-section" id="hasil-analisis" style="display:none; padding: 2.5rem 0 4.5rem; background:#FAF8F5; border-top: 1px solid #E5E7EB; border-bottom: 1px solid #E5E7EB;">
       <div class="container" style="max-width:1160px;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:1.5rem;">
+        <div class="hp-res-header-row" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:1.5rem;">
           <div>
             <div class="bc-features-eyebrow">HASIL PENCARIAN</div>
             <h2 style="font-family:var(--font-heading);font-size:2.2rem;font-weight:800;color:var(--bc-text-dark);margin:0 0 0.35rem 0;" id="hp-res-title">
@@ -304,7 +304,7 @@
               Ditemukan 15 merek terkait pada data resmi DJKI.
             </p>
           </div>
-          <div style="display:flex;align-items:center;gap:0.75rem;">
+          <div class="hp-res-actions-row" style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
             <button type="button" class="btn btn-secondary btn-sm" onclick="window.print()" style="padding:0.6rem 1.15rem;border-radius:9999px;">
               <span>📥 Unduh Laporan PDF</span>
             </button>
@@ -318,7 +318,7 @@
         </div>
 
         <!-- Summary Grid (Image 3 Upper Grid) -->
-        <div style="display:grid;grid-template-columns:1fr 1.35fr;gap:1.5rem;margin-bottom:2.5rem;">
+        <div class="hp-res-summary-grid" style="display:grid;grid-template-columns:1fr 1.35fr;gap:1.5rem;margin-bottom:2.5rem;">
           <div style="background:#FEF2F2;border:1px solid #FCA5A5;border-radius:16px;padding:1.75rem;">
             <div style="font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:#DC2626;display:inline-flex;align-items:center;gap:0.4rem;margin-bottom:0.5rem;">
               <span>✦</span>
@@ -330,7 +330,7 @@
             </p>
           </div>
 
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:16px;padding:1.75rem;">
+          <div class="hp-res-meta-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:16px;padding:1.75rem;">
             <div style="display:flex;align-items:flex-start;gap:0.85rem;">
               <div style="width:36px;height:36px;border-radius:10px;background:var(--bc-green-mint);color:var(--bc-green);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="m20.59 13.41-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
@@ -393,7 +393,7 @@
           </div>
 
           <!-- 4 Dimension Cards (Image 3 Center) -->
-          <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:1.25rem;margin-bottom:2rem;">
+          <div class="hp-res-dimensions-grid" style="display:grid;grid-template-columns:repeat(4, 1fr);gap:1.25rem;margin-bottom:2rem;">
             <div style="background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:14px;padding:1.35rem;">
               <div style="display:flex;align-items:center;gap:0.65rem;margin-bottom:0.85rem;font-family:var(--font-mono);font-size:0.72rem;font-weight:700;color:#4B5563;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--bc-green)" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
@@ -440,7 +440,7 @@
           </div>
 
           <!-- Bottom Two Cards: Merek Pembanding Utama & Rekomendasi (Image 3 Bottom) -->
-          <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:1.5rem;margin-bottom:2rem;">
+          <div class="hp-res-bottom-grid" style="display:grid;grid-template-columns:1.1fr 1fr;gap:1.5rem;margin-bottom:2rem;">
             <!-- Left: Merek Pembanding Utama -->
             <div style="background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:16px;padding:1.5rem;">
               <div style="font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:var(--bc-green);letter-spacing:0.1em;display:flex;align-items:center;gap:0.45rem;margin-bottom:1rem;">
@@ -448,7 +448,7 @@
                 <span>Merek Pembanding Utama</span>
               </div>
 
-              <div style="display:flex;align-items:center;gap:1.25rem;background:#FAF8F5;border:1px solid var(--bc-card-border);border-radius:12px;padding:1.25rem;">
+              <div class="hp-res-comparator-card" style="display:flex;align-items:center;gap:1.25rem;background:#FAF8F5;border:1px solid var(--bc-card-border);border-radius:12px;padding:1.25rem;">
                 <div style="width:110px;height:80px;background:#FFF;border:1px solid #E5E7EB;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:6px;overflow:hidden;" id="hp-comp-logo">
                   <div style="font-family:Georgia,serif;font-weight:800;color:#111;text-align:center;"><div style="color:#B91C1C;">♥</div><div style="font-size:0.75rem;line-height:1.15;">kopi<br/>kenangan</div></div>
                 </div>
@@ -490,7 +490,7 @@
           </div>
 
           <!-- Bottom Action Buttons -->
-          <div style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-top:2.5rem;">
+          <div class="hp-res-cta-row" style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-top:2.5rem;">
             <button type="button" class="bc-hero-search-btn" style="padding:0.95rem 2rem;font-size:0.95rem;" onclick="window.BCStore && window.BCStore.openHandoverModal()">
               <span>🎧 Konsultasi dengan Spesialis Merek</span>
               <span>→</span>
@@ -707,7 +707,7 @@
                 Pantau merek Anda di DJKI dan dapatkan notifikasi jika ada permohonan baru yang berpotensi mirip.
               </p>
 
-              <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+              <div class="bc-mon-actions-row" style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
                 <a href="javascript:void(0)" onclick="window.BCStore && window.BCStore.openHandoverModal()" class="bc-btn-white-pill">
                   <span>🔔 Mulai Monitoring</span>
                 </a>
@@ -897,7 +897,7 @@
               </div>
             </div>
 
-            <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:2rem;">
+            <div class="bc-reg-cta-row" style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:2rem;">
               <button type="button" class="bc-hero-search-btn" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-REG-01')">
                 <span>Daftar Merek Sekarang</span>
                 <span>→</span>

@@ -7532,3 +7532,493 @@ body {
   color: #0D3B2E;
   transform: translateY(-1px);
 }
+
+
+/* ==========================================================================
+   MOBILE RESPONSIVENESS & ANTI-TRUNCATION ENGINE (<= 768px & <= 640px)
+   Eliminates all horizontal overflow, clipped buttons, and cut-off text
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .container {
+    padding: 0 1.25rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Single column grids for mobile */
+  .bc-hero-grid,
+  .bc-how-grid,
+  .bc-class-hero-grid,
+  .bc-reg-grid,
+  .bc-monitoring-dark-grid,
+  .bc-features-grid-4,
+  .bc-services-grid-8,
+  .bc-classes-grid-9,
+  .bc-monitoring-points-bar,
+  .hp-res-summary-grid,
+  .hp-res-meta-grid,
+  .hp-res-dimensions-grid,
+  .hp-res-bottom-grid {
+    grid-template-columns: 100% !important;
+    gap: 1.5rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .bc-hero-left,
+  .bc-hero-right,
+  .bc-how-left,
+  .bc-how-right {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .bc-hero-visual,
+  .bc-reg-visual-card,
+  .bc-monitoring-mockup-wrap,
+  .bc-hero-visual img,
+  .bc-reg-visual-card img,
+  .bc-monitoring-mockup-wrap img {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    border-radius: 16px !important;
+    box-sizing: border-box !important;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Section 1: Hero Section */
+  .bc-hero-wrap {
+    padding: 2rem 0 2.5rem !important;
+    width: 100% !important;
+  }
+
+  .bc-hero-eyebrow {
+    font-size: 0.72rem !important;
+    gap: 0.5rem !important;
+    line-height: 1.4 !important;
+    flex-wrap: wrap !important;
+  }
+
+  .bc-hero-title {
+    font-size: clamp(1.85rem, 7.8vw, 2.35rem) !important;
+    line-height: 1.16 !important;
+    letter-spacing: -0.02em !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    margin-bottom: 0.85rem !important;
+  }
+
+  .bc-hero-desc {
+    font-size: 0.92rem !important;
+    line-height: 1.55 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 1.35rem !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* Search bar in Hero & Cari Kelas: stacked so input & button never clip */
+  .bc-hero-search-bar {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    border-radius: 18px !important;
+    padding: 0.65rem !important;
+    gap: 0.65rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin-bottom: 1.35rem !important;
+    background: #FFFFFF !important;
+    border: 1px solid #D5D3CA !important;
+  }
+
+  .bc-hero-search-bar svg {
+    display: none !important;
+  }
+
+  .bc-hero-search-bar input {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 0.55rem 0.65rem !important;
+    font-size: 0.92rem !important;
+    border-radius: 10px !important;
+    background: #FAF8F5 !important;
+    border: 1px solid #E5E7EB !important;
+    box-sizing: border-box !important;
+    color: var(--bc-text-dark) !important;
+  }
+
+  .bc-hero-search-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 0.8rem 1rem !important;
+    font-size: 0.92rem !important;
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Trust Badges: clean stacked list */
+  .bc-trust-badges {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.65rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .bc-trust-item {
+    font-size: 0.82rem !important;
+    line-height: 1.35 !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+  }
+
+  /* Section 2: AI Search Card */
+  .bc-ai-search-card {
+    padding: 1.75rem 1rem !important;
+    border-radius: 18px !important;
+    margin: 1.5rem auto 2.5rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .bc-ai-search-title {
+    font-size: clamp(1.4rem, 6vw, 1.85rem) !important;
+    line-height: 1.22 !important;
+    word-break: break-word !important;
+    margin-bottom: 0.65rem !important;
+  }
+
+  .bc-ai-search-subtitle {
+    font-size: 0.88rem !important;
+    line-height: 1.5 !important;
+    word-break: break-word !important;
+    margin-bottom: 1.25rem !important;
+  }
+
+  .bc-mode-tabs {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 0.35rem !important;
+    width: 100% !important;
+    border-radius: 14px !important;
+    padding: 0.35rem !important;
+    box-sizing: border-box !important;
+  }
+
+  .bc-mode-tab {
+    flex: 1 1 auto !important;
+    justify-content: center !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.78rem !important;
+    white-space: nowrap !important;
+  }
+
+  .bc-input-group {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    border-radius: 18px !important;
+    padding: 0.65rem !important;
+    gap: 0.65rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .bc-input-group input {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 0.55rem 0.65rem !important;
+    font-size: 0.92rem !important;
+    border-radius: 10px !important;
+    background: #FFFFFF !important;
+    border: 1px solid #E5E7EB !important;
+    box-sizing: border-box !important;
+  }
+
+  .bc-btn-search-action {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 0.8rem 1rem !important;
+    border-radius: 12px !important;
+    font-size: 0.92rem !important;
+    box-sizing: border-box !important;
+  }
+
+  .hp-sample-chip {
+    font-size: 0.76rem !important;
+    padding: 0.25rem 0.6rem !important;
+  }
+
+  .bc-footnote {
+    font-size: 0.76rem !important;
+    line-height: 1.4 !important;
+    text-align: center !important;
+    word-break: break-word !important;
+  }
+
+  .bc-features-header,
+  .bc-services-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.75rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .bc-features-title,
+  .bc-services-title {
+    font-size: clamp(1.5rem, 6.2vw, 2rem) !important;
+    line-height: 1.2 !important;
+    word-break: break-word !important;
+  }
+
+  .bc-features-intro,
+  .bc-services-intro {
+    font-size: 0.88rem !important;
+    line-height: 1.5 !important;
+    text-align: left !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .bc-feature-card {
+    padding: 1.5rem 1.15rem !important;
+    border-radius: 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Section 3: Hasil Analisis AI */
+  .hp-res-header-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+  }
+
+  .hp-res-actions-row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+    gap: 0.5rem !important;
+  }
+
+  .hp-res-actions-row button {
+    flex: 1 1 calc(50% - 0.5rem) !important;
+    justify-content: center !important;
+    font-size: 0.78rem !important;
+    padding: 0.5rem 0.65rem !important;
+  }
+
+  .hp-res-comparator-card {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 1rem !important;
+    text-align: left !important;
+  }
+
+  .hp-res-comparator-card #hp-comp-logo {
+    width: 100% !important;
+    height: 90px !important;
+  }
+
+  .hp-res-cta-row {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 0.65rem !important;
+  }
+
+  .hp-res-cta-row button,
+  .hp-res-cta-row a {
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 0.85rem 1.25rem !important;
+    font-size: 0.9rem !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Section 4: Cari Kelas Merek */
+  #hp-filter-pills {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.4rem !important;
+    width: 100% !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  #hp-filter-pills button {
+    padding: 0.45rem 0.75rem !important;
+    font-size: 0.78rem !important;
+    border-radius: 9999px !important;
+  }
+
+  .bc-class-card {
+    padding: 1.25rem 1.1rem !important;
+    border-radius: 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Section 5: Monitoring Merek */
+  .bc-monitoring-dark-hero {
+    padding: 2.25rem 1rem 1.75rem !important;
+    border-radius: 18px !important;
+    margin: 1.5rem 0 2.5rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .bc-monitoring-dark-grid {
+    padding: 0 !important;
+    gap: 1.75rem !important;
+    margin-bottom: 1.75rem !important;
+  }
+
+  .bc-monitoring-dark-hero .bc-hero-title {
+    font-size: clamp(1.65rem, 6.5vw, 2.1rem) !important;
+    line-height: 1.2 !important;
+  }
+
+  .bc-mon-actions-row {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 0.65rem !important;
+  }
+
+  .bc-mon-actions-row a {
+    width: 100% !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+  }
+
+  .bc-monitoring-points-bar {
+    padding: 1.5rem 0 0 !important;
+    gap: 1rem !important;
+  }
+
+  /* Section 6: Pendaftaran Merek */
+  .bc-reg-stepper {
+    margin: 1.25rem 0 1.75rem !important;
+    gap: 1rem !important;
+  }
+
+  .bc-reg-cta-row {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 0.65rem !important;
+  }
+
+  .bc-reg-cta-row button,
+  .bc-reg-cta-row a {
+    width: 100% !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+  }
+
+  .bc-reg-visual-card {
+    padding: 1rem !important;
+    border-radius: 18px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .bc-banner-callout {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 1.5rem 1.15rem !important;
+    border-radius: 18px !important;
+    gap: 0.85rem !important;
+  }
+
+  .bc-banner-title {
+    font-size: clamp(1.35rem, 5.5vw, 1.75rem) !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Section 7: Cara Kerja */
+  .bc-how-team-card {
+    padding: 1.5rem 1.15rem !important;
+    border-radius: 18px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .bc-step-item {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.6rem !important;
+  }
+
+  .bc-step-card {
+    padding: 1.25rem 1.1rem !important;
+    border-radius: 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Section 8: Katalog Layanan */
+  .bc-service-card {
+    padding: 1.5rem 1.15rem !important;
+    border-radius: 18px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .bc-service-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Floating AI Assistant pill */
+  #bc-ai-chat-trigger {
+    bottom: 14px !important;
+    right: 14px !important;
+    padding: 0.45rem 0.8rem !important;
+    font-size: 0.78rem !important;
+    border-radius: 9999px !important;
+    z-index: 999 !important;
+    max-width: calc(100vw - 28px) !important;
+  }
+
+  /* Navbar adjustments */
+  .nav-container {
+    height: 64px !important;
+    padding: 0 1rem !important;
+  }
+
+  .logo-img {
+    height: 28px !important;
+    max-width: 115px !important;
+  }
+
+  .nav-login-pill {
+    padding: 0.45rem 0.85rem !important;
+    font-size: 0.82rem !important;
+  }
+
+  .mobile-menu-toggle {
+    width: 38px !important;
+    height: 38px !important;
+  }
+}
