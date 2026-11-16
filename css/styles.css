@@ -310,7 +310,22 @@ button {
 .brand-logo {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  align-items: flex-start;
+  gap: 1px;
+  text-decoration: none;
+}
+
+.brand-logo .logo-img {
+  height: 35px;
+  width: auto;
+  max-width: 125px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.brand-logo:hover .logo-img {
+  transform: scale(1.02);
 }
 
 .logo-mark {
@@ -331,9 +346,10 @@ button {
 
 .logo-sub {
   font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.18em;
-  color: var(--pencil);
+  font-size: 0.46rem;
+  letter-spacing: 0.12em;
+  color: var(--green);
+  text-transform: uppercase;
 }
 
 .nav-list {
@@ -4067,6 +4083,15 @@ button {
     line-height: 0.96;
   }
 
+  .brand-logo .logo-img {
+    height: 27px;
+  }
+
+  .brand-logo .logo-sub {
+    font-size: 0.40rem;
+    letter-spacing: 0.08em;
+  }
+
   .brand-mark {
     font-size: 1.05rem;
     letter-spacing: 0.14em;
@@ -5095,6 +5120,18 @@ button {
    ========================================================================== */
 
 /* BrandConnect Logo & Header Refinements */
+.brand-logo .logo-img {
+  height: 35px;
+  width: auto;
+  max-width: 125px;
+  object-fit: contain;
+  display: block;
+}
+
+.brand-logo .logo-img-inverted {
+  filter: brightness(0) invert(1);
+}
+
 .brand-logo .logo-mark {
   font-family: var(--font-heading);
   font-weight: 800;
@@ -5116,11 +5153,22 @@ button {
 
 .brand-logo .logo-sub {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  font-size: 0.46rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   color: var(--green);
   text-transform: uppercase;
+  margin-top: 1px;
+  line-height: 1;
+  opacity: 0.92;
+}
+
+.footer-logo-img {
+  height: 36px;
+  width: auto;
+  max-width: 135px;
+  object-fit: contain;
+  display: block;
 }
 
 /* AI Trademark Badge */
