@@ -5155,109 +5155,308 @@ button {
 }
 
 /* --------------------------------------------------
-   FULL-WIDTH AI TRADEMARK CHECKER DECK (BELOW HERO GRID)
+   HERO INDONESIAN TO-THE-POINT & CENTERED AI SEARCH BANNER
    -------------------------------------------------- */
+@media (min-width: 961px) {
+  .hero-content {
+    grid-column: 1 / 7;
+  }
+  .hero-visual-wrapper {
+    grid-column: 7 / 13;
+  }
+}
+
+.hero-headline {
+  font-family: var(--font-heading);
+  font-size: clamp(2.15rem, 3.05vw, 3rem);
+  font-weight: 800;
+  line-height: 1.16;
+  letter-spacing: -0.025em;
+  color: var(--charcoal);
+  margin-bottom: 1.35rem;
+}
+
 .hero-headline .hero-line-1,
 .hero-headline .hero-line-2,
 .hero-headline .hero-line-idea {
   display: block;
 }
 
+.hero-brand-highlight {
+  position: relative;
+  display: inline-block;
+  color: var(--green);
+}
+
+.hero-brand-highlight::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  height: 6px;
+  background-color: rgba(49, 91, 76, 0.22);
+  z-index: -1;
+  border-radius: 2px;
+}
+
+.hero-trust-badge-row {
+  margin-top: 1.5rem;
+  padding-top: 1.15rem;
+  border-top: 1px dashed var(--border-sketch-strong);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-size: 0.82rem;
+  color: var(--pencil);
+}
+
+.hero-trust-badge-row strong {
+  color: var(--charcoal);
+  font-weight: 600;
+}
+
+/* Centered AI Search Banner Card (Mebiso Reference UX × Marlex Editorial UI) */
 .hero-tm-checker-wrap {
-  margin-top: 3.25rem;
-  margin-bottom: 1rem;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
 }
 
 .hero-tm-checker {
-  background-color: var(--ivory-elevated);
-  border: 1.5px solid var(--border-sketch-strong);
+  background: linear-gradient(180deg, #EBF1EE 0%, #E2ECE7 100%);
+  border: 1.5px solid rgba(49, 91, 76, 0.28);
   border-radius: var(--radius-lg);
-  padding: 1.75rem 2.25rem 2rem;
-  box-shadow: 0 24px 60px rgba(28, 29, 27, 0.06);
+  padding: 2.75rem 2rem 2.25rem;
+  box-shadow: 0 20px 50px rgba(28, 29, 27, 0.06);
+  text-align: center;
   position: relative;
 }
 
-.tm-deck-top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 0.85rem;
-  margin-bottom: 1.35rem;
-  border-bottom: 1px solid var(--border-sketch);
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.14em;
-  color: var(--pencil);
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.tm-deck-top-bar .tm-engine-status {
-  color: var(--green);
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-
-.tm-deck-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 1.25rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.tm-deck-title {
+.tm-ai-banner-title {
   font-family: var(--font-heading);
-  font-size: clamp(1.35rem, 2.2vw, 1.85rem);
+  font-size: clamp(1.6rem, 2.7vw, 2.35rem);
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--charcoal);
-  line-height: 1.15;
+  line-height: 1.2;
+  margin-bottom: 0.85rem;
 }
 
-.tm-deck-title .serif-italic {
+.tm-ai-highlight {
   color: var(--green);
-  font-weight: 400;
-  font-size: 1.08em;
+  position: relative;
+  display: inline-block;
+  border-bottom: 3px solid var(--green);
+  padding-bottom: 2px;
 }
 
-.tm-deck-sub {
-  font-size: 0.9rem;
-  color: rgba(28, 29, 27, 0.74);
-  max-width: 52ch;
+.tm-ai-banner-desc {
+  font-size: 0.96rem;
+  line-height: 1.65;
+  color: rgba(28, 29, 27, 0.82);
+  max-width: 740px;
+  margin: 0 auto 1.35rem;
+}
+
+.tm-ai-banner-prompt {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--charcoal);
+  margin-bottom: 1rem;
 }
 
 .tm-search-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
+  max-width: 720px;
+  margin: 0 auto;
 }
 
-.tm-search-inputs-row {
-  display: grid;
-  grid-template-columns: 1.7fr 1.15fr auto;
-  gap: 0.85rem;
+/* Mode Selector Tabs (Nama Merek / Nomor Permohonan / Upload Logo) */
+.tm-mode-tabs {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background-color: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(49, 91, 76, 0.22);
+  padding: 0.3rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.tm-mode-tab {
+  padding: 0.45rem 0.95rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--charcoal);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.tm-mode-tab:hover {
+  background-color: rgba(49, 91, 76, 0.08);
+}
+
+.tm-mode-tab.active {
+  background-color: var(--green);
+  color: var(--ivory);
+}
+
+.tm-logo-upload-area {
+  margin-top: 0.75rem;
+  padding: 1.15rem;
+  background-color: #FFFFFF;
+  border: 1.5px dashed rgba(49, 91, 76, 0.4);
+  border-radius: var(--radius-md);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.tm-logo-upload-area:hover {
+  border-color: var(--green);
+  background-color: #FAF8F3;
+}
+
+.tm-logo-preview-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0.65rem;
+}
+
+.tm-logo-preview-img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  border: 1px solid var(--border-sketch-strong);
+  border-radius: var(--radius-sm);
+  background: #FFF;
+  padding: 4px;
+}
+
+.tm-honest-status-banner {
+  margin-bottom: 1.15rem;
+  padding: 0.75rem 1rem;
+  background-color: rgba(49, 91, 76, 0.07);
+  border-left: 3px solid var(--green);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--charcoal);
+}
+
+.tm-next-steps-box {
+  margin-top: 1.15rem;
+  padding: 1.1rem 1.25rem;
+  background-color: var(--ivory);
+  border: 1px solid var(--border-sketch-strong);
+  border-radius: var(--radius-sm);
+}
+
+.tm-next-steps-title {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--green);
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+
+.tm-next-steps-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.84rem;
+  color: var(--charcoal);
+  margin-bottom: 1rem;
+}
+
+.tm-next-steps-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.nav-login-btn {
+  padding: 0.55rem 1.15rem;
+  border: 1.5px solid var(--charcoal);
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  color: var(--charcoal);
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-login-btn:hover {
+  background-color: var(--charcoal);
+  color: var(--ivory);
+}
+
+.tm-search-simple-row {
+  display: flex;
+  gap: 0.75rem;
   align-items: stretch;
 }
 
-@media (max-width: 960px) {
-  .tm-search-inputs-row {
-    grid-template-columns: 1fr 1fr;
-  }
-  .tm-submit-btn {
-    grid-column: 1 / -1;
-  }
+.tm-search-simple-row .tm-search-input {
+  flex: 1;
+  height: 54px;
+  padding: 0 1.25rem;
+  background-color: #FFFFFF;
+  border: 1.5px solid rgba(28, 29, 27, 0.2);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.96rem;
+  font-weight: 500;
+  color: var(--charcoal);
+  box-shadow: 0 4px 14px rgba(28, 29, 27, 0.04);
+}
+
+.tm-search-simple-row .tm-submit-btn {
+  height: 54px;
+  padding: 0 1.85rem;
+  font-size: 0.95rem;
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 20px rgba(49, 91, 76, 0.22);
+}
+
+.tm-ai-banner-foot {
+  margin-top: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--pencil);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 @media (max-width: 640px) {
   .hero-tm-checker {
-    padding: 1.25rem;
+    padding: 2rem 1.25rem 1.75rem;
   }
-  .tm-search-inputs-row {
-    grid-template-columns: 1fr;
+  .tm-search-simple-row {
+    flex-direction: column;
+  }
+  .tm-search-simple-row .tm-submit-btn {
+    width: 100%;
   }
 }
 
@@ -5376,7 +5575,9 @@ button {
    AI CHECKER LIVE RESULTS PANEL
    -------------------------------------------------- */
 .tm-results-panel {
-  margin-top: 1.25rem;
+  margin: 1.5rem auto 0;
+  max-width: 960px;
+  text-align: left;
   padding: 1.5rem;
   background-color: #FFFFFF;
   border: 1.5px solid var(--border-sketch-strong);

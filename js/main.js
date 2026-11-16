@@ -923,23 +923,41 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* --------------------------------------------------
-     7. ACTIVE NAV LINK HIGHLIGHTING ON SCROLL
+     7. ACTIVE NAV LINK HIGHLIGHTING ON SCROLL & LOGIN MODAL
      -------------------------------------------------- */
+  const loginModal = document.getElementById('login-modal');
+  const loginForm = document.getElementById('login-form');
+  const loginStatusNotice = document.getElementById('login-status-notice');
+
+  document.querySelectorAll('[data-open-modal="login"]').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (loginStatusNotice) loginStatusNotice.hidden = true;
+      openModal(loginModal);
+    });
+  });
+
+  if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (loginStatusNotice) {
+        loginStatusNotice.hidden = false;
+      }
+    });
+  }
+
   const navLinks = document.querySelectorAll('.nav-link[data-section]');
   const trackedSections = [
-    { id: 'top', el: document.getElementById('top') },
-    { id: 'ai-checker', el: document.getElementById('ai-checker') },
+    { id: 'cek-merek', el: document.getElementById('cek-merek') },
     { id: 'cari-kelas', el: document.getElementById('cari-kelas') },
     { id: 'monitoring-merek', el: document.getElementById('monitoring-merek') },
-    { id: 'layanan-haki', el: document.getElementById('layanan-haki') },
-    { id: 'layanan-pendukung', el: document.getElementById('layanan-pendukung') },
-    { id: 'why-brandconnect', el: document.getElementById('why-brandconnect') },
-    { id: 'insights', el: document.getElementById('insights') }
+    { id: 'proteksi-merek', el: document.getElementById('proteksi-merek') },
+    { id: 'pendaftaran-merek', el: document.getElementById('pendaftaran-merek') }
   ];
 
   const updateActiveNav = () => {
-    const scrollPos = window.scrollY + 240;
-    let currentId = 'top';
+    const scrollPos = window.scrollY + 260;
+    let currentId = 'cek-merek';
 
     trackedSections.forEach((item) => {
       if (item.el && item.el.offsetTop <= scrollPos) {
@@ -956,14 +974,25 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', updateActiveNav, { passive: true });
 
   /* --------------------------------------------------
-     8. BRANDCONNECT — AI TRADEMARK CHECKER ENGINE
+     8. BRANDCONNECT — AI TRADEMARK SEARCH ENGINE (#cek-merek)
+     Supports: Nama Merek, Nomor Permohonan, & Upload Logo (Visual)
      -------------------------------------------------- */
   const initAiTrademarkChecker = () => {
     const searchForm = document.getElementById('tm-search-form');
     const brandInput = document.getElementById('tm-brand-input');
-    const classSelect = document.getElementById('tm-class-select');
+    const modeInput = document.getElementById('tm-search-mode-input');
+    const selectedClassHidden = document.getElementById('tm-selected-class-hidden');
+    const modeTabs = document.querySelectorAll('.tm-mode-tab');
+    const modePrompt = document.getElementById('tm-mode-prompt');
+    const logoUploadArea = document.getElementById('tm-logo-upload-area');
+    const logoFileInput = document.getElementById('tm-logo-file-input');
+    const logoPlaceholder = document.getElementById('tm-logo-upload-placeholder');
+    const logoPreviewWrap = document.getElementById('tm-logo-preview-wrap');
+    const logoPreviewImg = document.getElementById('tm-logo-preview-img');
+    const logoFileNameEl = document.getElementById('tm-logo-file-name');
+    const logoFileMetaEl = document.getElementById('tm-logo-file-meta');
     const resultsPanel = document.getElementById('tm-results-panel');
-    const exampleTags = document.querySelectorAll('.tm-example-tag');
+    const honestNoticeEl = document.getElementById('tm-honest-notice');
 
     // Result elements
     const targetBrandEl = document.getElementById('tm-res-target-brand');
@@ -979,7 +1008,76 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!searchForm || !brandInput) return;
 
-    // Database of known / high-conflict brand tokens in Indonesia
+    let uploadedLogoInfo = null;
+
+    // Mode Tabs Switching
+    modeTabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        modeTabs.forEach((t) => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+
+        const mode = tab.getAttribute('data-search-mode') || 'name';
+        if (modeInput) modeInput.value = mode;
+
+        if (mode === 'name') {
+          brandInput.placeholder = 'Masukkan nama merek (contoh: Kopi Nusantara, Zenova, GlowSkin)...';
+          if (modePrompt) modePrompt.textContent = 'Cek Merek Anda Gratis, sekarang!';
+          if (logoUploadArea) logoUploadArea.hidden = true;
+        } else if (mode === 'number') {
+          brandInput.placeholder = 'Masukkan nomor permohonan / registrasi DJKI (contoh: DID2026012345 / IDM000...)...';
+          if (modePrompt) modePrompt.textContent = 'Cek Status Nomor Permohonan Merek DJKI';
+          if (logoUploadArea) logoUploadArea.hidden = true;
+        } else if (mode === 'logo') {
+          brandInput.placeholder = 'Masukkan nama merek pada logo Anda...';
+          if (modePrompt) modePrompt.textContent = 'Unggah Logo & Masukkan Nama Merek untuk Evaluasi Visual';
+          if (logoUploadArea) logoUploadArea.hidden = false;
+        }
+        brandInput.focus();
+      });
+    });
+
+    // Logo Upload Handling
+    if (logoUploadArea && logoFileInput) {
+      logoUploadArea.addEventListener('click', () => {
+        logoFileInput.click();
+      });
+
+      logoFileInput.addEventListener('change', (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const dataUrl = ev.target?.result;
+          if (logoPreviewImg && typeof dataUrl === 'string') {
+            logoPreviewImg.src = dataUrl;
+            const imgObj = new Image();
+            imgObj.onload = () => {
+              uploadedLogoInfo = {
+                name: file.name,
+                sizeKB: Math.round(file.size / 1024),
+                width: imgObj.naturalWidth,
+                height: imgObj.naturalHeight
+              };
+              if (logoFileNameEl) logoFileNameEl.textContent = file.name;
+              if (logoFileMetaEl) {
+                logoFileMetaEl.textContent = `${imgObj.naturalWidth}×${imgObj.naturalHeight} px · ${uploadedLogoInfo.sizeKB} KB · Siap dievaluasi`;
+              }
+              if (logoPlaceholder) logoPlaceholder.hidden = true;
+              if (logoPreviewWrap) logoPreviewWrap.hidden = false;
+            };
+            imgObj.src = dataUrl;
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Known well-known marks in Indonesia for rule-based collision warning
     const highConflictTokens = [
       'gojek', 'tokopedia', 'shopee', 'lazada', 'grab', 'indomie', 'aqua', 'bca', 'mandiri',
       'telkomsel', 'pertamina', 'erigo', 'kopi kenangan', 'janji jiwa', 'chatime', 'starbucks',
@@ -993,66 +1091,101 @@ document.addEventListener('DOMContentLoaded', () => {
       'toko', 'shop', 'store', 'enak', 'murah', 'segar', 'super', 'best', 'original'
     ];
 
-    const evaluateBrand = (rawBrand, targetClass) => {
-      const brand = rawBrand.trim().toLowerCase();
-      const words = brand.split(/\s+/);
-      let feasibility = 88; // Default favorable baseline for distinctive coined words
-      let phoneticVerdict = 'Aman // Risiko Rendah';
-      let phoneticDetail = 'Tidak ditemukan kemiripan bunyi pengucapan langsung.';
-      let visualVerdict = 'Unik // Pembeda Kuat';
-      let visualDetail = 'Komposisi huruf dan ejaan memiliki karakter pembeda.';
-      let classVerdict = 'Tepat // ' + (targetClass || 'Kelas Terpilih');
-      let classDetail = 'Cakupan barang/jasa sesuai dengan spesifikasi Nice Classification.';
-      let statuteVerdict = 'Lolos Kriteria // Pasal 20 & 21';
-      let statuteDetail = 'Memenuhi syarat daya pembeda dan tidak melanggar ketentuan absolut.';
+    const evaluateQuery = (rawVal, mode, chosenClass) => {
+      const cleaned = rawVal.trim();
+      const lower = cleaned.toLowerCase();
+      const isAppNumberPattern = /^(did|jid|ipt|d00|j00|idm|w00)/i.test(cleaned);
 
-      // Check 1: High Conflict match
-      const matchedHighConflict = highConflictTokens.find((tok) => brand.includes(tok));
+      // Case A: Application Number Check
+      if (mode === 'number' || isAppNumberPattern) {
+        let prefixType = 'Permohonan Merek DJKI';
+        if (/^did/i.test(cleaned)) prefixType = 'Merek Dagang Elektronik (DID)';
+        else if (/^jid/i.test(cleaned)) prefixType = 'Merek Jasa Elektronik (JID)';
+        else if (/^idm/i.test(cleaned)) prefixType = 'Sertifikat Merek Terdaftar (IDM)';
+
+        return {
+          mode: 'number',
+          brand: cleaned.toUpperCase(),
+          subtitle: `METODE: CEK NOMOR PERMOHONAN // KATEGORI: ${prefixType.toUpperCase()}`,
+          scoreText: 'PDKI',
+          badgeClass: 'score-high',
+          verdictText: 'FORMAT NOMOR PERMOHONAN TERIDENTIFIKASI',
+          honestNotice: 'Status Integrasi Nomor Permohonan: Format nomor permohonan telah dikenali. Penarikan status tahapan pemeriksaan terkini dari pangkalan data resmi DJKI (PDKI) dilakukan secara akurat oleh tim Konsultan Merek BrandConnect.',
+          phoneticVerdict: prefixType,
+          phoneticDetail: 'Kode awalan sesuai dengan format penomoran administrasi DJKI.',
+          visualVerdict: 'Verifikasi Status Berkas',
+          visualDetail: 'Memeriksa tahapan Formalitas, Masa Pengumuman BRM, atau Pemeriksaan Substantif.',
+          classVerdict: chosenClass || 'Sesuai Dokumen Permohonan',
+          classDetail: 'Kelas mengacu pada rincian barang/jasa di berkas permohonan.',
+          statuteVerdict: 'Pemantauan Resmi',
+          statuteDetail: 'Klik tombol WhatsApp di bawah untuk menerima laporan status terkini berkas ini.'
+        };
+      }
+
+      // Case B: Brand Name & Optional Visual Logo Evaluation
+      const words = lower.split(/\s+/);
+      const matchedHighConflict = highConflictTokens.find((tok) => lower.includes(tok));
+      const isPurelyGeneric = words.every((w) => genericTokens.includes(w));
+      const containsGeneric = words.some((w) => genericTokens.includes(w));
+
+      let scoreText = 'Tinggi';
+      let badgeClass = 'score-high';
+      let verdictText = 'DAYA PEMBEDA KUAT (POTENSI POSITIF)';
+      let phoneticVerdict = 'Distingtif // Unik';
+      let phoneticDetail = 'Struktur bunyi kata memiliki karakter pembeda yang jelas.';
+      let visualVerdict = mode === 'logo' && uploadedLogoInfo
+        ? `Logo Terunggah (${uploadedLogoInfo.width}×${uploadedLogoInfo.height}px)`
+        : 'Susunan Huruf Khas';
+      let visualDetail = mode === 'logo' && uploadedLogoInfo
+        ? `File "${uploadedLogoInfo.name}" siap diperiksa kemiripan visual/figuratifnya.`
+        : 'Penulisan tidak semata-mata mendeskripsikan jenis barang.';
+      let classVerdict = chosenClass || 'Pilih Kelas (Nice 1–45)';
+      let classDetail = chosenClass
+        ? `Diarahkan untuk perlindungan pada ${chosenClass}.`
+        : 'Gunakan fitur Cari Kelas Merek untuk menentukan nomor kelas yang tepat.';
+      let statuteVerdict = 'Memenuhi Kriteria Pasal 20';
+      let statuteDetail = 'Bukan merupakan kata umum/generik yang dilarang didaftarkan.';
+
       if (matchedHighConflict) {
-        feasibility = Math.floor(Math.random() * 15) + 15; // 15 - 29%
-        phoneticVerdict = 'Risiko Tinggi // Kemiripan Nyata';
-        phoneticDetail = `Terdeteksi kemiripan fonetik kuat dengan merek terdaftar "${matchedHighConflict.toUpperCase()}".`;
-        visualVerdict = 'Konflik Kemiripan';
-        visualDetail = 'Ejaan berpotensi dianggap meniru atau mendompleng reputasi pihak lain.';
-        statuteVerdict = 'Tolak // Pasal 21 Ayat 1';
-        statuteDetail = 'Mempunyai persamaan pada pokoknya atau keseluruhannya dengan merek terkenal/terdaftar.';
-      } else {
-        // Check 2: Purely generic / descriptive
-        const isPurelyGeneric = words.every((w) => genericTokens.includes(w));
-        const containsGeneric = words.some((w) => genericTokens.includes(w));
-
-        if (isPurelyGeneric) {
-          feasibility = Math.floor(Math.random() * 15) + 32; // 32 - 46%
-          phoneticVerdict = 'Bersifat Umum // Deskriptif';
-          phoneticDetail = 'Nama hanya menyebutkan jenis barang atau sifat produk yang dijual.';
-          visualVerdict = 'Kurang Daya Pembeda';
-          visualDetail = 'Tidak memiliki elemen distingtif yang dapat dimonopoli satu pihak.';
-          statuteVerdict = 'Tolak // Pasal 20 Huruf f';
-          statuteDetail = 'Merupakan nama umum dan/atau lambang milik umum.';
-        } else if (containsGeneric) {
-          feasibility = Math.floor(Math.random() * 15) + 68; // 68 - 82%
-          phoneticVerdict = 'Moderat // Kombinasi Kata';
-          phoneticDetail = 'Terdapat kata umum, namun diimbangi kata pembeda tambahan.';
-          visualVerdict = 'Cukup Pembeda';
-          visualDetail = 'Disarankan menambahkan logo atau elemen grafis khas saat pengajuan.';
-          statuteVerdict = 'Dapat Diterima Bersyarat';
-          statuteDetail = 'Hak eksklusif umumnya tidak melindungi kata generik secara terpisah.';
-        } else {
-          // Coined / Distinctive
-          feasibility = Math.floor(Math.random() * 10) + 86; // 86 - 95%
-          phoneticVerdict = 'Sangat Aman // Distingtif';
-          phoneticDetail = 'Peluang lolos penelusuran fonetik DJKI sangat tinggi.';
-          visualVerdict = 'Sangat Kuat // Coined Mark';
-          visualDetail = 'Nama memiliki daya pembeda tinggi dan ideal untuk perlindungan merek.';
-          statuteVerdict = 'Memenuhi Syarat Penuh';
-          statuteDetail = 'Sesuai dengan kriteria pendaftaran resmi UU No. 20 Tahun 2016.';
-        }
+        scoreText = 'Risiko';
+        badgeClass = 'score-low';
+        verdictText = 'PERINGATAN KEMIRIPAN MEREK TERKENAL';
+        phoneticVerdict = 'Indikasi Kemiripan Kuat';
+        phoneticDetail = `Mengandung unsur kata yang menyerupai merek populer "${matchedHighConflict.toUpperCase()}".`;
+        visualVerdict = 'Rawan Konflik Pasal 21';
+        visualDetail = 'Berisiko ditolak karena persamaan pada pokoknya/keseluruhannya.';
+        statuteVerdict = 'Perlu Modifikasi Nama';
+        statuteDetail = 'Pasal 21 UU Merek melarang pendaftaran merek yang mirip merek terdaftar/terkenal.';
+      } else if (isPurelyGeneric) {
+        scoreText = 'Rendah';
+        badgeClass = 'score-low';
+        verdictText = 'BERSIFAT UMUM / DESKRIPTIF (RAWAN DITOLAK)';
+        phoneticVerdict = 'Kata Umum (Generik)';
+        phoneticDetail = 'Hanya menyebutkan nama jenis barang atau sifat langsung produk.';
+        visualVerdict = 'Kurang Daya Pembeda';
+        visualDetail = 'Kata umum milik publik tidak dapat dimonopoli sebagai merek pribadi.';
+        statuteVerdict = 'Melanggar Pasal 20';
+        statuteDetail = 'Pasal 20 UU Merek menolak tanda yang tidak memiliki daya pembeda.';
+      } else if (containsGeneric) {
+        scoreText = 'Sedang';
+        badgeClass = 'score-medium';
+        verdictText = 'KOMBINASI KATA UMUM & UNSUR PEMBEDA';
+        phoneticVerdict = 'Cukup Distingtif';
+        phoneticDetail = 'Terdapat kata deskriptif, namun didampingi kata pembeda.';
+        statuteVerdict = 'Disarankan Tambah Unsur Unik';
+        statuteDetail = 'Kata generik di dalamnya tetap tidak dilindungi secara terpisah.';
       }
 
       return {
-        brand: rawBrand.trim(),
-        targetClass: targetClass || 'Kelas 35 (Jasa Retail & Komersial)',
-        feasibility,
+        mode,
+        brand: cleaned.toUpperCase(),
+        subtitle: mode === 'logo' && uploadedLogoInfo
+          ? `METODE: EVALUASI NAMA & LOGO (${uploadedLogoInfo.name.toUpperCase()})`
+          : `METODE: ANALISIS KARAKTERISTIK NAMA MEREK // PRA-SKRINING AI`,
+        scoreText,
+        badgeClass,
+        verdictText,
+        honestNotice: 'Status Analisis Pra-Skrining AI: Evaluasi ini menilai daya pembeda kata, kemiripan fonetik terhadap merek terkenal, dan kepatuhan Pasal 20 UU Merek secara jujur tanpa mengarang nomor registrasi. Untuk pengecekan silang terhadap seluruh merek terdaftar di database resmi DJKI (PDKI), konsultasikan gratis bersama tim kami.',
         phoneticVerdict,
         phoneticDetail,
         visualVerdict,
@@ -1067,26 +1200,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderResults = (data) => {
       if (!resultsPanel) return;
 
+      if (honestNoticeEl) honestNoticeEl.innerHTML = `<strong>Catatan Transparansi Analisis:</strong> ${data.honestNotice}`;
       if (targetBrandEl) targetBrandEl.textContent = data.brand;
-      if (targetClassEl) targetClassEl.textContent = `TARGET: ${data.targetClass.toUpperCase()} // PENGUJIAN DJKI SIMULASI`;
-      if (scoreNumEl) scoreNumEl.textContent = `${data.feasibility}%`;
+      if (targetClassEl) targetClassEl.textContent = data.subtitle;
+      if (scoreNumEl) scoreNumEl.textContent = data.scoreText;
 
-      // Set score badge styling
       if (scoreBadgeEl) {
         scoreBadgeEl.classList.remove('score-high', 'score-medium', 'score-low');
-        if (data.feasibility >= 80) {
-          scoreBadgeEl.classList.add('score-high');
-          if (scoreVerdictEl) scoreVerdictEl.textContent = 'PELUANG LOLOS TINGGI (RISIKO RENDAH)';
-        } else if (data.feasibility >= 60) {
-          scoreBadgeEl.classList.add('score-medium');
-          if (scoreVerdictEl) scoreVerdictEl.textContent = 'PELUANG SEDANG (BUTUH PENYESUAIAN)';
-        } else {
-          scoreBadgeEl.classList.add('score-low');
-          if (scoreVerdictEl) scoreVerdictEl.textContent = 'RISIKO TINGGI (RAWAN PENOLAKAN DJKI)';
-        }
+        scoreBadgeEl.classList.add(data.badgeClass);
       }
+      if (scoreVerdictEl) scoreVerdictEl.textContent = data.verdictText;
 
-      // Fill breakdown
       if (pillPhoneticEl) {
         pillPhoneticEl.querySelector('.tm-pill-status').textContent = data.phoneticVerdict;
         pillPhoneticEl.querySelector('.tm-pill-detail').textContent = data.phoneticDetail;
@@ -1104,10 +1228,9 @@ document.addEventListener('DOMContentLoaded', () => {
         pillStatuteEl.querySelector('.tm-pill-detail').textContent = data.statuteDetail;
       }
 
-      // Update WhatsApp handoff link with pre-filled message
       if (waActionBtn) {
         const msg = encodeURIComponent(
-          `Halo BRANDCONNECT, saya baru saja melakukan cek merek di website untuk nama "${data.brand}" (${data.targetClass}). Hasil simulasi skor kelayakan: ${data.feasibility}%. Saya ingin konsultasi lebih lanjut dengan konsultan HAKI BRANDCONNECT.`
+          `Halo BrandConnect, saya baru saja mengecek merek "${data.brand}" (${data.classVerdict}) di website dengan hasil evaluasi awal: ${data.verdictText}. Saya ingin verifikasi database resmi DJKI dan konsultasi pendaftaran merek.`
         );
         waActionBtn.href = `https://wa.me/6281234567890?text=${msg}`;
       }
@@ -1123,19 +1246,10 @@ document.addEventListener('DOMContentLoaded', () => {
         brandInput.focus();
         return;
       }
-      const selectedClass = classSelect ? classSelect.options[classSelect.selectedIndex]?.text : '';
-      const result = evaluateBrand(val, selectedClass);
+      const mode = modeInput ? modeInput.value : 'name';
+      const chosenClass = selectedClassHidden ? selectedClassHidden.value : '';
+      const result = evaluateQuery(val, mode, chosenClass);
       renderResults(result);
-    });
-
-    exampleTags.forEach((tag) => {
-      tag.addEventListener('click', () => {
-        const sampleText = tag.getAttribute('data-sample') || tag.textContent.trim();
-        brandInput.value = sampleText;
-        const selectedClass = classSelect ? classSelect.options[classSelect.selectedIndex]?.text : '';
-        const result = evaluateBrand(sampleText, selectedClass);
-        renderResults(result);
-      });
     });
   };
 
@@ -1148,7 +1262,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('nice-search-input');
     const filterBtns = document.querySelectorAll('.nice-filter-btn');
     const classCards = document.querySelectorAll('.nice-card');
-    const heroClassSelect = document.getElementById('tm-class-select');
+    const selectedClassHidden = document.getElementById('tm-selected-class-hidden');
+    const modePrompt = document.getElementById('tm-mode-prompt');
     const heroBrandInput = document.getElementById('tm-brand-input');
 
     if (!searchInput || classCards.length === 0) return;
@@ -1173,11 +1288,7 @@ document.addEventListener('DOMContentLoaded', () => {
           cardExamples.includes(query) ||
           cardNum.includes(query);
 
-        if (matchesCategory && matchesQuery) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
+        card.style.display = matchesCategory && matchesQuery ? 'flex' : 'none';
       });
     };
 
@@ -1192,25 +1303,21 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // "Pilih Kelas Ini" button interactions
-    document.querySelectorAll('.nice-select-btn').forEach((btn) => {
+    // "Gunakan Kelas XX untuk Cek Merek" button interactions
+    document.querySelectorAll('#cari-kelas .nice-select-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
-        const classValue = btn.getAttribute('data-class-val');
-        if (heroClassSelect && classValue) {
-          // Select corresponding option in hero class select
-          for (let i = 0; i < heroClassSelect.options.length; i++) {
-            if (heroClassSelect.options[i].value === classValue) {
-              heroClassSelect.selectedIndex = i;
-              break;
-            }
-          }
+        const classValue = btn.getAttribute('data-class-val') || '';
+        if (selectedClassHidden && classValue) {
+          selectedClassHidden.value = classValue;
         }
-        // Scroll smoothly to AI Checker
-        const checkerSection = document.getElementById('ai-checker') || document.getElementById('hero-section');
+        if (modePrompt && classValue) {
+          modePrompt.textContent = `Kelas Terpilih: ${classValue} — Masukkan nama merek Anda:`;
+        }
+        const checkerSection = document.getElementById('cek-merek');
         if (checkerSection) {
           checkerSection.scrollIntoView({ behavior: 'smooth' });
           if (heroBrandInput) {
-            heroBrandInput.focus();
+            setTimeout(() => heroBrandInput.focus(), 350);
           }
         }
       });
@@ -1220,7 +1327,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initNiceClassFinder();
 
   /* --------------------------------------------------
-     10. BRANDCONNECT — BRAND MONITORING SIMULATOR (#monitoring-merek)
+     10. BRANDCONNECT — BRAND MONITORING REGISTRATION (#monitoring-merek)
      -------------------------------------------------- */
   const initBrandMonitoringDemo = () => {
     const radarInput = document.getElementById('radar-brand-input');
@@ -1232,14 +1339,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     radarBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      const brand = radarInput.value.trim() || 'BRAND ANDA';
+      const brand = radarInput.value.trim();
+      if (!brand) {
+        radarInput.focus();
+        return;
+      }
       if (radarCenterBrand) {
-        radarCenterBrand.textContent = brand.toUpperCase();
+        radarCenterBrand.textContent = `${brand.toUpperCase()} // SIAP DIPANTAU`;
       }
       if (radarStatusLog) {
+        const waMsg = encodeURIComponent(
+          `Halo BrandConnect, saya ingin mengaktifkan layanan Monitoring Merek berkala pada Berita Resmi Merek (BRM) DJKI untuk merek "${brand}".`
+        );
         radarStatusLog.innerHTML = `
-          <span style="color:#5CD4A5;">[LIVE SCAN BRM]</span> Memindai 12.450 pengumuman Berita Resmi Merek DJKI terkini untuk entitas <strong>${brand.toUpperCase()}</strong>...<br/>
-          <span style="color:#F4F1EA;">STATUS:</span> Tidak ditemukan pihak ketiga yang mengajukan pendaftaran dengan kemiripan fonetik &gt;80% dalam 14 hari terakhir. Merek dalam status <strong style="color:#5CD4A5;">TERPROTEKSI</strong>.
+          <span style="color:#5CD4A5;">[SIAP DIAKTIFKAN]:</span> Merek <strong>${brand.toUpperCase()}</strong> siap didaftarkan ke dalam jadwal pemantauan Berita Resmi Merek (BRM) DJKI.<br/>
+          <a href="https://wa.me/6281234567890?text=${waMsg}" target="_blank" rel="noopener noreferrer" style="color:#5CD4A5;text-decoration:underline;font-weight:700;display:inline-block;margin-top:4px;">Klik di sini untuk Konfirmasi &amp; Aktifkan Notifikasi Pantauan via WhatsApp →</a>
         `;
       }
     });
