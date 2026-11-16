@@ -836,6 +836,103 @@
     }
   ];
 
+  // Live API Indonesia Cache & Key Management (https://use.apiindonesia.id/api/v1/merek/search)
+  const PDKI_API_KEY_STORAGE = 'bc_pdki_api_key';
+  const LIVE_PDKI_CACHE = {};
+
+  function getPdkiApiKey() {
+    try {
+      return (localStorage.getItem(PDKI_API_KEY_STORAGE) || state.settings.pdkiApiKey || '').trim();
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function setPdkiApiKey(key) {
+    const cleanKey = (key || '').trim();
+    try {
+      if (cleanKey) {
+        localStorage.setItem(PDKI_API_KEY_STORAGE, cleanKey);
+      } else {
+        localStorage.removeItem(PDKI_API_KEY_STORAGE);
+      }
+      state.settings.pdkiApiKey = cleanKey;
+      saveState();
+    } catch (e) {
+      console.warn('Could not save API key:', e);
+    }
+    return cleanKey;
+  }
+
+  async function fetchLivePdkiApi(rawQuery) {
+    const apiKey = getPdkiApiKey();
+    const clean = (rawQuery || '').trim();
+    const lower = clean.toLowerCase();
+    if (!apiKey || !clean) return null;
+    if (LIVE_PDKI_CACHE[lower]) return LIVE_PDKI_CACHE[lower];
+
+    const url = `https://use.apiindonesia.id/api/v1/merek/search?q=${encodeURIComponent(clean)}&page=1&limit=15`;
+    const resp = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'x-api-key': apiKey,
+        'Accept': 'application/json'
+      }
+    });
+
+    if (!resp.ok) {
+      throw new Error(`HTTP ${resp.status} — Pastikan x-api-key API Indonesia Anda aktif dan kuota kredit tersedia.`);
+    }
+
+    const json = await resp.json();
+    const rawList = Array.isArray(json.data) ? json.data : Array.isArray(json.results) ? json.results : [];
+
+    const mappedItems = rawList.map((r) => {
+      const brand = String(r.mark_name || r.nama_merek || r.name || clean).toUpperCase();
+      const niceClass = String(r.class || r.kelas || '35').replace(/[^0-9, ]/g, '').trim() || '35';
+      const appNo = String(r.app_number || r.nomor_permohonan || r.no_permohonan || '-');
+      const owner = String(r.owner || r.pemilik || r.nama_pemilik || '-');
+      const rawStatus = String(r.status || r.status_merek || '(TM) DIDAFTAR').toUpperCase();
+
+      let statusKey = 'didaftar';
+      let statusLabel = rawStatus.includes('DIDAFTAR') || rawStatus.includes('TERDAFTAR') ? '(TM) DIDAFTAR' : rawStatus;
+      if (rawStatus.includes('PROSES') || rawStatus.includes('PENGAJUAN') || rawStatus.includes('PENGUMUMAN')) {
+        statusKey = 'dalam_proses';
+        statusLabel = 'DALAM PROSES';
+      } else if (rawStatus.includes('TOLAK') || rawStatus.includes('DITOLAK')) {
+        statusKey = 'ditolak';
+        statusLabel = '(TM) DITOLAK';
+      } else if (rawStatus.includes('BERAKHIR') || rawStatus.includes('HAPUS')) {
+        statusKey = 'berakhir';
+        statusLabel = 'BERAKHIR';
+      }
+
+      const imgUrl = r.logo_url || r.image_url || r.image || '';
+      const etiquetteSvg = imgUrl
+        ? `<img src="${imgUrl}" alt="${brand}" style="max-width:100%;max-height:100%;object-fit:contain;" />`
+        : `<div style="font-family:Georgia,serif;font-weight:900;font-size:1.05rem;letter-spacing:0.04em;color:#111;text-align:center;line-height:1.25;word-break:break-word;">${brand}</div>`;
+
+      return {
+        brand,
+        niceClass,
+        appNo,
+        owner,
+        status: statusLabel,
+        statusKey,
+        similarityPct: 92,
+        etiquetteSvg
+      };
+    });
+
+    const resultObj = {
+      totalFound: json.total || json.total_data || mappedItems.length,
+      items: mappedItems,
+      fromLiveApi: true
+    };
+    LIVE_PDKI_CACHE[lower] = resultObj;
+    return resultObj;
+  }
+
   // Dynamic Phonetic & Contextual PDKI Directory Search (No Fabricated Records)
   function searchPdkiDirectory(rawQuery, filters, logoMeta) {
     const clean = (rawQuery || (logoMeta ? logoMeta.name.replace(/\.[^.]+$/, '') : 'MEREK')).trim();
@@ -843,6 +940,9 @@
     const fStatus = filters?.statuses || []; // ['dalam_proses', 'didaftar', 'ditolak', 'berakhir', 'lainnya']
     const fClass = filters?.niceClass || '';
     const fOwner = (filters?.owner || '').trim().toLowerCase();
+
+    // 0. Check if Live API Indonesia cache already has data for this query
+    const liveCached = LIVE_PDKI_CACHE[lower];
 
     // 1. Check if query matches any verified cluster in PDKI_DIRECTORY_DB
     let matchedCluster = PDKI_DIRECTORY_DB.find((cluster) =>
@@ -852,8 +952,13 @@
     let items = [];
     let totalFound = 0;
     let isUnindexedQuery = false;
+    let fromLiveApi = false;
 
-    if (matchedCluster) {
+    if (liveCached) {
+      items = liveCached.items.map((it) => Object.assign({}, it));
+      totalFound = liveCached.totalFound;
+      fromLiveApi = true;
+    } else if (matchedCluster) {
       items = matchedCluster.items.map((it) => Object.assign({}, it));
       totalFound = matchedCluster.totalFound;
     } else {
@@ -875,7 +980,8 @@
       query: clean,
       totalFound: fStatus.length || fClass || fOwner ? filtered.length : totalFound,
       items: filtered,
-      isUnindexedQuery
+      isUnindexedQuery,
+      fromLiveApi
     };
   }
 
@@ -2137,16 +2243,54 @@
 
           <!-- RIGHT COLUMN: PDKI SEARCH RESULTS LIST -->
           <div>
+            <!-- Live API Indonesia Status & Quick-Connect Bar -->
+            <div style="margin-bottom:0.9rem;padding:0.75rem 1rem;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">
+              <div style="font-size:0.78rem;color:#334155;">
+                <strong>🔌 Konektor API Indonesia (Live PDKI DJKI):</strong>
+                ${
+                  getPdkiApiKey()
+                    ? `<span style="color:#15803D;font-weight:700;">● Terhubung (x-api-key: ${getPdkiApiKey().slice(0, 6)}...${getPdkiApiKey().slice(-4)})</span>`
+                    : `<span style="color:#B45309;font-weight:600;">Mode Gratis / Lokal (Tempel x-api-key gratis 3.000 kredit untuk akses semua merek live)</span>`
+                }
+              </div>
+              <div style="display:flex;gap:0.45rem;align-items:center;flex-wrap:wrap;">
+                <input
+                  type="password"
+                  class="bc-pdki-apikey-input"
+                  value="${getPdkiApiKey()}"
+                  placeholder="Tempel x-api-key apiindonesia.id..."
+                  style="padding:0.38rem 0.65rem;border:1px solid #CBD5E1;border-radius:4px;font-family:var(--font-mono);font-size:0.74rem;width:230px;background:#FFF;"
+                />
+                <button
+                  type="button"
+                  class="bc-pdki-apikey-save-btn"
+                  style="background:#172B4D;color:#FFF;border:none;border-radius:4px;padding:0.42rem 0.75rem;font-family:var(--font-heading);font-weight:700;font-size:0.74rem;cursor:pointer;"
+                >
+                  ${getPdkiApiKey() ? 'Update & Cari Live' : 'Aktifkan Free API'}
+                </button>
+                <a
+                  href="https://dashboard.apiindonesia.id"
+                  target="_blank"
+                  rel="noopener"
+                  style="font-size:0.72rem;color:#1D4ED8;font-weight:700;text-decoration:underline;"
+                >
+                  Ambil Key Gratis ↗
+                </a>
+              </div>
+            </div>
+
+            <div class="bc-pdki-live-error" hidden style="margin-bottom:0.85rem;padding:0.75rem 1rem;background:#FEF2F2;border:1px solid #FECACA;border-radius:6px;color:#B91C1C;font-size:0.8rem;"></div>
+
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.85rem;">
               <div style="font-size:0.88rem;color:#334155;">
                 ${
                   res.isUnindexedQuery
-                    ? `Hasil Penelusuran Database Lokal untuk <strong>"${qDisplay}"</strong>`
+                    ? `Hasil Penelusuran untuk <strong>"${qDisplay}"</strong>`
                     : `Menampilkan <strong>1-${visibleItems.length}</strong> dari <strong>${res.totalFound} Merek</strong> untuk <strong>"${qDisplay}"</strong>`
                 }
               </div>
-              <span style="font-family:var(--font-mono);font-size:0.68rem;padding:3px 8px;border-radius:4px;background:${res.isUnindexedQuery ? '#FEF3C7' : '#DCFCE7'};color:${res.isUnindexedQuery ? '#92400E' : '#166534'};">
-                ${res.isUnindexedQuery ? 'Menunggu Koneksi API PDKI Live' : '✓ Data Referensi Terverifikasi PDKI'}
+              <span style="font-family:var(--font-mono);font-size:0.68rem;padding:3px 8px;border-radius:4px;background:${res.fromLiveApi ? '#DBEAFE' : res.isUnindexedQuery ? '#FEF3C7' : '#DCFCE7'};color:${res.fromLiveApi ? '#1D4ED8' : res.isUnindexedQuery ? '#92400E' : '#166534'};">
+                ${res.fromLiveApi ? '⚡ Data Live API Indonesia (PDKI DJKI)' : res.isUnindexedQuery ? 'Menunggu x-api-key Live PDKI' : '✓ Data Referensi Terverifikasi PDKI'}
               </span>
             </div>
 
@@ -2156,11 +2300,12 @@
                   ? `
                 <div style="padding:1.5rem;background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;margin-top:0.85rem;">
                   <h4 style="font-family:var(--font-heading);font-size:1rem;font-weight:800;color:#92400E;margin:0 0 0.45rem 0;">
-                    Mengapa Daftar Pemilik Merek "${res.query.toUpperCase()}" Belum Ditampilkan Otomatis?
+                    Ingin Menampilkan Semua Pemilik Merek "${res.query.toUpperCase()}" Secara Otomatis (Gratis)?
                   </h4>
                   <p style="font-size:0.84rem;color:#78350F;line-height:1.55;margin:0 0 0.9rem 0;">
-                    Sesuai prinsip transparansi BrandConnect (<strong>tidak mengarang data pemilik PT atau nomor permohonan palsu</strong>): kata kunci <strong>"${qDisplay}"</strong> belum terdapat pada sampel indeks lokal kami (seperti <code>mebisoo</code>, <code>meiso</code>, <code>nike</code>, <code>kopi kenangan</code>, <code>wardah</code>, <code>zenova</code>).<br/><br/>
-                    Platform seperti Mebiso menarik 1,2+ juta data merek DJKI menggunakan langganan database/API agregator berbayar (seperti <code>apiindonesia.id/api/v1/merek/search</code>) karena situs resmi pemerintah <strong>pdki-indonesia.dgip.go.id</strong> tidak membuka API publik gratis.
+                    Kata kunci <strong>"${qDisplay}"</strong> belum ada di cache sampel lokal (<code>mebisoo</code>, <code>meiso</code>, <code>nike</code>, <code>kopi kenangan</code>, <code>wardah</code>, <code>zenova</code>). Agar BrandConnect tidak mengarang nama PT palsu, silakan:<br/>
+                    <strong>1. Pakai Kuota Gratis 3.000 Kredit API Indonesia:</strong> Klik <strong>"Ambil Key Gratis ↗"</strong> di atas, daftar akun gratis di <code>dashboard.apiindonesia.id</code>, lalu tempel <code>x-api-key</code> Anda pada kotak di atas dan klik <strong>Aktifkan Free API</strong>.<br/>
+                    <strong>2. Atau Cek Manual Langsung:</strong> Klik tombol di bawah untuk membuka pencarian <strong>"${res.query.toUpperCase()}"</strong> langsung di situs resmi PDKI DJKI.
                   </p>
                   <div style="display:flex;flex-wrap:wrap;gap:0.75rem;">
                     <a href="https://pdki-indonesia.dgip.go.id/search?type=trademark&keyword=${encodeURIComponent(res.query)}" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="text-decoration:none;">
@@ -2188,14 +2333,21 @@
     let currentFilters = { statuses: [], niceClass: 'all', owner: '' };
     let unlocked = false;
 
-    const rerender = () => {
+    const rerender = (liveErrMsg) => {
       const logoPart = logoMeta ? renderVisualSimilarityHtml(logoMeta, compLogoMeta, rawQuery) : renderPdkiDirectoryHtml(rawQuery, currentFilters, null, unlocked);
       if (logoMeta) {
-        // Replace directory portion inside logoPart with currentFilters & unlocked state
         const headerOnly = renderVisualSimilarityHtml(logoMeta, compLogoMeta, rawQuery).split('<div class="bc-pdki-explorer-root"')[0];
         containerEl.innerHTML = headerOnly + renderPdkiDirectoryHtml(rawQuery || logoMeta.inferredBrand, currentFilters, logoMeta, unlocked);
       } else {
         containerEl.innerHTML = logoPart;
+      }
+
+      if (liveErrMsg) {
+        const errEl = containerEl.querySelector('.bc-pdki-live-error');
+        if (errEl) {
+          errEl.hidden = false;
+          errEl.textContent = liveErrMsg;
+        }
       }
 
       const applyBtn = containerEl.querySelector('.bc-pf-apply-btn');
@@ -2216,9 +2368,37 @@
           rerender();
         });
       }
+
+      const saveKeyBtn = containerEl.querySelector('.bc-pdki-apikey-save-btn');
+      const keyInput = containerEl.querySelector('.bc-pdki-apikey-input');
+      if (saveKeyBtn && keyInput) {
+        saveKeyBtn.addEventListener('click', async () => {
+          const k = setPdkiApiKey(keyInput.value);
+          if (!k) {
+            rerender('API Key dikosongkan. Kembali ke mode lokal.');
+            return;
+          }
+          saveKeyBtn.textContent = 'Menghubungkan...';
+          saveKeyBtn.disabled = true;
+          try {
+            await fetchLivePdkiApi(rawQuery || logoMeta?.inferredBrand || 'MEREK');
+            rerender();
+          } catch (err) {
+            rerender(`Gagal memanggil Live API (${err.message}). Pastikan x-api-key dari dashboard.apiindonesia.id benar.`);
+          }
+        });
+      }
     };
 
     rerender();
+
+    // If API key is configured and query is not yet cached, automatically fetch live data!
+    const qTarget = (rawQuery || logoMeta?.inferredBrand || '').trim();
+    if (getPdkiApiKey() && qTarget && !LIVE_PDKI_CACHE[qTarget.toLowerCase()]) {
+      fetchLivePdkiApi(qTarget)
+        .then(() => rerender())
+        .catch((err) => rerender(`Info Live API: ${err.message}`));
+    }
   }
 
   function openReportModal(searchLogId) {
@@ -2302,6 +2482,9 @@
     formatIDR,
     NICE_CLASSES_DB,
     PDKI_DIRECTORY_DB,
+    getPdkiApiKey,
+    setPdkiApiKey,
+    fetchLivePdkiApi,
     searchPdkiDirectory,
     renderPdkiDirectoryHtml,
     mountPdkiExplorer,

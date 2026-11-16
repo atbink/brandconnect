@@ -227,8 +227,17 @@
         <!-- 13. SETTINGS -->
         <div class="adm-panel" id="adm-panel-settings">
           <span class="eyebrow">MODULE 13 // PLATFORM CONFIGURATION</span>
-          <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin-bottom:1rem;">Pengaturan Platform, AI Disclaimer &amp; Reset Data</h2>
+          <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin-bottom:1rem;">Pengaturan Platform, Live API PDKI &amp; AI Disclaimer</h2>
           <form id="adm-settings-form" style="max-width:640px;display:flex;flex-direction:column;gap:1rem;">
+            <div style="background:#FFF;border:1.5px solid var(--green);padding:1rem;border-radius:4px;">
+              <label style="font-family:var(--font-mono);font-size:0.7rem;color:var(--green);font-weight:700;display:block;margin-bottom:0.3rem;">
+                🔌 X-API-KEY API INDONESIA (LIVE PDKI DJKI — GRATIS 3.000 KREDIT AWAL)
+              </label>
+              <input type="password" id="set-pdki-apikey" class="tm-search-input" style="padding-left:1rem;height:44px;" placeholder="Tempel x-api-key dari dashboard.apiindonesia.id..." />
+              <span style="font-size:0.76rem;color:var(--pencil);display:block;margin-top:0.35rem;">
+                Daftar gratis di <a href="https://dashboard.apiindonesia.id" target="_blank" rel="noopener" style="color:var(--green);font-weight:700;">dashboard.apiindonesia.id</a> (bonus 3.000 kredit gratis / 1.500x pencarian merek live dari endpoint <code>https://use.apiindonesia.id/api/v1/merek/search</code>).
+              </span>
+            </div>
             <div>
               <label style="font-family:var(--font-mono);font-size:0.7rem;display:block;margin-bottom:0.3rem;">NOMOR WHATSAPP KONSULTASI RESMI</label>
               <input type="text" id="set-wa" class="tm-search-input" style="padding-left:1rem;height:44px;" />
@@ -466,6 +475,10 @@
         // 13 Settings
         document.getElementById('set-wa').value = state.settings.whatsappNumber;
         document.getElementById('set-disclaimer').value = state.settings.aiDisclaimer;
+        const apiKeyEl = document.getElementById('set-pdki-apikey');
+        if (apiKeyEl && window.BCStore.getPdkiApiKey) {
+          apiKeyEl.value = window.BCStore.getPdkiApiKey();
+        }
       }
 
       roleSwitcher.addEventListener('change', () => {
@@ -591,9 +604,14 @@
         e.preventDefault();
         const state = window.BCStore.getState();
         const actor = getCurrentActor();
+        const apiKeyVal = document.getElementById('set-pdki-apikey')?.value || '';
+        if (window.BCStore.setPdkiApiKey) {
+          window.BCStore.setPdkiApiKey(apiKeyVal);
+        }
         state.settings.whatsappNumber = document.getElementById('set-wa').value.trim();
         state.settings.aiDisclaimer = document.getElementById('set-disclaimer').value.trim();
-        window.BCStore.logActivity(actor.name, actor.role, 'SETTINGS_UPDATED', 'PLATFORM', 'Memperbarui konfigurasi kontak & disclaimer AI.');
+        window.BCStore.logActivity(actor.name, actor.role, 'SETTINGS_UPDATED', 'PLATFORM', 'Memperbarui konfigurasi Live API Key PDKI, kontak & disclaimer AI.');
+        alert('Pengaturan Platform & x-api-key API Indonesia berhasil disimpan!');
         renderAdmin();
       });
 
