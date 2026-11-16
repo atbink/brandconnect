@@ -1044,6 +1044,15 @@
         <span style="font-family:Impact,sans-serif;font-weight:900;font-size:0.85rem;letter-spacing:0.1em;color:#111;margin-top:2px;">PUMA</span>
       </div>`;
     }
+    if (b === 'CONVERSE' || b.startsWith('CONVERSE ') || b.includes('CONVERSE')) {
+      return `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:4px;">
+        <svg viewBox="0 0 100 62" style="width:76px;max-height:48px;" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="30.0,10.0 33.2,17.6 41.4,18.3 35.2,23.7 37.1,31.7 30.0,27.5 22.9,31.7 24.8,23.7 18.6,18.3 26.8,17.6" fill="#111" />
+          <polygon points="46,11 60,22 46,33 53,33 67,22 53,11" fill="#111" />
+          <text x="50" y="52" font-family="'Inter',-apple-system,sans-serif" font-weight="900" font-size="13.5" letter-spacing="1.5px" text-anchor="middle" fill="#111">CONVERSE</text>
+        </svg>
+      </div>`;
+    }
     if (b === 'APPLE' || b.includes('APPLE')) {
       return `<div style="text-align:center;"><svg viewBox="0 0 40 48" style="width:36px;height:42px;"><path d="M26 0 C27 4 23 8 20 8 C19 4 23 1 26 0 Z M28 12 C24 12 21 14 18 14 C15 14 12 12 8 12 C2 12 0 18 0 26 C0 35 7 48 14 48 C17 48 19 46 22 46 C25 46 27 48 30 48 C37 48 40 38 40 33 C34 31 32 24 35 20 C33 16 30 13 28 12 Z" fill="#111"/></svg></div>`;
     }
