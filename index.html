@@ -76,17 +76,18 @@
       <nav class="main-nav" aria-label="Navigasi Utama">
         <ul class="nav-list">
           <li><a href="trademark-checker.html" class="nav-link active" data-section="cek-merek">Cek Merek</a></li>
-          <li><a href="class-finder.html" class="nav-link" data-section="cari-kelas">Cari Kelas</a></li>
-          <li><a href="monitoring.html" class="nav-link" data-section="monitoring-merek">Monitoring</a></li>
-          <li><a href="brand-protection.html" class="nav-link" data-section="proteksi-merek">Proteksi</a></li>
-          <li><a href="services.html" class="nav-link" data-section="layanan-merek">Layanan (8)</a></li>
-          <li><a href="pendaftaran-merek.html" class="nav-link" data-section="pendaftaran-merek">Pendaftaran</a></li>
+          <li><a href="class-finder.html" class="nav-link" data-section="cari-kelas">Cari Kelas Merek</a></li>
+          <li><a href="monitoring.html" class="nav-link" data-section="monitoring-merek">Monitoring Merek</a></li>
+          <li><a href="brand-protection.html" class="nav-link" data-section="proteksi-merek">Proteksi Merek</a></li>
+          <li><a href="services.html" class="nav-link" data-section="layanan-merek">Jasa Merek</a></li>
         </ul>
       </nav>
 
-      <div class="nav-actions" style="display:flex;align-items:center;gap:0.55rem;">
-        <a href="dashboard.html" class="nav-login-btn" style="text-decoration:none;">Dashboard Klien</a>
-        <a href="admin.html" class="nav-login-btn" style="text-decoration:none;background:var(--charcoal);color:var(--ivory);">Admin Panel</a>
+      <div class="nav-actions" style="display:flex;align-items:center;gap:0.75rem;">
+        <a href="dashboard.html" class="nav-login-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span>Login</span>
+        </a>
 
         <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Buka Menu" aria-expanded="false">
           <span class="hamburger-line"></span>
@@ -128,1195 +129,464 @@
   <main id="top">
 
     <!-- ==================================================
-         SECTION 1 — HERO
+         IMAGE 1: HERO SECTION
          Headline: "Lindungi Merek Kebanggaan Anda Bersama BrandConnect."
-         Subheadline: "Pastikan identitas bisnis Anda terlindungi. Temukan potensi kemiripan merek, pahami kelas pendaftaran, dan dapatkan pendampingan perlindungan merek."
-         CTA: "Cek Merek Sekarang"
          ================================================== -->
-    <section class="hero-section" id="hero-section">
-      <div class="container hero-grid">
-        <!-- Left Column: Direct Bahasa Indonesia Value Proposition -->
-        <div class="hero-content reveal-up">
-          <div class="eyebrow-group">
-            <span class="badge-ai-intel">
-              <span class="pulse-indicator"></span>
-              AI-POWERED TRADEMARK &amp; BRAND PROTECTION
-            </span>
-          </div>
-
-          <h1 class="hero-headline">
-            <span class="hero-line-1">Lindungi Merek Kebanggaan</span>
-            <span class="hero-line-2">Anda Bersama</span>
-            <span class="hero-line-idea"><span class="hero-brand-highlight">BrandConnect.</span></span>
+    <section class="bc-hero-wrap" id="hero-section">
+      <div class="container bc-hero-grid">
+        <div class="bc-hero-left">
+          <div class="bc-hero-eyebrow">AI-POWERED TRADEMARK PLATFORM</div>
+          <h1 class="bc-hero-title">
+            Lindungi Merek<br />
+            Kebanggaan Anda<br />
+            Bersama <span class="serif-accent">BrandConnect.</span>
           </h1>
-
-          <p class="hero-lead">
-            Pastikan identitas bisnis Anda terlindungi. Temukan potensi kemiripan merek, pahami kelas pendaftaran, dan dapatkan pendampingan perlindungan merek.
+          <p class="bc-hero-desc">
+            Pastikan identitas bisnis Anda terlindungi. Temukan potensi kemiripan merek, pahami kelas pendaftaran, dan dapatkan pendampingan profesional hingga perlindungan hukum.
           </p>
 
-          <!-- Primary & Secondary Conversion CTAs -->
-          <div class="hero-cta-group" style="margin-bottom: 1.5rem;">
-            <a href="#cek-merek" class="btn btn-primary" id="hero-cek-merek-cta">
+          <form class="bc-hero-search-bar" action="#cek-merek" onsubmit="event.preventDefault(); const q = this.querySelector('input').value; if(q){ document.getElementById('tm-brand-input').value = q; document.getElementById('cek-merek').scrollIntoView({behavior: 'smooth'}); setTimeout(() => document.getElementById('tm-submit-btn').click(), 300); }">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" placeholder="Masukkan nama merek..." required />
+            <button type="submit" class="bc-hero-search-btn">
               <span>Cek Merek Sekarang</span>
-              <span class="btn-arrow" aria-hidden="true">↓</span>
-            </a>
-            <button type="button" class="btn btn-secondary" onclick="window.BCStore && window.BCStore.openHandoverModal()">
-              <span>Konsultasi Spesialis Merek</span>
-              <span class="btn-arrow" aria-hidden="true">→</span>
+              <span>→</span>
             </button>
-          </div>
+          </form>
 
-          <div class="hero-trust-badge-row">
-            <span>✓ <strong>Search Smart. Protect Better.</strong></span>
-            <span>·</span>
-            <span>✓ <strong>45 Kelas Merek (Nice)</strong></span>
-            <span>·</span>
-            <span>✓ <strong>Tim Spesialis &amp; Legal In-House</strong></span>
+          <div class="bc-trust-badges">
+            <div class="bc-trust-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+              <span>Analisis dengan AI</span>
+            </div>
+            <div class="bc-trust-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+              <span>Didampingi Tim Profesional</span>
+            </div>
+            <div class="bc-trust-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>
+              <span>Hingga Kuasa Hukum</span>
+            </div>
           </div>
         </div>
 
-        <!-- Right Column: Editorial Trademark Visual -->
-        <div class="hero-visual-wrapper reveal-up" style="--reveal-delay: 0.12s;">
-          <div class="hero-frame">
-            <div class="frame-drafting-bar">
-              <span class="drafting-ref">TRADEMARK INTELLIGENCE // BRANDCONNECT</span>
-              <span class="drafting-coords">STATUS: READY TO CHECK</span>
-            </div>
-
-            <div class="hero-image-container">
-              <img
-                src="assets/images/hero-workspace.jpg"
-                alt="Penelusuran merek dan perlindungan identitas brand bersama BrandConnect"
-                class="hero-img"
-                width="800"
-                height="600"
-                fetchpriority="high"
-              />
-
-              <div class="artifact-tag tag-sketch">
-                <span class="tag-dot"></span>
-                <span class="tag-text">01. Cek Kemiripan Merek dengan AI</span>
-              </div>
-              <div class="artifact-tag tag-reality">
-                <span class="tag-dot tag-dot-green"></span>
-                <span class="tag-text">02. Sertifikat Merek Terdaftar (®)</span>
-              </div>
-            </div>
-
-            <div class="frame-caption-bar">
-              <span class="caption-note">“Lindungi Merek Kebanggaan Anda.”</span>
-              <span class="caption-spec">BRANDCONNECT // ID</span>
-            </div>
+        <div class="bc-hero-right">
+          <div class="bc-hero-visual">
+            <img src="assets/images/hero-workspace-editorial.jpg" alt="BrandConnect Editorial Workspace &amp; Blueprint" />
           </div>
         </div>
       </div>
+    </section>
 
-      <!-- ==================================================
-           SECTION 2 — AI TRADEMARK SEARCH (#cek-merek)
-           Headline: "Pencarian Merek dengan Teknologi AI"
-           Fitur: Input nama merek, Input nomor permohonan, Upload logo, Tombol Cek Merek Gratis, Hasil analisis, Rekomendasi langkah berikutnya
-           ================================================== -->
-      <div class="container hero-tm-checker-wrap reveal-up" id="cek-merek">
-        <div class="hero-tm-checker">
-          <h2 class="tm-ai-banner-title">
-            Pencarian Merek dengan <span class="tm-ai-highlight">Teknologi AI</span>
+    <!-- ==================================================
+         IMAGE 2: AI SEARCH ENGINE CARD & 4 FITUR UTAMA
+         ================================================== -->
+    <section class="bc-search-section" id="cek-merek" style="padding: 2rem 0 4.5rem;">
+      <div class="container">
+        <!-- AI Search Card (Image 2 Top) -->
+        <div class="bc-ai-search-card">
+          <h2 class="bc-ai-search-title">
+            Pencarian Merek dengan <strong>Teknologi AI</strong>
           </h2>
-
-          <p class="tm-ai-banner-desc">
+          <p class="bc-ai-search-subtitle">
             Bayangkan merek yang Anda bangun dengan susah payah berakhir ditolak atau diambil orang lain. Ketahui potensi kemiripan merek, evaluasi daya pembeda, dan rekomendasi langkah perlindungan secara cepat dan gratis.
           </p>
 
-          <!-- Mode Tabs: Nama Merek | Nomor Permohonan | Upload Logo -->
-          <div class="tm-mode-tabs" role="tablist" aria-label="Metode Pencarian Merek">
-            <button type="button" class="tm-mode-tab active" data-search-mode="name" role="tab" aria-selected="true">
-              <span>🔍 Nama Merek</span>
+          <div class="bc-mode-tabs" role="tablist">
+            <button type="button" class="bc-mode-tab active" data-search-mode="name">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <span>Nama Merek</span>
             </button>
-            <button type="button" class="tm-mode-tab" data-search-mode="number" role="tab" aria-selected="false">
+            <button type="button" class="bc-mode-tab" data-search-mode="number">
               <span># Nomor Permohonan</span>
             </button>
-            <button type="button" class="tm-mode-tab" data-search-mode="logo" role="tab" aria-selected="false">
-              <span>🖼️ Upload Logo (Visual)</span>
+            <button type="button" class="bc-mode-tab" data-search-mode="logo">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              <span>Upload Logo (Visual)</span>
             </button>
           </div>
 
-          <p class="tm-ai-banner-prompt" id="tm-mode-prompt">
-            Cek Merek Anda Gratis, sekarang!
-          </p>
+          <p class="bc-search-label" id="tm-mode-prompt">Cek Merek Anda Gratis, sekarang!</p>
 
           <form class="tm-search-form" id="tm-search-form">
             <input type="hidden" id="tm-search-mode-input" value="name" />
             <input type="hidden" id="tm-selected-class-hidden" value="" />
 
-            <!-- Main Input + Button Row -->
-            <div class="tm-search-simple-row">
+            <div class="bc-input-group">
               <input
                 type="text"
                 id="tm-brand-input"
-                class="tm-search-input"
-                placeholder="Masukkan nama merek (contoh: Kopi Nusantara, Zenova, GlowSkin)..."
-                aria-label="Masukkan nama merek atau nomor permohonan"
+                placeholder="Masukkan nama merek (contoh: Kopi Nusantara, Zenova, GlowS)"
                 required
               />
-              <button type="submit" class="tm-submit-btn" id="tm-submit-btn">
+              <button type="submit" class="bc-btn-search-action" id="tm-submit-btn">
                 <span>Cek Merek Gratis</span>
+                <span>→</span>
               </button>
             </div>
 
-            <!-- Conditional Logo Upload Area (Shown when Upload Logo tab is active) -->
             <div class="tm-logo-upload-area" id="tm-logo-upload-area" hidden>
               <input type="file" id="tm-logo-file-input" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden />
-              <div id="tm-logo-upload-placeholder" style="cursor:pointer;">
-                <strong style="font-family:var(--font-heading);font-size:0.9rem;color:var(--charcoal);display:block;margin-bottom:0.25rem;">
+              <div id="tm-logo-upload-placeholder" style="cursor:pointer;padding:1.5rem;border:2px dashed #D5D3CA;border-radius:16px;background:#FAF8F5;">
+                <strong style="font-family:var(--font-heading);font-size:0.95rem;color:var(--bc-text-dark);display:block;margin-bottom:0.35rem;">
                   📎 Klik untuk Pilih File Logo Anda (PNG, JPG, WEBP, SVG)
                 </strong>
-                <span style="font-size:0.78rem;color:var(--pencil);">
-                  Sistem akan otomatis menjalankan <strong>Cek Kemiripan Visual (dHash, Geometri Simetri, Klasifikasi Vienna &amp; Palet Warna)</strong> terhadap referensi merek lukisan terdaftar.
+                <span style="font-size:0.82rem;color:#6B7280;">
+                  Sistem otomatis menjalankan analisis kemiripan visual logo (dHash, geometri simetri, klasifikasi Vienna &amp; palet warna).
                 </span>
               </div>
-              <div class="tm-logo-preview-wrap" id="tm-logo-preview-wrap" hidden>
-                <img src="" alt="Preview Logo Merek" class="tm-logo-preview-img" id="tm-logo-preview-img" />
+              <div class="tm-logo-preview-wrap" id="tm-logo-preview-wrap" hidden style="margin-top:1rem;display:flex;align-items:center;gap:1rem;background:#fff;padding:0.75rem 1rem;border-radius:12px;border:1px solid #E5E2D9;">
+                <img src="" alt="Preview Logo" class="tm-logo-preview-img" id="tm-logo-preview-img" style="max-height:48px;max-width:64px;object-fit:contain;" />
                 <div style="text-align:left;flex:1;">
-                  <strong id="tm-logo-file-name" style="font-size:0.84rem;display:block;color:var(--charcoal);">logo.png</strong>
-                  <span id="tm-logo-file-meta" style="font-family:var(--font-mono);font-size:0.72rem;color:var(--green);display:block;">Siap dianalisis</span>
+                  <strong id="tm-logo-file-name" style="font-size:0.88rem;display:block;">logo.png</strong>
+                  <span id="tm-logo-file-meta" style="font-family:var(--font-mono);font-size:0.75rem;color:var(--bc-green);">Siap dianalisis</span>
                 </div>
-              </div>
-
-              <!-- Optional 2nd Logo Upload for 1-on-1 Direct Competitor Comparison -->
-              <div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px dashed rgba(26,26,26,0.2);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.65rem;" onclick="event.stopPropagation();">
-                <div style="text-align:left;">
-                  <strong style="font-family:var(--font-mono);font-size:0.7rem;color:var(--charcoal);display:block;">⚖️ OPSIONAL: BANDINGKAN DENGAN LOGO KOMPETITOR (CEK KEMIRIPAN 2 GAMBAR 1-ON-1)</strong>
-                  <span id="tm-comp-logo-status" style="font-size:0.74rem;color:var(--pencil);">Punya gambar logo merek lain yang ingin dibandingkan langsung dengan logo Anda? Unggah di sini.</span>
-                </div>
-                <label class="btn btn-secondary btn-sm" style="cursor:pointer;font-size:0.74rem;padding:0.4rem 0.75rem;">
-                  <span>+ Pilih Logo Pembanding</span>
-                  <input type="file" id="tm-comp-logo-input" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden />
-                </label>
               </div>
             </div>
           </form>
 
-          <div class="tm-ai-banner-foot">
+          <p class="bc-footnote" style="margin-top:1.25rem;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
             <span>Mengacu pada Kriteria Pemeriksaan Substantif Pasal 20 &amp; 21 UU Merek No. 20 Tahun 2016 (DJKI)</span>
-          </div>
-
-          <!-- LIVE ANALYSIS RESULTS PANEL -->
-          <div class="tm-results-panel" id="tm-results-panel" aria-live="polite">
-            <!-- Honest Status Notice -->
-            <div class="tm-honest-status-banner" id="tm-honest-notice">
-              <strong>Status Analisis Pra-Skrining AI:</strong> Evaluasi di bawah ini menganalisis struktur fonetik, daya pembeda kata, dan kepatuhan Pasal 20 UU Merek secara instan. Untuk pengecekan silang terhadap pangkalan data resmi DJKI (PDKI) yang sedang berjalan secara menyeluruh, tim Konsultan Merek BrandConnect akan memverifikasinya untuk Anda.
-            </div>
-
-            <div class="tm-results-header">
-              <div class="tm-target-info">
-                <span class="tm-target-brand" id="tm-res-target-brand">NAMA MEREK</span>
-                <span class="tm-target-class" id="tm-res-target-class">METODE: PENELUSURAN NAMA MEREK // PRA-SKRINING AI</span>
-              </div>
-              <div class="tm-score-badge score-high" id="tm-res-score-badge">
-                <span class="tm-score-number" id="tm-res-score-num">88%</span>
-                <div class="tm-score-meta">
-                  <span class="tm-score-label">Indeks Daya Pembeda AI</span>
-                  <span class="tm-score-verdict" id="tm-res-score-verdict">POTENSI KUAT (DAYA PEMBEDA TINGGI)</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- 4-Pillar Analysis Grid -->
-            <div class="tm-breakdown-grid">
-              <div class="tm-pill-card" id="tm-pill-phonetic">
-                <div class="tm-pill-title">01 // KEMIRIPAN FONETIK</div>
-                <div class="tm-pill-status">Distingtif</div>
-                <div class="tm-pill-detail">Struktur bunyi pengucapan memiliki karakter unik.</div>
-              </div>
-              <div class="tm-pill-card" id="tm-pill-visual">
-                <div class="tm-pill-title">02 // VISUAL &amp; EJAAN</div>
-                <div class="tm-pill-status">Kuat</div>
-                <div class="tm-pill-detail">Susunan huruf tidak bersifat generik.</div>
-              </div>
-              <div class="tm-pill-card" id="tm-pill-class">
-                <div class="tm-pill-title">03 // KELAS MEREK</div>
-                <div class="tm-pill-status">Pilih Kelas (1–45)</div>
-                <div class="tm-pill-detail">Pastikan kelas sesuai dengan barang/jasa yang dijual.</div>
-              </div>
-              <div class="tm-pill-card" id="tm-pill-statute">
-                <div class="tm-pill-title">04 // KRITERIA UU MEREK</div>
-                <div class="tm-pill-status">Memenuhi Pasal 20</div>
-                <div class="tm-pill-detail">Bukan merupakan kata umum/milik publik.</div>
-              </div>
-            </div>
-
-            <!-- Dynamic Visual Logo Similarity Matrix Container -->
-            <div id="tm-visual-similarity-container"></div>
-
-            <!-- Recommended Next Steps -->
-            <div class="tm-next-steps-box">
-              <div class="tm-next-steps-title">REKOMENDASI LANGKAH BERIKUTNYA:</div>
-              <ul class="tm-next-steps-list" id="tm-next-steps-list">
-                <li><strong>1. Tentukan Kelas Merek:</strong> Pastikan nomor kelas Nice (1–45) sesuai dengan produk/jasa Anda.</li>
-                <li><strong>2. Verifikasi Database DJKI Lengkap:</strong> Konsultasikan hasil pra-skrining ini dengan Konsultan Merek BrandConnect untuk memastikan tidak ada merek identik di kelas yang sama.</li>
-                <li><strong>3. Ajukan Pendaftaran Lebih Awal (First-to-File):</strong> Amankan hak prioritas merek Anda sebelum didaftarkan pihak lain.</li>
-              </ul>
-
-              <div class="tm-next-steps-actions">
-                <button type="button" class="btn btn-primary btn-sm" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-REG-01')">
-                  <span>® Pesan Pendaftaran Merek</span>
-                  <span class="btn-arrow" aria-hidden="true">→</span>
-                </button>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="window.BCStore && window.BCStore.openHandoverModal()">
-                  <span>👨‍⚖️ Handover ke Spesialis Merek</span>
-                </button>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="window.BCStore && window.BCStore.openReportModal()">
-                  <span>📄 Lihat &amp; Cetak Laporan AI</span>
-                </button>
-                <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer" class="tm-wa-action-btn" id="tm-wa-action-btn">
-                  <span>WhatsApp Spesialis</span>
-                  <span class="btn-arrow" aria-hidden="true">↗</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ==================================================
-           SECTION 3 — QUICK ACCESS TOOLS (4 CORE TRADEMARK FEATURES)
-           1. Cek Merek | 2. Cari Kelas Merek | 3. Monitoring Merek | 4. Proteksi Merek
-           ================================================== -->
-      <div class="container quick-access-wrapper reveal-up" id="quick-tools">
-        <div class="quick-access-header">
-          <div>
-            <p class="eyebrow">FITUR UTAMA BRANDCONNECT</p>
-            <h2 class="quick-access-title">
-              Solusi Lengkap <span class="serif-italic">Perlindungan Merek.</span>
-            </h2>
-          </div>
-          <p class="quick-access-sub">
-            Empat instrumen utama untuk membantu Anda memeriksa ketersediaan merek, memetakan kelas pendaftaran, memantau peniruan, dan menjaga hak eksklusif brand Anda.
           </p>
         </div>
 
-        <div class="quick-access-grid">
-          <!-- 01 — CEK MEREK -->
-          <a href="#cek-merek" class="quick-card quick-selector-row">
-            <div class="quick-row-left">
-              <span class="quick-row-index">01</span>
-              <div class="quick-row-copy">
-                <div class="quick-card-top">
-                  <span class="quick-num">CEK MEREK</span>
-                  <span class="quick-tag">AI SEARCH</span>
-                </div>
-                <p class="quick-desc">
-                  <span class="qa-desc-mobile">Analisis kemiripan merek &amp; nomor permohonan.</span>
-                  <span class="qa-desc-desktop">Periksa potensi kemiripan nama merek, nomor permohonan, dan logo dengan teknologi AI.</span>
-                </p>
-              </div>
+        <!-- 4 Fitur Utama Grid (Image 2 Bottom) -->
+        <div class="bc-features-wrap">
+          <div class="bc-features-header">
+            <div>
+              <div class="bc-features-eyebrow">FITUR UTAMA BRANDCONNECT</div>
+              <h2 class="bc-features-title">
+                Solusi Lengkap <span class="serif-accent">Perlindungan Merek.</span>
+              </h2>
             </div>
-            <div class="quick-card-links">
-              <span class="quick-cta">
-                <span class="qa-cta-label">CEK MEREK</span>
-                <span class="btn-arrow" aria-hidden="true">↑</span>
-              </span>
-            </div>
-          </a>
+            <p class="bc-features-intro">
+              Empat instrumen utama untuk membantu Anda memeriksa ketersediaan merek, memetakan kelas pendaftaran, memantau peniruan, dan menjaga hak eksklusif brand Anda.
+            </p>
+          </div>
 
-          <!-- 02 — CARI KELAS MEREK -->
-          <a href="#cari-kelas" class="quick-card quick-selector-row">
-            <div class="quick-row-left">
-              <span class="quick-row-index">02</span>
-              <div class="quick-row-copy">
-                <div class="quick-card-top">
-                  <span class="quick-num">CARI KELAS MEREK</span>
-                  <span class="quick-tag">KELAS 1–45</span>
+          <div class="bc-features-grid-4">
+            <a href="trademark-checker.html" class="bc-feature-card">
+              <div>
+                <div class="bc-card-top-meta">
+                  <div class="bc-card-icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  </div>
+                  <span class="bc-card-tag">AI SEARCH</span>
                 </div>
-                <p class="quick-desc">
-                  <span class="qa-desc-mobile">Temukan kelas pendaftaran barang &amp; jasa.</span>
-                  <span class="qa-desc-desktop">Temukan klasifikasi kelas merek (Nice Classification 1–45) yang tepat untuk produk atau layanan Anda.</span>
+                <h3 class="bc-feature-card-title">Cek Merek</h3>
+                <p class="bc-feature-card-desc">
+                  Periksa potensi kemiripan nama merek, nomor permohonan, dan logo dengan teknologi AI.
                 </p>
               </div>
-            </div>
-            <div class="quick-card-links">
-              <span class="quick-cta">
-                <span class="qa-cta-label">CARI KELAS</span>
-                <span class="btn-arrow" aria-hidden="true">↓</span>
-              </span>
-            </div>
-          </a>
+              <div class="bc-feature-card-action">
+                <span>Cek Merek</span>
+                <span>→</span>
+              </div>
+            </a>
 
-          <!-- 03 — MONITORING MEREK -->
-          <a href="#monitoring-merek" class="quick-card quick-selector-row">
-            <div class="quick-row-left">
-              <span class="quick-row-index">03</span>
-              <div class="quick-row-copy">
-                <div class="quick-card-top">
-                  <span class="quick-num">MONITORING MEREK</span>
-                  <span class="quick-tag">PANTAU BRM</span>
+            <a href="class-finder.html" class="bc-feature-card">
+              <div>
+                <div class="bc-card-top-meta">
+                  <div class="bc-card-icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                  </div>
+                  <span class="bc-card-tag">KELAS 1-45</span>
                 </div>
-                <p class="quick-desc">
-                  <span class="qa-desc-mobile">Deteksi dini merek baru yang meniru.</span>
-                  <span class="qa-desc-desktop">Pantau publikasi Berita Resmi Merek DJKI secara berkala agar merek Anda tidak ditiru pihak lain.</span>
+                <h3 class="bc-feature-card-title">Cari Kelas Merek</h3>
+                <p class="bc-feature-card-desc">
+                  Temukan klasifikasi kelas merek (Nice Classification 1–45) yang tepat untuk produk atau layanan Anda.
                 </p>
               </div>
-            </div>
-            <div class="quick-card-links">
-              <span class="quick-cta">
-                <span class="qa-cta-label">MONITOR MEREK</span>
-                <span class="btn-arrow" aria-hidden="true">↓</span>
-              </span>
-            </div>
-          </a>
+              <div class="bc-feature-card-action">
+                <span>Cari Kelas</span>
+                <span>→</span>
+              </div>
+            </a>
 
-          <!-- 04 — PROTEKSI MEREK -->
-          <a href="#proteksi-merek" class="quick-card quick-selector-row">
-            <div class="quick-row-left">
-              <span class="quick-row-index">04</span>
-              <div class="quick-row-copy">
-                <div class="quick-card-top">
-                  <span class="quick-num">PROTEKSI MEREK</span>
-                  <span class="quick-tag">SANGGAHAN · OPOSISI</span>
+            <a href="monitoring.html" class="bc-feature-card">
+              <div>
+                <div class="bc-card-top-meta">
+                  <div class="bc-card-icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+                  </div>
+                  <span class="bc-card-tag">PANTAU BRM</span>
                 </div>
-                <p class="quick-desc">
-                  <span class="qa-desc-mobile">Sanggahan penolakan, oposisi &amp; perpanjangan.</span>
-                  <span class="qa-desc-desktop">Pendampingan hukum atas usulan penolakan DJKI, oposisi merek peniru, dan perpanjangan merek.</span>
+                <h3 class="bc-feature-card-title">Monitoring Merek</h3>
+                <p class="bc-feature-card-desc">
+                  Pantau publikasi Berita Resmi Merek DJKI secara berkala agar merek Anda tidak ditiru pihak lain.
                 </p>
               </div>
-            </div>
-            <div class="quick-card-links">
-              <span class="quick-cta">
-                <span class="qa-cta-label">PROTEKSI MEREK</span>
-                <span class="btn-arrow" aria-hidden="true">↓</span>
-              </span>
-            </div>
-          </a>
+              <div class="bc-feature-card-action">
+                <span>Monitor Merek</span>
+                <span>→</span>
+              </div>
+            </a>
+
+            <a href="brand-protection.html" class="bc-feature-card">
+              <div>
+                <div class="bc-card-top-meta">
+                  <div class="bc-card-icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                  </div>
+                  <span class="bc-card-tag">SANGGAHAN · OPOSISI</span>
+                </div>
+                <h3 class="bc-feature-card-title">Proteksi Merek</h3>
+                <p class="bc-feature-card-desc">
+                  Pendampingan hukum atas usulan penolakan DJKI, oposisi merek peniru, dan perpanjangan merek.
+                </p>
+              </div>
+              <div class="bc-feature-card-action">
+                <span>Proteksi Merek</span>
+                <span>→</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Live Search Results Container (Injected by JS when search runs) -->
+        <div class="tm-results-container" id="tm-results-container" hidden>
+          <!-- Dynamic Results -->
         </div>
       </div>
     </section>
 
     <!-- ==================================================
-         TOOL B — CARI KELAS MEREK (TRADEMARK CLASS FINDER)
+         IMAGE 7: ALUR TERINTEGRASI (CARA KERJA)
          ================================================== -->
-    <section class="nice-finder-section" id="cari-kelas">
+    <section class="bc-how-wrap" id="how-it-works">
       <div class="container">
-        <div class="section-header reveal-up">
-          <div class="header-left">
-            <p class="eyebrow">KLASIFIKASI NICE (KELAS 1–45)</p>
-            <h2 class="section-title">
-              Cari Kelas <span class="serif-italic">Merek Anda.</span>
+        <div class="bc-how-grid">
+          <div class="bc-how-left">
+            <div class="bc-features-eyebrow">CARA KERJA BRANDCONNECT</div>
+            <h2 class="bc-features-title" style="margin-bottom:1.25rem;">
+              Alur Terintegrasi<br />
+              <span class="serif-accent">AI &amp; Tim Spesialis.</span>
             </h2>
-          </div>
-          <div class="header-right">
-            <p class="section-subtitle">
-              Pendaftaran merek di DJKI wajib mencantumkan kelas barang (Kelas 1–34) atau kelas jasa (Kelas 35–45). Ketik jenis produk atau layanan Anda di bawah ini untuk menemukan kelas yang sesuai.
+            <p style="font-size:1rem;color:#4B5563;line-height:1.6;margin-bottom:2rem;">
+              Dari pengecekan mandiri berbasis AI hingga pendaftaran resmi dan pemantauan berkelanjutan, semua kami dampingi dalam satu alur.
             </p>
-          </div>
-        </div>
 
-        <!-- Search Bar & Category Filters -->
-        <div class="nice-search-bar-wrap reveal-up">
-          <div class="tm-input-group">
-            <span class="tm-input-icon" aria-hidden="true">🔍</span>
-            <input
-              type="text"
-              id="nice-search-input"
-              class="tm-search-input"
-              placeholder="Ketik jenis produk atau jasa Anda (contoh: kopi, baju, skincare, kafe, aplikasi, toko online)..."
-              aria-label="Cari Kelas Merek Berdasarkan Nama Produk atau Jasa"
-            />
-          </div>
-        </div>
-
-        <div class="nice-filter-pills reveal-up">
-          <button type="button" class="nice-filter-btn active" data-filter="all">Semua Kelas Populer</button>
-          <button type="button" class="nice-filter-btn" data-filter="makanan">Makanan &amp; Minuman</button>
-          <button type="button" class="nice-filter-btn" data-filter="fashion">Fashion &amp; Pakaian</button>
-          <button type="button" class="nice-filter-btn" data-filter="kosmetik">Kosmetik &amp; Skincare</button>
-          <button type="button" class="nice-filter-btn" data-filter="teknologi">Teknologi &amp; Aplikasi</button>
-          <button type="button" class="nice-filter-btn" data-filter="jasa">Restoran, Toko &amp; Jasa</button>
-          <button type="button" class="nice-filter-btn" data-filter="kesehatan">Kesehatan &amp; Herbal</button>
-        </div>
-
-        <div class="nice-classes-grid reveal-up" id="nice-classes-grid">
-          <div class="nice-card" data-category="kosmetik">
-            <div class="nice-card-top">
-              <span class="nice-card-num">KELAS 03</span>
-              <span class="nice-card-type">BARANG</span>
-            </div>
-            <h3 class="nice-card-title">Kosmetik, Skincare &amp; Parfum</h3>
-            <p class="nice-card-desc">Sediaan kosmetik perawatan kulit (skincare), serum wajah, sabun mandi, shampo, parfum, minyak esensial, dan pasta gigi.</p>
-            <div class="nice-card-examples">Contoh: Sunscreen, Lipstik, Facial Wash, Parfum, Body Lotion.</div>
-            <button type="button" class="nice-select-btn" data-class-val="Kelas 03 (Kosmetik & Skincare)">
-              <span>Gunakan Kelas 03 untuk Cek Merek</span>
-              <span class="btn-arrow" aria-hidden="true">↑</span>
-            </button>
-          </div>
-
-          <div class="nice-card" data-category="kesehatan">
-            <div class="nice-card-top">
-              <span class="nice-card-num">KELAS 05</span>
-              <span class="nice-card-type">BARANG</span>
-            </div>
-            <h3 class="nice-card-title">Farmasi, Obat Herbal &amp; Suplemen</h3>
-            <p class="nice-card-desc">Sediaan farmasi, obat tradisional/jamu, vitamin, suplemen kesehatan, makanan bayi, dan bahan pembalut medis.</p>
-            <div class="nice-card-examples">Contoh: Kapsul Herbal, Vitamin, Suplemen Kolagen, Minyak Gosok.</div>
-            <button type="button" class="nice-select-btn" data-class-val="Kelas 05 (Farmasi & Suplemen)">
-              <span>Gunakan Kelas 05 untuk Cek Merek</span>
-              <span class="btn-arrow" aria-hidden="true">↑</span>
-            </button>
-          </div>
-
-          <div class="nice-card" data-category="teknologi">
-            <div class="nice-card-top">
-              <span class="nice-card-num">KELAS 09</span>
-              <span class="nice-card-type">BARANG</span>
-            </div>
-            <h3 class="nice-card-title">Aplikasi Mobile, Software &amp; Elektronik</h3>
-            <p class="nice-card-desc">Perangkat lunak komputer dan aplikasi mobile yang dapat diunduh, perangkat keras komputer, kacamata, dan perangkat elektronik.</p>
-            <div class="nice-card-examples">Contoh: Aplikasi Android/iOS, Software Kasir POS, Aksesoris Gadget.</div>
-            <button type="button" class="nice-select-btn" data-class-val="Kelas 09 (Aplikasi & Elektronik)">
-              <span>Gunakan Kelas 09 untuk Cek Merek</span>
-              <span class="btn-arrow" aria-hidden="true">↑</span>
-            </button>
-          </div>
-
-          <div class="nice-card" data-category="fashion">
-            <div class="nice-card-top">
-              <span class="nice-card-num">KELAS 25</span>
-              <span class="nice-card-type">BARANG</span>
-            </div>
-            <h3 class="nice-card-title">Pakaian, Sepatu &amp; Tutup Kepala</h3>
-            <p class="nice-card-desc">Segala jenis pakaian pria, wanita, dan anak-anak, kemeja, kaos, jaket, celana, busana muslim, hijab, sepatu, sandal, dan topi.</p>
-            <div class="nice-card-examples">Contoh: Brand Clothing, Hijab &amp; Gamis, Sneakers, Pakaian Olahraga.</div>
-            <button type="button" class="nice-select-btn" data-class-val="Kelas 25 (Pakaian & Fashion)">
-              <span>Gunakan Kelas 25 untuk Cek Merek</span>
-              <span class="btn-arrow" aria-hidden="true">↑</span>
-            </button>
-          </div>
-
-          <div class="nice-card" data-category="makanan">
-            <div class="nice-card-top">
-              <span class="nice-card-num">KELAS 29</span>
-              <span class="nice-card-type">BARANG</span>
-            </div>
-            <h3 class="nice-card-title">Olahan Daging, Susu &amp; Frozen Food</h3>
-            <p class="nice-card-desc">Daging, ikan, unggas olahan, makanan beku (frozen food), buah/sayur yang diawetkan, susu, keju, yoghurt, dan minyak makan.</p>
-            <div class="nice-card-examples">Contoh: Dimsum &amp; Nugget Beku, Susu Kemasan, Keripik Buah/Sayur.</div>
-            <button type="button" class="nice-select-btn" data-class-val="Kelas 29 (Olahan Pangan & Frozen Food)">
-              <span>Gunakan Kelas 29 untuk Cek Merek</span>
-              <span class="btn-arrow" aria-hidden="true">↑</span>
-            </button>
-          </div>
-
-          <div class="nice-card" data-category="makanan">
-            <div class="nice-card-top">
-              <span class="nice-card-num">KELAS 30</span>
-              <span class="nice-card-type">BARANG</span>
-            </div>
-            <h3 class="nice-card-title">Kopi, Teh, Roti, Kue &amp; Bumbu</h3>
-            <p class="nice-card-desc">Kopi, teh, kakao, coklat, gula, beras, roti, pastry, kue kering, biskuit, es krim, madu, saus, sambal kemasan, dan rempah-rempah.</p>
-            <div class="nice-card-examples">Contoh: Biji/Bubuk Kopi, Roti &amp; Kue, Sambal Botol, Snack Gandum.</div>
-            <button type="button" class="nice-select-btn" data-class-val="Kelas 30 (Kopi, Bakery & Makanan Ringan)">
-              <span>Gunakan Kelas 30 untuk Cek Merek</span>
-              <span class="btn-arrow" aria-hidden="true">↑</span>
-            </button>
-          </div>
-
-          <div class="nice-card" data-category="jasa">
-            <div class="nice-card-top">
-              <span class="nice-card-num">KELAS 35</span>
-              <span class="nice-card-type">JASA</span>
-            </div>
-            <h3 class="nice-card-title">Toko Retail, Marketplace &amp; Periklanan</h3>
-            <p class="nice-card-desc">Jasa penjualan toko ritel dan grosir (offline maupun online e-commerce), manajemen bisnis, agensi pemasaran digital, dan konsultan bisnis.</p>
-            <div class="nice-card-examples">Contoh: Toko Retail, Online Shop, Digital Agency, Manajemen Franchise.</div>
-            <button type="button" class="nice-select-btn" data-class-val="Kelas 35 (Toko Retail & Pemasaran)">
-              <span>Gunakan Kelas 35 untuk Cek Merek</span>
-              <span class="btn-arrow" aria-hidden="true">↑</span>
-            </button>
-          </div>
-
-          <div class="nice-card" data-category="teknologi">
-            <div class="nice-card-top">
-              <span class="nice-card-num">KELAS 42</span>
-              <span class="nice-card-type">JASA</span>
-            </div>
-            <h3 class="nice-card-title">Layanan IT, Software SaaS &amp; Desain</h3>
-            <p class="nice-card-desc">Penyediaan perangkat lunak berbasis cloud (SaaS), pengembangan website dan sistem IT, konsultasi teknologi, serta desain grafis/industri.</p>
-            <div class="nice-card-examples">Contoh: Platform SaaS, Software House, Studio Desain &amp; IT.</div>
-            <button type="button" class="nice-select-btn" data-class-val="Kelas 42 (Layanan IT & Software SaaS)">
-              <span>Gunakan Kelas 42 untuk Cek Merek</span>
-              <span class="btn-arrow" aria-hidden="true">↑</span>
-            </button>
-          </div>
-
-          <div class="nice-card" data-category="jasa">
-            <div class="nice-card-top">
-              <span class="nice-card-num">KELAS 43</span>
-              <span class="nice-card-type">JASA</span>
-            </div>
-            <h3 class="nice-card-title">Restoran, Coffee Shop, Kafe &amp; Hotel</h3>
-            <p class="nice-card-desc">Jasa penyediaan makanan dan minuman siap saji, operasional kedai kopi (coffee shop), restoran, katering, bar, serta akomodasi perhotelan.</p>
-            <div class="nice-card-examples">Contoh: Kedai Kopi, Restoran, Cloud Kitchen, Katering, Villa.</div>
-            <button type="button" class="nice-select-btn" data-class-val="Kelas 43 (Restoran, Kafe & Katering)">
-              <span>Gunakan Kelas 43 untuk Cek Merek</span>
-              <span class="btn-arrow" aria-hidden="true">↑</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================================================
-         TOOL C — MONITORING MEREK (TRADEMARK MONITORING)
-         ================================================== -->
-    <section class="monitoring-section" id="monitoring-merek">
-      <div class="container">
-        <div class="monitoring-header-grid reveal-up">
-          <div>
-            <span class="badge-ai-intel" style="background-color:rgba(92,212,165,0.12);border-color:#5CD4A5;color:#5CD4A5;">
-              <span class="pulse-indicator" style="background-color:#5CD4A5;box-shadow:0 0 0 3px rgba(92,212,165,0.25);"></span>
-              SISTEM PEMANTAUAN MEREK OTOMATIS
-            </span>
-            <h2 class="monitoring-title">
-              Monitoring Merek.<br />
-              Cegah Peniruan <span class="serif-italic">Sejak Dini.</span>
-            </h2>
-            <p class="monitoring-lead">
-              DJKI memberikan masa publikasi hanya <strong>2 bulan</strong> pada Berita Resmi Merek (BRM) bagi pemilik merek untuk mengajukan keberatan (oposisi). Fitur Monitoring Merek BrandConnect membantu memantau permohonan merek baru agar Anda mendapat peringatan dini jika ada pihak yang mendaftarkan merek mirip milik Anda.
-            </p>
-          </div>
-
-          <!-- Interactive Monitoring Registration / Radar Card -->
-          <div class="monitoring-radar-card">
-            <div class="radar-screen">
-              <div class="radar-sweep"></div>
-              <div class="radar-blip radar-blip-1"></div>
-              <div class="radar-blip radar-blip-2"></div>
-              <div class="radar-center-brand" id="radar-center-brand-label">MEREK ANDA // DIPANTAU</div>
-            </div>
-
-            <div class="tm-search-form" id="radar-demo-form" style="gap: 0.6rem;">
-              <div style="display:flex;gap:0.5rem;">
-                <input
-                  type="text"
-                  id="radar-brand-input"
-                  class="tm-search-input"
-                  placeholder="Masukkan nama merek yang ingin dipantau..."
-                  style="background:#1C1D1B;color:#F4F1EA;border-color:rgba(244,241,234,0.22);height:46px;font-size:0.88rem;padding-left:1rem;"
-                />
-                <button type="button" class="tm-submit-btn" id="radar-scan-btn" style="height:46px;padding:0 1.25rem;background-color:#5CD4A5;color:#1C1D1B;">
-                  Aktifkan Pantauan
-                </button>
+            <div class="bc-how-team-card">
+              <div class="bc-team-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
               </div>
-              <p style="font-family:var(--font-mono);font-size:0.72rem;color:var(--pencil-light);line-height:1.45;" id="radar-status-log">
-                <span style="color:#5CD4A5;">[INFO FITUR]:</span> Masukkan nama merek Anda untuk mendaftarkan jadwal pemantauan Berita Resmi Merek DJKI.
+              <div class="bc-team-eyebrow">DIDAMPINGI OLEH</div>
+              <h3 class="bc-team-title">Tim Ahli Merek</h3>
+              <p class="bc-team-desc">
+                Spesialis merek &amp; legal counsel berpengalaman siap mendampingi proses pendaftaran Anda.
               </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="monitoring-steps-grid reveal-up">
-          <div class="monitoring-step-card">
-            <span class="monitoring-step-num">01 // PANTAUAN BRM DJKI</span>
-            <h3 class="monitoring-step-title">Pemantauan Berkala</h3>
-            <p class="monitoring-step-desc">Memeriksa publikasi permohonan merek baru pada Berita Resmi Merek (BRM) yang diterbitkan oleh DJKI.</p>
-          </div>
-
-          <div class="monitoring-step-card">
-            <span class="monitoring-step-num">02 // DETEKSI KEMIRIPAN</span>
-            <h3 class="monitoring-step-title">Analisis Nama &amp; Kelas</h3>
-            <p class="monitoring-step-desc">Mendeteksi permohonan merek pihak lain yang memiliki kemiripan suara, penulisan, atau berada di kelas yang sama.</p>
-          </div>
-
-          <div class="monitoring-step-card">
-            <span class="monitoring-step-num">03 // NOTIFIKASI CEPAT</span>
-            <h3 class="monitoring-step-title">Laporan Peringatan Dini</h3>
-            <p class="monitoring-step-desc">Mengirimkan pemberitahuan langsung melalui WhatsApp &amp; Email sebelum masa publikasi 2 bulan berakhir.</p>
-          </div>
-
-          <div class="monitoring-step-card">
-            <span class="monitoring-step-num">04 // TINDAK LANJUT</span>
-            <h3 class="monitoring-step-title">Rekomendasi Oposisi</h3>
-            <p class="monitoring-step-desc">Pendampingan pengajuan surat keberatan (oposisi) resmi agar permohonan merek peniru ditolak oleh pemeriksa DJKI.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================================================
-         TOOL D — PROTEKSI MEREK (TRADEMARK PROTECTION)
-         ================================================== -->
-    <section class="supporting-services-section" id="proteksi-merek">
-      <div class="container">
-        <div class="section-header reveal-up">
-          <div class="header-left">
-            <p class="eyebrow">PERLINDUNGAN HUKUM MEREK</p>
-            <h2 class="section-title">
-              Proteksi Merek <span class="serif-italic">Menyeluruh.</span>
-            </h2>
-          </div>
-          <div class="header-right">
-            <p class="section-subtitle">
-              Pertahankan hak eksklusif merek Anda dari risiko penolakan pendaftaran, upaya peniruan oleh kompetitor, maupun berakhirnya masa berlaku sertifikat merek.
-            </p>
-          </div>
-        </div>
-
-        <div class="supporting-grid reveal-up">
-          <!-- Proteksi 01 -->
-          <div class="supporting-card">
-            <span class="supporting-card-eyebrow">PROTEKSI 01 // USULAN PENOLAKAN</span>
-            <h3 class="supporting-card-title">Surat Sanggahan Penolakan DJKI</h3>
-            <p class="supporting-card-desc">Merek Anda mendapat surat Usulan Penolakan dari DJKI? Tim kami menyusun argumentasi hukum dan bukti pembeda untuk mempertahankan permohonan merek Anda.</p>
-            <button type="button" class="nice-select-btn" data-open-modal="consultation" data-preselect="PROTEKSI — Sanggahan Usulan Penolakan DJKI">
-              <span>Konsultasi Sanggahan</span>
-              <span class="btn-arrow" aria-hidden="true">→</span>
-            </button>
-          </div>
-
-          <!-- Proteksi 02 -->
-          <div class="supporting-card">
-            <span class="supporting-card-eyebrow">PROTEKSI 02 // KEBERATAN MEREK</span>
-            <h3 class="supporting-card-title">Pengajuan Oposisi Merek Pihak Lain</h3>
-            <p class="supporting-card-desc">Menyusun dan mengajukan surat keberatan resmi (oposisi) terhadap permohonan merek baru di BRM DJKI yang meniru atau mendompleng ketenaran merek Anda.</p>
-            <button type="button" class="nice-select-btn" data-open-modal="consultation" data-preselect="PROTEKSI — Pengajuan Oposisi Merek">
-              <span>Ajukan Oposisi Merek</span>
-              <span class="btn-arrow" aria-hidden="true">→</span>
-            </button>
-          </div>
-
-          <!-- Proteksi 03 -->
-          <div class="supporting-card">
-            <span class="supporting-card-eyebrow">PROTEKSI 03 // MASA BERLAKU 10 TAHUN</span>
-            <h3 class="supporting-card-title">Perpanjangan Sertifikat Merek</h3>
-            <p class="supporting-card-desc">Pengurusan perpanjangan masa perlindungan merek yang telah terdaftar (setiap 10 tahun) agar hak eksklusif merek Anda tidak hangus atau diambil pihak lain.</p>
-            <button type="button" class="nice-select-btn" data-open-modal="consultation" data-preselect="PROTEKSI — Perpanjangan Sertifikat Merek">
-              <span>Perpanjang Merek</span>
-              <span class="btn-arrow" aria-hidden="true">→</span>
-            </button>
-          </div>
-
-          <!-- Proteksi 04 -->
-          <div class="supporting-card">
-            <span class="supporting-card-eyebrow">PROTEKSI 04 // PENGALIHAN &amp; LISENSI</span>
-            <h3 class="supporting-card-title">Pengalihan Hak &amp; Perjanjian Lisensi</h3>
-            <p class="supporting-card-desc">Pencatatan resmi pengalihan hak atas merek terdaftar, perubahan nama/alamat pemilik merek, serta penyusunan perjanjian lisensi penggunaan merek (royalti/kemitraan).</p>
-            <button type="button" class="nice-select-btn" data-open-modal="consultation" data-preselect="PROTEKSI — Pengalihan Hak & Lisensi Merek">
-              <span>Konsultasi Lisensi Merek</span>
-              <span class="btn-arrow" aria-hidden="true">→</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================================================
-         SECTION 4 — TRADEMARK REGISTRATION (#pendaftaran-merek)
-         Jelaskan layanan pendaftaran merek dan proses pendampingannya.
-         ================================================== -->
-    <section class="stage-section stage-protect" id="pendaftaran-merek">
-      <div class="container">
-        <div class="stage-grid">
-          <!-- Left Column: Explanation & Step-by-Step Assistance -->
-          <div class="stage-content reveal-up">
-            <div class="stage-index-header">
-              <span class="stage-giant-num" aria-hidden="true">®</span>
-              <div class="stage-eyebrow-wrap">
-                <span class="eyebrow-pill">LAYANAN PENDAFTARAN MEREK RESMI</span>
-                <p class="eyebrow">PENDAMPINGAN PENUH HINGGA SERTIFIKAT TERBIT</p>
-              </div>
-            </div>
-
-            <h2 class="stage-headline">
-              Pendaftaran Merek <br />
-              Didampingi <span class="serif-italic">Ahli Merek.</span>
-            </h2>
-
-            <p class="stage-description">
-              Di Indonesia berlaku prinsip <em>First-to-File</em>—hak atas merek diberikan kepada pihak yang mendaftarkan lebih dulu secara sah di DJKI. Kami mendampingi seluruh tahapan pendaftaran merek Anda dari penelusuran awal hingga sertifikat resmi diterbitkan.
-            </p>
-
-            <div class="service-group-label">TAHAPAN PENDAMPINGAN PENDAFTARAN MEREK:</div>
-            <ul class="service-list" aria-label="Tahapan Pendaftaran Merek">
-              <li class="service-row">
-                <a href="pendaftaran-merek.html#pendaftaran-merek" class="service-row-link">
-                  <span class="service-index">01</span>
-                  <div class="service-info">
-                    <span class="service-name">Analisis Kemiripan &amp; Pemetaan Kelas Merek</span>
-                    <span class="service-sub">Pemeriksaan menyeluruh terhadap potensi kemiripan fonetik/visual dan penentuan kelas Nice (1–45) yang paling tepat</span>
-                  </div>
-                  <span class="service-row-arrow" aria-hidden="true">→</span>
-                </a>
-              </li>
-
-              <li class="service-row">
-                <a href="pendaftaran-merek.html#konsultasi-merek" class="service-row-link">
-                  <span class="service-index">02</span>
-                  <div class="service-info">
-                    <span class="service-name">Persiapan Berkas &amp; Etiket Merek (Logo/Nama)</span>
-                    <span class="service-sub">Verifikasi kelengkapan dokumen pemohon (Perorangan, UMKM, atau Badan Usaha) dan standar etiket merek DJKI</span>
-                  </div>
-                  <span class="service-row-arrow" aria-hidden="true">→</span>
-                </a>
-              </li>
-
-              <li class="service-row">
-                <a href="pendaftaran-merek.html#pendaftaran-merek" class="service-row-link">
-                  <span class="service-index">03</span>
-                  <div class="service-name">Pengajuan Resmi &amp; Penerbitan Bukti Permohonan</div>
-                  <div class="service-info">
-                    <span class="service-sub">Pendaftaran resmi ke sistem DJKI untuk mengamankan tanggal penerimaan (Filing Date) dan Nomor Permohonan</span>
-                  </div>
-                  <span class="service-row-arrow" aria-hidden="true">→</span>
-                </a>
-              </li>
-
-              <li class="service-row">
-                <a href="pendaftaran-merek.html#perlindungan-brand" class="service-row-link">
-                  <span class="service-index">04</span>
-                  <div class="service-info">
-                    <span class="service-name">Pemantauan Masa Pengumuman &amp; Pemeriksaan Substantif</span>
-                    <span class="service-sub">Kawal proses pemeriksaan DJKI hingga Sertifikat Merek Terdaftar (®) resmi diterbitkan</span>
-                  </div>
-                  <span class="service-row-arrow" aria-hidden="true">→</span>
-                </a>
-              </li>
-            </ul>
-
-            <div class="stage-cta-wrap">
-              <button type="button" class="btn btn-primary" data-open-modal="consultation" data-preselect="PENDAFTARAN — Pendaftaran Merek Baru DJKI">
-                <span>Daftar Merek Sekarang</span>
-                <span class="btn-arrow" aria-hidden="true">→</span>
-              </button>
-              <a href="pendaftaran-merek.html" class="btn btn-secondary">
-                <span>Detail Layanan Pendaftaran Merek</span>
-                <span class="btn-arrow" aria-hidden="true">→</span>
-              </a>
-            </div>
-          </div>
-
-          <!-- Right Column: Visual Exhibit -->
-          <div class="stage-visual reveal-up" style="--reveal-delay: 0.15s;">
-            <div class="editorial-media-card">
-              <div class="media-card-top">
-                <span class="media-ref">ALUR PENDAFTARAN MEREK // DJKI</span>
-                <span class="media-status">PROTECTED ASSET ®</span>
-              </div>
-
-              <div class="media-image-wrap">
-                <img
-                  src="assets/images/stage-protect.jpg"
-                  alt="Proses pendaftaran merek dari sketsa logo hingga sertifikat merek resmi DJKI"
-                  class="stage-img"
-                  loading="lazy"
-                  width="720"
-                  height="540"
-                />
-              </div>
-
-              <div class="evolution-strip evolution-strip-light" aria-label="Tahapan Pendaftaran Merek">
-                <div class="evo-step">
-                  <span class="evo-num">01</span>
-                  <span class="evo-name">Cek Merek AI</span>
-                  <span class="evo-sub">Uji kemiripan</span>
-                </div>
-                <span class="evo-arrow" aria-hidden="true">→</span>
-                <div class="evo-step">
-                  <span class="evo-num">02</span>
-                  <span class="evo-name">Pilih Kelas</span>
-                  <span class="evo-sub">Kelas Nice 1–45</span>
-                </div>
-                <span class="evo-arrow" aria-hidden="true">→</span>
-                <div class="evo-step">
-                  <span class="evo-num">03</span>
-                  <span class="evo-name">Daftar DJKI</span>
-                  <span class="evo-sub">Bukti permohonan</span>
-                </div>
-                <span class="evo-arrow" aria-hidden="true">→</span>
-                <div class="evo-step evo-step-final">
-                  <span class="evo-num">04</span>
-                  <span class="evo-name">Sertifikat ®</span>
-                  <span class="evo-sub">Hak eksklusif 10 thn</span>
-                </div>
-              </div>
-
-              <div class="media-card-caption">
-                <p class="visual-quote">“Amankan tanggal pengajuan merek Anda hari ini.”</p>
-                <span class="visual-meta">FIRST-TO-FILE // UU MEREK NO. 20/2016</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================================================
-         HOW IT WORKS (4-STEP TRADEMARK LIFECYCLE)
-         ================================================== -->
-    <section class="how-section" id="how-it-works">
-      <div class="container">
-        <div class="how-layout">
-          <div class="how-intro reveal-up">
-            <p class="eyebrow">CARA KERJA BRANDCONNECT</p>
-            <h2 class="section-title">
-              Alur Terintegrasi <br />
-              <span class="serif-italic">AI &amp; Tim Spesialis.</span>
-            </h2>
-            <p class="section-subtitle">
-              Mulai dari pengecekan mandiri berbasis AI hingga pengajuan resmi dan pemantauan berkelanjutan yang dieksekusi langsung oleh tim in-house BrandConnect.
-            </p>
-            <div class="how-blueprint-note">
-              <div class="blueprint-note-header">
-                <span>HUMAN EXPERT HANDOVER</span>
-                <span>TERINTEGRASI CRM</span>
-              </div>
-              <p>
-                Setiap pencarian AI dan percakapan asisten dapat langsung diteruskan menjadi berkas konsultasi tanpa Anda harus mengulang penjelasan dari awal.
-              </p>
-              <button type="button" class="btn btn-primary" onclick="window.BCStore && window.BCStore.openHandoverModal()">
+              <button type="button" class="bc-hero-search-btn" style="width:100%;justify-content:center;" onclick="window.BCStore && window.BCStore.openHandoverModal()">
                 <span>Konsultasi Spesialis Merek</span>
-                <span class="btn-arrow" aria-hidden="true">→</span>
+                <span>→</span>
               </button>
             </div>
           </div>
 
-          <div class="how-steps-wrapper reveal-up" style="--reveal-delay: 0.12s;">
-            <ol class="how-steps-list">
-              <li class="how-step-item">
-                <div class="step-marker"><span class="step-dot"></span><span class="step-label">STEP 01</span></div>
-                <div class="step-card">
-                  <div class="step-card-header"><h3 class="step-title">AI TRADEMARK SEARCH &amp; CLASS MAPPING</h3><span class="step-spec">AI ENGINE</span></div>
-                  <p class="step-desc">Analisis daya pembeda nama merek, kemiripan fonetik/visual, serta rekomendasi kelas Nice (1–45) secara instan.</p>
+          <div class="bc-how-right">
+            <div class="bc-steps-list">
+              <div class="bc-step-item">
+                <div class="bc-step-indicator">
+                  <span class="bc-step-dot"></span>
+                  <span>STEP 01</span>
                 </div>
-              </li>
-              <li class="how-step-item">
-                <div class="step-marker"><span class="step-dot"></span><span class="step-label">STEP 02</span></div>
-                <div class="step-card">
-                  <div class="step-card-header"><h3 class="step-title">HUMAN EXPERT HANDOVER &amp; VERIFICATION</h3><span class="step-spec">IN-HOUSE TEAM</span></div>
-                  <p class="step-desc">Spesialis Merek &amp; Legal Counsel kami memverifikasi hasil terhadap database resmi DJKI dan menyiapkan strategi pendaftaran.</p>
+                <div class="bc-step-card">
+                  <div class="bc-step-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  </div>
+                  <div>
+                    <h3 class="bc-step-card-title">AI Trademark Search &amp; Class Mapping</h3>
+                    <p class="bc-step-card-desc">Analisis potensi kemiripan merek dan rekomendasi kelas Nice (1–45) secara instan.</p>
+                  </div>
                 </div>
-              </li>
-              <li class="how-step-item">
-                <div class="step-marker"><span class="step-dot"></span><span class="step-label">STEP 03</span></div>
-                <div class="step-card">
-                  <div class="step-card-header"><h3 class="step-title">OFFICIAL DJKI FILING &amp; CASE TRACKING</h3><span class="step-spec">CUSTOMER DASHBOARD</span></div>
-                  <p class="step-desc">Document Officer mengajukan berkas resmi ke DJKI. Anda dapat memantau status kasus dan dokumen secara transparan di Dashboard Pelanggan.</p>
+              </div>
+
+              <div class="bc-step-item">
+                <div class="bc-step-indicator">
+                  <span class="bc-step-dot"></span>
+                  <span>STEP 02</span>
                 </div>
-              </li>
-              <li class="how-step-item">
-                <div class="step-marker"><span class="step-dot step-dot-final"></span><span class="step-label">STEP 04</span></div>
-                <div class="step-card step-card-final">
-                  <div class="step-card-header"><h3 class="step-title">CONTINUOUS BRM MONITORING &amp; PROTECTION</h3><span class="step-spec">PROTECTED ®</span></div>
-                  <p class="step-desc">Merek Anda terus dipantau pada Berita Resmi Merek DJKI untuk mencegah peniruan serta menjaga masa berlaku 10 tahun.</p>
+                <div class="bc-step-card">
+                  <div class="bc-step-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                  </div>
+                  <div>
+                    <h3 class="bc-step-card-title">Human Expert Handover &amp; Verification</h3>
+                    <p class="bc-step-card-desc">Spesialis merek kami memverifikasi hasil analisis dan menyiapkan strategi pendaftaran.</p>
+                  </div>
                 </div>
-              </li>
-            </ol>
+              </div>
+
+              <div class="bc-step-item">
+                <div class="bc-step-indicator">
+                  <span class="bc-step-dot"></span>
+                  <span>STEP 03</span>
+                </div>
+                <div class="bc-step-card">
+                  <div class="bc-step-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                  </div>
+                  <div>
+                    <h3 class="bc-step-card-title">Official DJKI Filing &amp; Case Tracking</h3>
+                    <p class="bc-step-card-desc">Pengajuan resmi ke DJKI dan pemantauan status secara transparan di dashboard.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bc-step-item">
+                <div class="bc-step-indicator">
+                  <span class="bc-step-dot" style="background:var(--bc-green);"></span>
+                  <span>STEP 04</span>
+                </div>
+                <div class="bc-step-card active">
+                  <div class="bc-step-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+                  </div>
+                  <div>
+                    <h3 class="bc-step-card-title">Continuous BRM Monitoring &amp; Protection</h3>
+                    <p class="bc-step-card-desc">Monitoring publikasi merek di BRM DJKI untuk mencegah peniruan dan menjaga hak eksklusif Anda (hingga 10 tahun).</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ==================================================
-         TRADEMARK SERVICES CATALOG (ALL 8 CONFIGURABLE SERVICES)
+         IMAGE 8: KATALOG LAYANAN (SERVICES 8 CARDS)
          ================================================== -->
-    <section class="supporting-services-section" id="layanan-merek">
+    <section class="bc-services-wrap" id="layanan-merek">
       <div class="container">
-        <div class="section-header reveal-up">
-          <div class="header-left">
-            <p class="eyebrow">KATALOG 8 LAYANAN PROFESIONAL</p>
-            <h2 class="section-title">
-              Layanan Merek &amp; HAKI <br />
-              <span class="serif-italic">In-House BrandConnect.</span>
+        <div class="bc-services-header">
+          <div>
+            <div class="bc-services-eyebrow">KATALOG LAYANAN PROFESIONAL</div>
+            <h2 class="bc-services-title">
+              Layanan Merek &amp; HAKI<br />
+              <span class="serif-accent">In-House BrandConnect.</span>
             </h2>
           </div>
-          <div class="header-right">
-            <p class="section-subtitle">
-              Seluruh pesanan layanan dikelola langsung oleh tim internal BrandConnect (Trademark Specialist, Legal Counsel, dan Document Officer) serta dapat dipantau melalui Customer Dashboard.
-            </p>
-          </div>
+          <p class="bc-services-intro">
+            Seluruh layanan dikelola langsung oleh tim internal BrandConnect, mulai dari pendaftaran, perlindungan, hingga pendampingan hukum.
+          </p>
         </div>
 
-        <div class="supporting-grid reveal-up">
-          <div class="supporting-card">
-            <span class="supporting-card-eyebrow">01 // SRV-REG-01</span>
-            <h3 class="supporting-card-title">Trademark Registration</h3>
-            <p class="supporting-card-desc">Pendaftaran Merek Baru resmi ke DJKI. Mencakup analisis kemiripan, pemetaan kelas Nice, pengajuan Filing Date, hingga pemantauan sertifikat.</p>
-            <div style="font-family:var(--font-mono);font-size:0.75rem;color:var(--green);margin-bottom:0.85rem;font-weight:700;">UMKM: Rp 1.850.000 · Umum: Rp 3.200.000</div>
-            <button type="button" class="nice-select-btn" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-REG-01')"><span>Pesan Pendaftaran Merek →</span></button>
+        <div class="bc-services-grid-8">
+          <div class="bc-service-card">
+            <div>
+              <div class="bc-service-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9 16V8h4a2 2 0 1 1 0 4H9m4 0 2.5 4"></path></svg>
+              </div>
+              <h3 class="bc-service-title">Trademark Registration</h3>
+              <p class="bc-service-desc">Pendaftaran merek baru resmi ke DJKI.</p>
+            </div>
+            <a href="javascript:void(0)" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-REG-01')" class="bc-service-btn">
+              <span>Pesan Pendaftaran Merek</span>
+              <span>→</span>
+            </a>
           </div>
 
-          <div class="supporting-card">
-            <span class="supporting-card-eyebrow">02 // SRV-REN-02</span>
-            <h3 class="supporting-card-title">Trademark Renewal</h3>
-            <p class="supporting-card-desc">Perpanjangan masa perlindungan sertifikat merek terdaftar untuk 10 tahun berikutnya agar hak eksklusif brand Anda tetap aktif.</p>
-            <div style="font-family:var(--font-mono);font-size:0.75rem;color:var(--green);margin-bottom:0.85rem;font-weight:700;">UMKM: Rp 2.400.000 · Umum: Rp 3.800.000</div>
-            <button type="button" class="nice-select-btn" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-REN-02')"><span>Pesan Perpanjangan Merek →</span></button>
+          <div class="bc-service-card">
+            <div>
+              <div class="bc-service-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              </div>
+              <h3 class="bc-service-title">Trademark Renewal</h3>
+              <p class="bc-service-desc">Perpanjangan perlindungan merek (hingga 10 tahun).</p>
+            </div>
+            <a href="javascript:void(0)" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-REN-02')" class="bc-service-btn">
+              <span>Pesan Perpanjangan Merek</span>
+              <span>→</span>
+            </a>
           </div>
 
-          <div class="supporting-card">
-            <span class="supporting-card-eyebrow">03 // SRV-ASN-03</span>
-            <h3 class="supporting-card-title">Trademark Assignment</h3>
-            <p class="supporting-card-desc">Pencatatan resmi pengalihan hak atas merek terdaftar (karena jual-beli, hibah, akuisisi, atau pengalihan dari perorangan ke PT) di DJKI.</p>
-            <div style="font-family:var(--font-mono);font-size:0.75rem;color:var(--green);margin-bottom:0.85rem;font-weight:700;">Biaya Layanan: Rp 2.900.000</div>
-            <button type="button" class="nice-select-btn" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-ASN-03')"><span>Pesan Pengalihan Hak →</span></button>
+          <div class="bc-service-card">
+            <div>
+              <div class="bc-service-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m11 17 2 2a1 1 0 0 0 1.42 0l4.24-4.24a1 1 0 0 0 0-1.42l-2-2"></path><path d="m7 7 2-2a1 1 0 0 1 1.42 0l4.24 4.24a1 1 0 0 1 0 1.42l-2 2"></path></svg>
+              </div>
+              <h3 class="bc-service-title">Trademark Assignment</h3>
+              <p class="bc-service-desc">Pengalihan hak atas merek (jual-beli, hibah, akuisisi).</p>
+            </div>
+            <a href="javascript:void(0)" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-ASN-03')" class="bc-service-btn">
+              <span>Pesan Pengalihan Hak</span>
+              <span>→</span>
+            </a>
           </div>
 
-          <div class="supporting-card">
-            <span class="supporting-card-eyebrow">04 // SRV-LIC-04</span>
-            <h3 class="supporting-card-title">Trademark Licensing</h3>
-            <p class="supporting-card-desc">Penyusunan perjanjian lisensi merek (kemitraan, waralaba/franchise, atau royalti) beserta pencatatan resminya pada DJKI.</p>
-            <div style="font-family:var(--font-mono);font-size:0.75rem;color:var(--green);margin-bottom:0.85rem;font-weight:700;">Biaya Layanan: Rp 3.500.000</div>
-            <button type="button" class="nice-select-btn" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-LIC-04')"><span>Pesan Lisensi Merek →</span></button>
+          <div class="bc-service-card">
+            <div>
+              <div class="bc-service-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+              </div>
+              <h3 class="bc-service-title">Trademark Licensing</h3>
+              <p class="bc-service-desc">Penyusunan perjanjian lisensi merek (kemitraan, franchise, dll).</p>
+            </div>
+            <a href="javascript:void(0)" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-LIC-04')" class="bc-service-btn">
+              <span>Pesan Lisensi Merek</span>
+              <span>→</span>
+            </a>
           </div>
 
-          <div class="supporting-card">
-            <span class="supporting-card-eyebrow">05 // SRV-OPP-05</span>
-            <h3 class="supporting-card-title">Trademark Opposition</h3>
-            <p class="supporting-card-desc">Penyusunan dan pengajuan Surat Keberatan (Oposisi) resmi terhadap permohonan merek pihak lain yang meniru merek Anda di BRM DJKI.</p>
-            <div style="font-family:var(--font-mono);font-size:0.75rem;color:var(--green);margin-bottom:0.85rem;font-weight:700;">Biaya Layanan: Rp 4.500.000</div>
-            <button type="button" class="nice-select-btn" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-OPP-05')"><span>Ajukan Oposisi Merek →</span></button>
+          <div class="bc-service-card">
+            <div>
+              <div class="bc-service-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m14 12-8.5 8.5a2.12 2.12 0 1 1-3-3L11 9"></path><path d="M15 13 9 7l4-4 6 6h3l3 3"></path></svg>
+              </div>
+              <h3 class="bc-service-title">Trademark Opposition</h3>
+              <p class="bc-service-desc">Pengajuan Surat Keberatan (Oposisi) resmi di BRM DJKI.</p>
+            </div>
+            <a href="javascript:void(0)" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-OPP-05')" class="bc-service-btn">
+              <span>Ajukan Oposisi Merek</span>
+              <span>→</span>
+            </a>
           </div>
 
-          <div class="supporting-card">
-            <span class="supporting-card-eyebrow">06 // SRV-REF-06</span>
-            <h3 class="supporting-card-title">Response to Refusal</h3>
-            <p class="supporting-card-desc">Penyusunan surat sanggahan/tanggapan hukum resmi atas Surat Usulan Penolakan dari Pemeriksa Merek DJKI (batas waktu 30 hari kerja).</p>
-            <div style="font-family:var(--font-mono);font-size:0.75rem;color:var(--green);margin-bottom:0.85rem;font-weight:700;">UMKM: Rp 2.500.000 · Umum: Rp 3.200.000</div>
-            <button type="button" class="nice-select-btn" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-REF-06')"><span>Pesan Sanggahan Penolakan →</span></button>
+          <div class="bc-service-card">
+            <div>
+              <div class="bc-service-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+              </div>
+              <h3 class="bc-service-title">Response to Refusal</h3>
+              <p class="bc-service-desc">Penyusunan sanggahan atas Surat Usulan Penolakan DJKI.</p>
+            </div>
+            <a href="javascript:void(0)" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-REF-06')" class="bc-service-btn">
+              <span>Pesan Sanggahan Penolakan</span>
+              <span>→</span>
+            </a>
           </div>
 
-          <div class="supporting-card">
-            <span class="supporting-card-eyebrow">07 // SRV-COP-07</span>
-            <h3 class="supporting-card-title">Copyright Registration</h3>
-            <p class="supporting-card-desc">Pencatatan resmi Hak Cipta (Surat Pencatatan Ciptaan e-HakCipta) untuk karya seni logo, maskot brand, desain kemasan, dan karya kreatif.</p>
-            <div style="font-family:var(--font-mono);font-size:0.75rem;color:var(--green);margin-bottom:0.85rem;font-weight:700;">UMKM: Rp 1.250.000 · Umum: Rp 1.750.000</div>
-            <button type="button" class="nice-select-btn" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-COP-07')"><span>Pesan Hak Cipta →</span></button>
+          <div class="bc-service-card">
+            <div>
+              <div class="bc-service-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M14.83 14.83a4 4 0 1 1 0-5.66"></path></svg>
+              </div>
+              <h3 class="bc-service-title">Copyright Registration</h3>
+              <p class="bc-service-desc">Pencatatan resmi Hak Cipta (karya, logo, desain, maskot, dll).</p>
+            </div>
+            <a href="javascript:void(0)" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-COP-07')" class="bc-service-btn">
+              <span>Pesan Hak Cipta</span>
+              <span>→</span>
+            </a>
           </div>
 
-          <div class="supporting-card">
-            <span class="supporting-card-eyebrow">08 // SRV-CON-08</span>
-            <h3 class="supporting-card-title">Legal Consultation &amp; Assistance</h3>
-            <p class="supporting-card-desc">Sesi konsultasi mendalam 1-on-1 dan pendampingan hukum bersama Trademark Specialist &amp; IP Legal Counsel BrandConnect.</p>
-            <div style="font-family:var(--font-mono);font-size:0.75rem;color:var(--green);margin-bottom:0.85rem;font-weight:700;">UMKM: Rp 450.000 · Umum: Rp 750.000</div>
-            <button type="button" class="nice-select-btn" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-CON-08')"><span>Jadwalkan Konsultasi →</span></button>
+          <div class="bc-service-card">
+            <div>
+              <div class="bc-service-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path></svg>
+              </div>
+              <h3 class="bc-service-title">Legal Consultation &amp; Assistance</h3>
+              <p class="bc-service-desc">Konsultasi dan pendampingan hukum bersama Trademark Specialist &amp; IP Legal Counsel.</p>
+            </div>
+            <a href="javascript:void(0)" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-CON-08')" class="bc-service-btn">
+              <span>Jadwalkan Konsultasi</span>
+              <span>→</span>
+            </a>
           </div>
         </div>
       </div>
     </section>
-
-    <!-- ==================================================
-         SECTION 5 — PROFESSIONAL EXPERTISE & WHY BRANDCONNECT (#why-brandconnect)
-         ================================================== -->
-    <section class="why-section" id="why-brandconnect">
-      <div class="container">
-        <div class="section-header reveal-up">
-          <div class="header-left">
-            <p class="eyebrow">PROFESSIONAL EXPERTISE &amp; IN-HOUSE TEAM</p>
-            <h2 class="section-title">
-              Teknologi AI Didukung <br />
-              <span class="serif-italic">Tim Spesialis In-House.</span>
-            </h2>
-          </div>
-          <div class="header-right">
-            <p class="section-subtitle">
-              Setiap kasus merek di BrandConnect ditangani secara kolaboratif oleh Trademark Specialist, IP Legal Counsel, Document Officer, dan Customer Relations yang terintegrasi di dalam platform.
-            </p>
-          </div>
-        </div>
-
-        <div class="why-columns-wrapper reveal-up">
-          <svg class="why-sketch-line" viewBox="0 0 1200 28" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" aria-hidden="true">
-            <path
-              class="sketch-draw-path"
-              d="M 2 14 C 310 6, 610 22, 1198 12"
-              stroke="#8A8A85"
-              stroke-width="1.25"
-              filter="url(#pencil-sketch)"
-            />
-          </svg>
-
-          <div class="why-grid">
-            <article class="why-col">
-              <div class="why-num-row">
-                <span class="why-num">01</span>
-                <span class="why-coord">01 — TEKNOLOGI AI</span>
-              </div>
-              <h3 class="why-heading">ANALISIS RISIKO LEBIH CEPAT</h3>
-              <p class="why-copy">
-                Identifikasi potensi penolakan merek sejak awal. Sistem kami membantu mengevaluasi daya pembeda nama merek, kemiripan bunyi (fonetik), dan kesesuaian Pasal 20 &amp; 21 UU Merek sebelum mendaftar.
-              </p>
-              <div class="why-sketch-detail" aria-hidden="true">
-                <svg viewBox="0 0 180 24" fill="none">
-                  <path class="sketch-draw-path" d="M2 18 L 155 18" stroke="#315B4C" stroke-width="1.5" stroke-linecap="round" filter="url(#pencil-sketch)" />
-                  <circle cx="164" cy="18" r="3" fill="#315B4C" />
-                </svg>
-              </div>
-            </article>
-
-            <article class="why-col">
-              <div class="why-num-row">
-                <span class="why-num">02</span>
-                <span class="why-coord">02 — PENDAMPINGAN AHLI</span>
-              </div>
-              <h3 class="why-heading">DIKAWAL SAMPAI SERTIFIKAT</h3>
-              <p class="why-copy">
-                Anda tidak dibiarkan mengurus birokrasi sendiri. Tim ahli merek kami membantu memvalidasi kelas pendaftaran, menyiapkan berkas, hingga mengawal proses pemeriksaan substantif di DJKI.
-              </p>
-              <div class="why-sketch-detail" aria-hidden="true">
-                <svg viewBox="0 0 180 24" fill="none">
-                  <path class="sketch-draw-path" d="M2 18 C 45 6, 95 26, 164 14" stroke="#315B4C" stroke-width="1.5" stroke-linecap="round" filter="url(#pencil-sketch)" />
-                  <circle cx="82" cy="16" r="2.5" fill="#1C1D1B" />
-                  <circle cx="164" cy="14" r="3" fill="#315B4C" />
-                </svg>
-              </div>
-            </article>
-
-            <article class="why-col">
-              <div class="why-num-row">
-                <span class="why-num">03</span>
-                <span class="why-coord">03 — MONITORING &amp; PROTEKSI</span>
-              </div>
-              <h3 class="why-heading">PERLINDUNGAN BERKELANJUTAN</h3>
-              <p class="why-copy">
-                Dilengkapi layanan Monitoring Berita Resmi Merek (BRM) dan penanganan sanggahan/oposisi agar merek yang sudah Anda daftarkan tetap aman dari upaya peniruan pihak ketiga.
-              </p>
-              <div class="why-sketch-detail" aria-hidden="true">
-                <svg viewBox="0 0 180 24" fill="none">
-                  <path class="sketch-draw-path" d="M2 20 Q 90 19, 162 8" stroke="#315B4C" stroke-width="1.5" stroke-linecap="round" marker-end="url(#sketch-arrow-green)" filter="url(#pencil-sketch)" />
-                </svg>
-              </div>
-            </article>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================================================
-         SECTION 6 — FAQ (#faq)
-         Pertanyaan yang Sering Diajukan seputar Cek Merek & Pendaftaran Merek
-         ================================================== -->
-    <section class="sp-section sp-section-alt" id="faq" style="border-top: 1px solid var(--border-sketch-strong);">
-      <div class="container">
-        <div class="section-header reveal-up">
-          <div class="header-left">
-            <p class="eyebrow">PERTANYAAN UMUM (FAQ)</p>
-            <h2 class="section-title">
-              Hal Penting Seputar <br />
-              <span class="serif-italic">Pendaftaran Merek.</span>
-            </h2>
-          </div>
-          <div class="header-right">
-            <p class="section-subtitle">
-              Jawaban jelas atas pertanyaan yang paling sering diajukan pemilik bisnis sebelum mengecek dan mendaftarkan mereknya ke DJKI.
-            </p>
-          </div>
-        </div>
-
-        <div class="sp-faq-list reveal-up" style="max-width: 920px; margin: 2rem auto 0;">
-          <details class="sp-faq-item" open>
-            <summary>Mengapa saya harus melakukan Cek Merek sebelum mendaftar ke DJKI?</summary>
-            <p>
-              Biaya resmi pendaftaran merek ke DJKI tidak dapat dikembalikan apabila permohonan merek Anda ditolak karena dianggap mirip dengan merek orang lain yang sudah terdaftar lebih dulu. Dengan melakukan pengecekan awal, Anda dapat mengetahui potensi risiko kemiripan dan menyesuaikan strategi nama/logo sebelum mengajukan pendaftaran resmi.
-            </p>
-          </details>
-
-          <details class="sp-faq-item">
-            <summary>Apa yang dimaksud dengan Kelas Merek (Nice Classification 1–45)?</summary>
-            <p>
-              Perlindungan merek di Indonesia berlaku berdasarkan kategori kelas barang (Kelas 1 hingga 34) dan kelas jasa (Kelas 35 hingga 45). Misalnya, produk kopi kemasan berada di Kelas 30, sedangkan layanan kedai kopi (coffee shop) berada di Kelas 43. Gunakan fitur <strong>Cari Kelas Merek</strong> di atas untuk menemukan kelas yang sesuai dengan bisnis Anda.
-            </p>
-          </details>
-
-          <details class="sp-faq-item">
-            <summary>Berapa lama proses pendaftaran merek hingga sertifikat terbit?</summary>
-            <p>
-              Bukti Permohonan Merek (dan Tanggal Penerimaan / <em>Filing Date</em>) terbit segera setelah berkas resmi diajukan. Selanjutnya, proses pemeriksaan formalitas, masa pengumuman Berita Resmi Merek (2 bulan), hingga pemeriksaan substantif di DJKI umumnya memakan waktu sekitar 6 hingga 12 bulan sesuai antrean resmi DJKI.
-            </p>
-          </details>
-
-          <details class="sp-faq-item">
-            <summary>Apakah UMKM mendapatkan keringanan biaya pendaftaran merek?</summary>
-            <p>
-              Ya, pemerintah melalui DJKI memberikan tarif khusus PNBP UMKM bagi pemohon yang memiliki surat rekomendasi/keterangan UMKM dari dinas terkait. Tim BrandConnect siap membantu memandu persyaratan baik untuk jalur Umum maupun jalur UMKM.
-            </p>
-          </details>
-
-          <details class="sp-faq-item">
-            <summary>Apa fungsi dari fitur Monitoring Merek di BrandConnect?</summary>
-            <p>
-              Setiap minggu DJKI mengumumkan ribuan permohonan merek baru di Berita Resmi Merek (BRM). Jika ada pihak lain yang mendaftarkan merek mirip dengan merek Anda, Anda hanya memiliki waktu 2 bulan untuk mengajukan keberatan (oposisi). Fitur Monitoring Merek membantu memantau pengumuman tersebut agar Anda dapat bertindak sebelum merek peniru disetujui.
-            </p>
-          </details>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================================================
-         SECTION 7 — FINAL CTA (#cta)
-         Arahkan pengunjung untuk melakukan pengecekan atau konsultasi merek.
-         ================================================== -->
-    <section class="final-cta-section section-dark" id="cta">
-      <div class="final-cta-sketch" aria-hidden="true">
-        <svg viewBox="0 0 1200 70" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-          <path
-            class="sketch-draw-path"
-            d="M 100 62 C 420 12, 780 12, 1100 62"
-            stroke="#8A8A85"
-            stroke-opacity="0.45"
-            stroke-width="1.35"
-            stroke-dasharray="6 5"
-            filter="url(#pencil-sketch)"
-          />
-          <circle cx="600" cy="24" r="4" fill="#315B4C" />
-        </svg>
-      </div>
-
-      <div class="container final-cta-container reveal-up">
-        <p class="eyebrow eyebrow-light">MULAI PERLINDUNGAN MEREK ANDA HARI INI</p>
-
-        <h2 class="final-cta-headline">
-          Siap Melindungi Merek <br />
-          <span class="serif-italic">Kebanggaan Anda?</span>
-        </h2>
-
-        <p class="final-cta-copy">
-          Jangan tunggu sampai nama merek yang Anda bangun digunakan atau didaftarkan pihak lain. Lakukan pengecekan merek sekarang atau konsultasikan langsung bersama tim ahli merek BrandConnect.
-        </p>
-
-        <div class="final-cta-actions">
-          <a href="#cek-merek" class="btn btn-accent-light btn-lg">
-            <span>Cek Merek Sekarang</span>
-            <span class="btn-arrow" aria-hidden="true">↑</span>
-          </a>
-          <button type="button" class="btn btn-outline-light btn-lg" data-open-modal="consultation" data-preselect="PENDAFTARAN — Pendaftaran Merek Baru DJKI">
-            <span>Konsultasi Pendaftaran Merek</span>
-            <span class="btn-arrow" aria-hidden="true">→</span>
-          </button>
-        </div>
-
-        <div class="final-cta-promise">
-          <span>CEK MEREK AI</span>
-          <span class="promise-line" aria-hidden="true"></span>
-          <span>CARI KELAS MEREK</span>
-          <span class="promise-line" aria-hidden="true"></span>
-          <span>MONITORING MEREK</span>
-          <span class="promise-line" aria-hidden="true"></span>
-          <span>PROTEKSI MEREK</span>
-          <span class="promise-line" aria-hidden="true"></span>
-          <span class="promise-highlight">PENDAFTARAN MEREK ®</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================================================
-         ARCHIVED NON-TRADEMARK FEATURES (HIDDEN FROM PUBLIC VIEW, PRESERVED IN SOURCE CODE)
-         Contains: Business Establishment, Licensing, BPOM, Halal, Business Readiness Scanner
-         ================================================== -->
-    <template id="archived-non-trademark-features" hidden>
-      <!-- Preserved links and components for future re-activation:
-           - pendirian-bisnis.html (Business Establishment: PT, CV, Badan Usaha)
-           - legalitas-perizinan.html (Business Licensing: NIB, OSS RBA, Izin Operasional)
-           - sertifikasi-produk.html (Product Compliance: BPOM, Sertifikasi Halal, SNI)
-           - #journey-mapper (General Business Readiness Scanner & Assistant)
-      -->
-    </template>
 
   </main>
 

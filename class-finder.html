@@ -3,84 +3,236 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Trademark Class Finder (Nice 1–45) — BRANDCONNECT | Search Smart. Protect Better.</title>
-  <meta name="description" content="Direktori lengkap 45 Kelas Merek (Nice Classification Kelas 1–34 Barang & Kelas 35–45 Jasa) dilengkapi AI Class Recommendation Engine BrandConnect." />
+  <title>Cari Kelas Merek (Nice Classification 1–45) - BRANDCONNECT</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Crect width='36' height='36' rx='3' fill='%230D3B2E'/%3E%3Cpath d='M8 26V10h6.5c3.2 0 5.5 1.8 5.5 4.5 0 1.8-1 3.2-2.6 3.9 2.1.7 3.4 2.2 3.4 4.3 0 3-2.4 4.8-6.1 4.8H8zm3.5-9.3h2.6c1.6 0 2.6-.8 2.6-2.1s-1-2.1-2.6-2.1h-2.6v4.2zm0 6.8h2.9c1.8 0 3-.9 3-2.3 0-1.5-1.2-2.3-3-2.3h-2.9v4.6z' fill='%23FAF8F5'/%3E%3Ccircle cx='28' cy='23' r='2.5' fill='%235CD4A5'/%3E%3C/svg%3E" />
 </head>
 <body>
-  <div class="paper-grain" aria-hidden="true"></div>
-
   <header class="site-header">
     <div class="container nav-container">
       <a href="index.html" class="brand-logo" aria-label="BrandConnect Beranda">
         <img src="assets/images/brandconnect-logo.png" alt="BRANDCONNECT" class="logo-img" />
-        <span class="logo-sub">SEARCH SMART. PROTECT BETTER.</span>
       </a>
       <nav class="main-nav">
         <ul class="nav-list">
           <li><a href="trademark-checker.html" class="nav-link">Cek Merek</a></li>
-          <li><a href="class-finder.html" class="nav-link active">Cari Kelas</a></li>
-          <li><a href="monitoring.html" class="nav-link">Monitoring</a></li>
-          <li><a href="brand-protection.html" class="nav-link">Proteksi</a></li>
-          <li><a href="services.html" class="nav-link">Layanan (8)</a></li>
-          <li><a href="pendaftaran-merek.html" class="nav-link">Pendaftaran</a></li>
+          <li><a href="class-finder.html" class="nav-link active">Cari Kelas Merek</a></li>
+          <li><a href="monitoring.html" class="nav-link">Monitoring Merek</a></li>
+          <li><a href="brand-protection.html" class="nav-link">Proteksi Merek</a></li>
+          <li><a href="services.html" class="nav-link">Jasa Merek</a></li>
         </ul>
       </nav>
-      <div class="nav-actions" style="display:flex;gap:0.55rem;">
-        <a href="dashboard.html" class="nav-login-btn" style="text-decoration:none;">Dashboard Klien</a>
-        <a href="admin.html" class="nav-login-btn" style="text-decoration:none;background:var(--charcoal);color:var(--ivory);">Admin Panel</a>
+      <div class="nav-actions" style="display:flex;align-items:center;gap:0.75rem;">
+        <a href="dashboard.html" class="nav-login-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span>Login</span>
+        </a>
       </div>
     </div>
   </header>
 
   <main>
-    <section class="nice-finder-section" style="padding-top:3.5rem;">
+    <!-- IMAGE 4: CARI KELAS MEREK HERO -->
+    <section class="bc-class-hero-wrap">
       <div class="container">
-        <div class="section-header">
-          <div class="header-left">
-            <span class="badge-ai-intel"><span class="pulse-indicator"></span> AI CLASS RECOMMENDATION · KELAS 1–45</span>
-            <h1 class="section-title" style="margin-top:0.65rem;">
-              Trademark Class Finder <br /><span class="serif-italic">Seluruh 45 Kelas Nice.</span>
+        <div class="bc-class-hero-grid">
+          <div>
+            <div class="bc-hero-eyebrow">KLASIFIKASI NICE (KELAS 1–45)</div>
+            <h1 class="bc-hero-title">
+              Cari Kelas <span class="serif-accent">Merek Anda.</span>
             </h1>
-          </div>
-          <div class="header-right">
-            <p class="section-subtitle">
-              Ketik nama produk atau jasa yang Anda jual (misal: <em>kopi, skincare, aplikasi, baju, restoran, ekspedisi, klinik</em>) untuk mendapatkan rekomendasi kelas merek otomatis dari seluruh 45 kelas resmi DJKI.
+            <p class="bc-hero-desc">
+              Temukan kelas pendaftaran yang sesuai dengan produk atau layanan bisnis Anda.
             </p>
+
+            <form class="bc-hero-search-bar" id="cf-search-form" onsubmit="event.preventDefault(); window.searchClasses && window.searchClasses();">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="cf-search-input" placeholder="Ketik jenis produk atau jasa (contoh: kopi, skincare, aplikasi)..." />
+              <button type="submit" class="bc-hero-search-btn">
+                <span>Cari Kelas</span>
+                <span>→</span>
+              </button>
+            </form>
+          </div>
+
+          <div style="border-radius:18px;overflow:hidden;box-shadow:0 12px 32px rgba(13,59,46,0.06);">
+            <img src="assets/images/class-finder-books.jpg" alt="Nice Classification Books" style="width:100%;height:100%;object-fit:cover;display:block;" />
           </div>
         </div>
 
-        <div class="nice-search-bar-wrap">
-          <div class="tm-input-group">
-            <span class="tm-input-icon" aria-hidden="true">🔍</span>
-            <input type="text" id="cf-search" class="tm-search-input" placeholder="Ketik jenis barang atau jasa bisnis Anda untuk mencari dari 45 Kelas Merek..." />
-          </div>
+        <!-- Category Filters -->
+        <div class="bc-filter-pills" id="cf-filter-pills">
+          <button type="button" class="bc-filter-pill active" data-cf-cat="all">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            <span>Semua</span>
+          </button>
+          <button type="button" class="bc-filter-pill" data-cf-cat="makanan">
+            <span>☕ Makanan &amp; Minuman</span>
+          </button>
+          <button type="button" class="bc-filter-pill" data-cf-cat="fashion">
+            <span>👗 Fashion</span>
+          </button>
+          <button type="button" class="bc-filter-pill" data-cf-cat="kosmetik">
+            <span>🧴 Kosmetik</span>
+          </button>
+          <button type="button" class="bc-filter-pill" data-cf-cat="teknologi">
+            <span>💻 Teknologi</span>
+          </button>
+          <button type="button" class="bc-filter-pill" data-cf-cat="jasa">
+            <span>💼 Jasa</span>
+          </button>
         </div>
 
-        <div class="nice-filter-pills">
-          <button type="button" class="nice-filter-btn active" data-cf-filter="all">Semua 45 Kelas</button>
-          <button type="button" class="nice-filter-btn" data-cf-filter="BARANG">Kelas Barang (01–34)</button>
-          <button type="button" class="nice-filter-btn" data-cf-filter="JASA">Kelas Jasa (35–45)</button>
-          <button type="button" class="nice-filter-btn" data-cf-filter="makanan">Makanan &amp; Minuman</button>
-          <button type="button" class="nice-filter-btn" data-cf-filter="kosmetik">Kosmetik &amp; Skincare</button>
-          <button type="button" class="nice-filter-btn" data-cf-filter="fashion">Fashion &amp; Tekstil</button>
-          <button type="button" class="nice-filter-btn" data-cf-filter="teknologi">Teknologi &amp; IT</button>
-          <button type="button" class="nice-filter-btn" data-cf-filter="kesehatan">Kesehatan &amp; Medis</button>
+        <!-- 9 Most Relevant Classes Section -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.75rem;">
+          <h2 style="font-family:var(--font-heading);font-size:1.85rem;font-weight:800;color:var(--bc-text-dark);">
+            Kelas yang <span class="serif-accent">Paling Relevan</span>
+          </h2>
+          <a href="javascript:void(0)" id="show-all-45-toggle" style="font-family:var(--font-heading);font-size:0.88rem;font-weight:700;color:var(--bc-green);text-decoration:none;display:inline-flex;align-items:center;gap:0.35rem;">
+            <span>Lihat Semua Kelas (1–45)</span>
+            <span>→</span>
+          </a>
         </div>
 
-        <div class="nice-classes-grid" id="cf-all-classes-grid"></div>
+        <div class="bc-classes-grid-9" id="cf-classes-grid">
+          <!-- 9 Default High-Demand Classes (matching Image 4) -->
+          <a href="trademark-checker.html?prefillClass=03" class="bc-class-card" data-cat="kosmetik">
+            <div class="bc-class-left">
+              <div class="bc-class-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2V2z"></path></svg>
+              </div>
+              <div>
+                <div class="bc-class-num">KELAS 03</div>
+                <div class="bc-class-name">Kosmetik, Skincare &amp; Parfum</div>
+              </div>
+            </div>
+            <div class="bc-class-arrow-btn">→</div>
+          </a>
+
+          <a href="trademark-checker.html?prefillClass=05" class="bc-class-card" data-cat="kesehatan">
+            <div class="bc-class-left">
+              <div class="bc-class-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path><path d="m8.5 8.5 7 7"></path></svg>
+              </div>
+              <div>
+                <div class="bc-class-num">KELAS 05</div>
+                <div class="bc-class-name">Farmasi &amp; Suplemen</div>
+              </div>
+            </div>
+            <div class="bc-class-arrow-btn">→</div>
+          </a>
+
+          <a href="trademark-checker.html?prefillClass=09" class="bc-class-card" data-cat="teknologi">
+            <div class="bc-class-left">
+              <div class="bc-class-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+              </div>
+              <div>
+                <div class="bc-class-num">KELAS 09</div>
+                <div class="bc-class-name">Aplikasi &amp; Elektronik</div>
+              </div>
+            </div>
+            <div class="bc-class-arrow-btn">→</div>
+          </a>
+
+          <a href="trademark-checker.html?prefillClass=25" class="bc-class-card" data-cat="fashion">
+            <div class="bc-class-left">
+              <div class="bc-class-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path></svg>
+              </div>
+              <div>
+                <div class="bc-class-num">KELAS 25</div>
+                <div class="bc-class-name">Pakaian &amp; Alas Kaki</div>
+              </div>
+            </div>
+            <div class="bc-class-arrow-btn">→</div>
+          </a>
+
+          <a href="trademark-checker.html?prefillClass=29" class="bc-class-card" data-cat="makanan">
+            <div class="bc-class-left">
+              <div class="bc-class-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 17h20v2H2z"></path><path d="M12 4a8 8 0 0 0-8 8h16a8 8 0 0 0-8-8z"></path></svg>
+              </div>
+              <div>
+                <div class="bc-class-num">KELAS 29</div>
+                <div class="bc-class-name">Olahan Daging &amp; Susu</div>
+              </div>
+            </div>
+            <div class="bc-class-arrow-btn">→</div>
+          </a>
+
+          <a href="trademark-checker.html?prefillClass=30" class="bc-class-card" data-cat="makanan">
+            <div class="bc-class-left">
+              <div class="bc-class-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8h1a4 4 0 1 1 0 8h-1"></path><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg>
+              </div>
+              <div>
+                <div class="bc-class-num">KELAS 30</div>
+                <div class="bc-class-name">Kopi, Teh, Roti &amp; Bumbu</div>
+              </div>
+            </div>
+            <div class="bc-class-arrow-btn">→</div>
+          </a>
+
+          <a href="trademark-checker.html?prefillClass=35" class="bc-class-card" data-cat="jasa">
+            <div class="bc-class-left">
+              <div class="bc-class-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+              </div>
+              <div>
+                <div class="bc-class-num">KELAS 35</div>
+                <div class="bc-class-name">Retail &amp; Marketplace</div>
+              </div>
+            </div>
+            <div class="bc-class-arrow-btn">→</div>
+          </a>
+
+          <a href="trademark-checker.html?prefillClass=42" class="bc-class-card" data-cat="teknologi">
+            <div class="bc-class-left">
+              <div class="bc-class-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+              </div>
+              <div>
+                <div class="bc-class-num">KELAS 42</div>
+                <div class="bc-class-name">Layanan IT &amp; Software</div>
+              </div>
+            </div>
+            <div class="bc-class-arrow-btn">→</div>
+          </a>
+
+          <a href="trademark-checker.html?prefillClass=43" class="bc-class-card" data-cat="jasa">
+            <div class="bc-class-left">
+              <div class="bc-class-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2v20"></path><path d="M18 8H6a4 4 0 0 1-4-4V2"></path><path d="M6 2v20"></path></svg>
+              </div>
+              <div>
+                <div class="bc-class-num">KELAS 43</div>
+                <div class="bc-class-name">Restoran, Kafe &amp; Hotel</div>
+              </div>
+            </div>
+            <div class="bc-class-arrow-btn">→</div>
+          </a>
+        </div>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="container">
+      <div class="footer-top-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-logo">
+            <img src="assets/images/brandconnect-logo-white.png" alt="BRANDCONNECT" class="footer-logo-img" />
+          </a>
+          <p class="footer-tagline">AI-POWERED TRADEMARK SEARCH &amp; BRAND PROTECTION</p>
+        </div>
+      </div>
       <div class="footer-bottom">
-        <p class="copyright">© 2026 BRANDCONNECT. All Rights Reserved. · <a href="index.html">Kembali ke Homepage</a></p>
-        <p class="footer-concept-note">NICE CLASSIFICATION 1–45 // BRANDCONNECT</p>
+        <p class="copyright">© 2026 BRANDCONNECT. All Rights Reserved. · <a href="index.html">Homepage</a></p>
+        <p class="footer-concept-note">KLASIFIKASI NICE 1-45 // BRANDCONNECT</p>
       </div>
     </div>
   </footer>
@@ -88,50 +240,33 @@
   <script src="js/platform-store.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const grid = document.getElementById('cf-all-classes-grid');
-      const searchInput = document.getElementById('cf-search');
-      const filterBtns = document.querySelectorAll('[data-cf-filter]');
-      let activeFilter = 'all';
+      const pills = document.querySelectorAll('#cf-filter-pills button');
+      const cards = document.querySelectorAll('#cf-classes-grid .bc-class-card');
+      const searchInput = document.getElementById('cf-search-input');
 
-      const renderGrid = () => {
+      function filterCards() {
+        const activeCat = document.querySelector('#cf-filter-pills button.active')?.dataset.cfCat || 'all';
         const q = (searchInput.value || '').toLowerCase().trim();
-        const classes = window.BCStore.NICE_CLASSES_DB.filter((c) => {
-          const matchCat = activeFilter === 'all' || c.type === activeFilter || c.cat === activeFilter;
-          const matchQ = !q ||
-            c.num.includes(q) ||
-            c.title.toLowerCase().includes(q) ||
-            c.keywords.some((k) => k.includes(q));
-          return matchCat && matchQ;
+
+        cards.forEach(card => {
+          const cardCat = card.dataset.cat;
+          const text = card.textContent.toLowerCase();
+          const matchCat = activeCat === 'all' || cardCat === activeCat;
+          const matchQ = !q || text.includes(q);
+
+          card.style.display = (matchCat && matchQ) ? 'flex' : 'none';
         });
+      }
 
-        grid.innerHTML = classes.map((c) => `
-          <div class="nice-card">
-            <div class="nice-card-top">
-              <span class="nice-card-num">KELAS ${c.num}</span>
-              <span class="nice-card-type">${c.type}</span>
-            </div>
-            <h3 class="nice-card-title">${c.title}</h3>
-            <div class="nice-card-examples">Kata Kunci: ${c.keywords.slice(0, 6).join(', ')}</div>
-            <div style="display:flex;gap:0.5rem;margin-top:auto;">
-              <button type="button" class="nice-select-btn" onclick="window.BCStore.openOrderModal('SRV-REG-01', '', 'Kelas ${c.num} (${c.title})')">
-                <span>Daftar di Kelas ${c.num} →</span>
-              </button>
-            </div>
-          </div>
-        `).join('');
-      };
-
-      searchInput.addEventListener('input', renderGrid);
-      filterBtns.forEach((btn) => {
-        btn.addEventListener('click', () => {
-          filterBtns.forEach((b) => b.classList.remove('active'));
-          btn.classList.add('active');
-          activeFilter = btn.getAttribute('data-cf-filter');
-          renderGrid();
+      pills.forEach(p => {
+        p.addEventListener('click', () => {
+          pills.forEach(b => b.classList.remove('active'));
+          p.classList.add('active');
+          filterCards();
         });
       });
 
-      renderGrid();
+      searchInput.addEventListener('input', filterCards);
     });
   </script>
 </body>

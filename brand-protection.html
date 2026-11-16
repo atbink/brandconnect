@@ -3,97 +3,202 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Brand Protection &amp; Legal Defense — BRANDCONNECT | Search Smart. Protect Better.</title>
-  <meta name="description" content="Layanan perlindungan merek komprehensif: Sanggahan Usulan Penolakan DJKI, Pengajuan Oposisi Merek BRM, Perpanjangan 10 Tahun, Pengalihan Hak, dan Perjanjian Lisensi." />
+  <title>Monitoring Merek & Proteksi Merek - BRANDCONNECT</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Crect width='36' height='36' rx='3' fill='%230D3B2E'/%3E%3Cpath d='M8 26V10h6.5c3.2 0 5.5 1.8 5.5 4.5 0 1.8-1 3.2-2.6 3.9 2.1.7 3.4 2.2 3.4 4.3 0 3-2.4 4.8-6.1 4.8H8zm3.5-9.3h2.6c1.6 0 2.6-.8 2.6-2.1s-1-2.1-2.6-2.1h-2.6v4.2zm0 6.8h2.9c1.8 0 3-.9 3-2.3 0-1.5-1.2-2.3-3-2.3h-2.9v4.6z' fill='%23FAF8F5'/%3E%3Ccircle cx='28' cy='23' r='2.5' fill='%235CD4A5'/%3E%3C/svg%3E" />
 </head>
 <body>
-  <div class="paper-grain" aria-hidden="true"></div>
-
   <header class="site-header">
     <div class="container nav-container">
       <a href="index.html" class="brand-logo" aria-label="BrandConnect Beranda">
         <img src="assets/images/brandconnect-logo.png" alt="BRANDCONNECT" class="logo-img" />
-        <span class="logo-sub">SEARCH SMART. PROTECT BETTER.</span>
       </a>
       <nav class="main-nav">
         <ul class="nav-list">
           <li><a href="trademark-checker.html" class="nav-link">Cek Merek</a></li>
-          <li><a href="class-finder.html" class="nav-link">Cari Kelas</a></li>
-          <li><a href="monitoring.html" class="nav-link">Monitoring</a></li>
-          <li><a href="brand-protection.html" class="nav-link active">Proteksi</a></li>
-          <li><a href="services.html" class="nav-link">Layanan (8)</a></li>
-          <li><a href="pendaftaran-merek.html" class="nav-link">Pendaftaran</a></li>
+          <li><a href="class-finder.html" class="nav-link">Cari Kelas Merek</a></li>
+          <li><a href="monitoring.html" class="nav-link">Monitoring Merek</a></li>
+          <li><a href="brand-protection.html" class="nav-link active">Proteksi Merek</a></li>
+          <li><a href="services.html" class="nav-link">Jasa Merek</a></li>
         </ul>
       </nav>
-      <div class="nav-actions" style="display:flex;gap:0.55rem;">
-        <a href="dashboard.html" class="nav-login-btn" style="text-decoration:none;">Dashboard Klien</a>
-        <a href="admin.html" class="nav-login-btn" style="text-decoration:none;background:var(--charcoal);color:var(--ivory);">Admin Panel</a>
+      <div class="nav-actions" style="display:flex;align-items:center;gap:0.75rem;">
+        <a href="dashboard.html" class="nav-login-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span>Login</span>
+        </a>
       </div>
     </div>
   </header>
 
   <main>
-    <section class="supporting-services-section" style="padding-top:4rem;">
-      <div class="container">
-        <div class="section-header">
-          <div class="header-left">
-            <span class="badge-ai-intel"><span class="pulse-indicator"></span> TRADEMARK DEFENSE &amp; PORTFOLIO PROTECTION</span>
-            <h1 class="section-title" style="margin-top:0.65rem;">
-              Brand Protection &amp; <br /><span class="serif-italic">Pendampingan Hukum Merek.</span>
+    <div class="container">
+      <!-- IMAGE 5 TOP: MONITORING HERO DARK EMERALD -->
+      <section class="bc-monitoring-dark-hero">
+        <div class="bc-monitoring-dark-grid">
+          <div>
+            <div class="bc-hero-eyebrow">MONITORING MEREK</div>
+            <h1 class="bc-hero-title">
+              Monitoring Merek.<br />
+              Cegah Peniruan <span class="serif-accent">Sejak Dini.</span>
             </h1>
-          </div>
-          <div class="header-right">
-            <p class="section-subtitle">
-              Ditangani langsung oleh Tim In-House Legal Counsel dan Trademark Specialist BrandConnect untuk mempertahankan hak atas merek Anda dari penolakan DJKI maupun pelanggaran pihak ketiga.
+            <p class="bc-hero-desc">
+              Pantau merek Anda di DJKI dan dapatkan notifikasi jika ada permohonan baru yang berpotensi mirip.
             </p>
+
+            <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+              <a href="javascript:void(0)" onclick="window.BCStore && window.BCStore.openHandoverModal()" class="bc-btn-white-pill">
+                <span>🔔 Mulai Monitoring</span>
+              </a>
+              <a href="#cara-monitoring" class="bc-btn-outline-pill">
+                <span>▷ Lihat Caranya</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="bc-monitoring-mockup-wrap">
+            <img src="assets/images/monitoring-mockup.jpg" alt="BrandConnect Live Trademark Monitoring Mockup" />
           </div>
         </div>
 
-        <div class="supporting-grid">
-          <div class="supporting-card">
-            <span class="supporting-card-eyebrow">DEFENSE 01 // PASAL 24 UU MEREK</span>
-            <h3 class="supporting-card-title">Response to Trademark Refusal (Sanggahan Penolakan)</h3>
-            <p class="supporting-card-desc">Menyusun argumentasi hukum pembeda fonetik, visual, dan bukti penggunaan nyata apabila permohonan merek Anda menerima Surat Usulan Penolakan dari Pemeriksa DJKI (batas 30 hari kerja).</p>
-            <button type="button" class="nice-select-btn" onclick="window.BCStore.openOrderModal('SRV-REF-06')"><span>Pesan Layanan Sanggahan →</span></button>
+        <!-- 4 Feature Points Bar (Image 5 Center) -->
+        <div class="bc-monitoring-points-bar" id="cara-monitoring">
+          <div class="bc-point-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <div>
+              <div class="bc-point-title">Notifikasi Otomatis</div>
+              <div class="bc-point-desc">Info terbaru langsung ke email/WhatsApp.</div>
+            </div>
           </div>
 
-          <div class="supporting-card">
-            <span class="supporting-card-eyebrow">DEFENSE 02 // PASAL 16 UU MEREK</span>
-            <h3 class="supporting-card-title">Trademark Opposition (Oposisi Merek BRM)</h3>
-            <p class="supporting-card-desc">Mengajukan surat keberatan resmi kepada DJKI untuk menggugurkan permohonan merek pihak lain yang meniru merek Anda selama masa pengumuman 2 bulan di Berita Resmi Merek.</p>
-            <button type="button" class="nice-select-btn" onclick="window.BCStore.openOrderModal('SRV-OPP-05')"><span>Ajukan Oposisi Merek →</span></button>
+          <div class="bc-point-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+            <div>
+              <div class="bc-point-title">Pantau Status Merek</div>
+              <div class="bc-point-desc">Ikuti perkembangan permohonan di DJKI.</div>
+            </div>
           </div>
 
-          <div class="supporting-card">
-            <span class="supporting-card-eyebrow">PORTFOLIO 03 // PASAL 35 UU MEREK</span>
-            <h3 class="supporting-card-title">Trademark Renewal (Perpanjangan 10 Tahun)</h3>
-            <p class="supporting-card-desc">Memperpanjang masa perlindungan sertifikat merek terdaftar untuk 10 tahun berikutnya agar hak eksklusif merek kebanggaan Anda tidak berakhir atau diambil kompetitor.</p>
-            <button type="button" class="nice-select-btn" onclick="window.BCStore.openOrderModal('SRV-REN-02')"><span>Perpanjang Sertifikat Merek →</span></button>
+          <div class="bc-point-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+            <div>
+              <div class="bc-point-title">Deteksi Merek Serupa</div>
+              <div class="bc-point-desc">Identifikasi potensi peniruan lebih awal.</div>
+            </div>
           </div>
 
-          <div class="supporting-card">
-            <span class="supporting-card-eyebrow">RIGHTS 04 // PASAL 41 &amp; 42 UU MEREK</span>
-            <h3 class="supporting-card-title">Assignment &amp; Licensing (Pengalihan &amp; Lisensi)</h3>
-            <p class="supporting-card-desc">Pencatatan resmi pengalihan kepemilikan merek (Assignment) serta penyusunan dan pencatatan kontrak Lisensi Merek untuk ekspansi kemitraan atau waralaba.</p>
-            <button type="button" class="nice-select-btn" onclick="window.BCStore.openOrderModal('SRV-LIC-04')"><span>Pesan Pengalihan / Lisensi →</span></button>
+          <div class="bc-point-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            <div>
+              <div class="bc-point-title">Tindak Lanjut Profesional</div>
+              <div class="bc-point-desc">Didampingi tim ahli BrandConnect.</div>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <!-- IMAGE 5 BOTTOM: BRAND PROTECTION SECTION -->
+      <section style="padding: 2.5rem 0 5rem;">
+        <div class="bc-features-header">
+          <div>
+            <div class="bc-features-eyebrow">BRAND PROTECTION</div>
+            <h2 class="bc-features-title">
+              Proteksi Merek <span class="serif-accent">Menyeluruh.</span>
+            </h2>
+          </div>
+          <p class="bc-features-intro">
+            Lindungi merek Anda dari peniruan, penggunaan tanpa izin, dan sengketa dengan dukungan tim profesional.
+          </p>
+        </div>
+
+        <div class="bc-features-grid-4">
+          <div class="bc-feature-card">
+            <div>
+              <div class="bc-card-icon-wrap" style="margin-bottom:1.25rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+              </div>
+              <h3 class="bc-feature-card-title">Cegah Pelanggaran Merek</h3>
+              <p class="bc-feature-card-desc">
+                Identifikasi dan tangani potensi pelanggaran sejak dini.
+              </p>
+            </div>
+            <a href="javascript:void(0)" onclick="window.BCStore && window.BCStore.openHandoverModal()" class="bc-feature-card-action">
+              <span>Konsultasi</span>
+              <span>→</span>
+            </a>
+          </div>
+
+          <div class="bc-feature-card">
+            <div>
+              <div class="bc-card-icon-wrap" style="margin-bottom:1.25rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m14 12-8.5 8.5a2.12 2.12 0 1 1-3-3L11 9"></path><path d="M15 13 9 7l4-4 6 6h3l3 3"></path></svg>
+              </div>
+              <h3 class="bc-feature-card-title">Oposisi &amp; Sanggahan</h3>
+              <p class="bc-feature-card-desc">
+                Dampingi proses oposisi atau tanggapan atas penolakan.
+              </p>
+            </div>
+            <a href="services.html" class="bc-feature-card-action">
+              <span>Ajukan Oposisi</span>
+              <span>→</span>
+            </a>
+          </div>
+
+          <div class="bc-feature-card">
+            <div>
+              <div class="bc-card-icon-wrap" style="margin-bottom:1.25rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+              </div>
+              <h3 class="bc-feature-card-title">Lisensi &amp; Pengalihan Merek</h3>
+              <p class="bc-feature-card-desc">
+                Pengurusan perjanjian lisensi atau pengalihan kepemilikan.
+              </p>
+            </div>
+            <a href="services.html" class="bc-feature-card-action">
+              <span>Lihat Layanan</span>
+              <span>→</span>
+            </a>
+          </div>
+
+          <div class="bc-feature-card">
+            <div>
+              <div class="bc-card-icon-wrap" style="margin-bottom:1.25rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path></svg>
+              </div>
+              <h3 class="bc-feature-card-title">Pendampingan Hukum</h3>
+              <p class="bc-feature-card-desc">
+                Konsultasi dan bantuan hukum atas sengketa merek.
+              </p>
+            </div>
+            <a href="javascript:void(0)" onclick="window.BCStore && window.BCStore.openHandoverModal()" class="bc-feature-card-action">
+              <span>Hubungi Tim Legal</span>
+              <span>→</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
 
   <footer class="site-footer">
     <div class="container">
+      <div class="footer-top-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-logo">
+            <img src="assets/images/brandconnect-logo-white.png" alt="BRANDCONNECT" class="footer-logo-img" />
+          </a>
+          <p class="footer-tagline">AI-POWERED TRADEMARK SEARCH &amp; BRAND PROTECTION</p>
+        </div>
+      </div>
       <div class="footer-bottom">
-        <p class="copyright">© 2026 BRANDCONNECT. All Rights Reserved. · <a href="index.html">Kembali ke Homepage</a></p>
-        <p class="footer-concept-note">BRAND PROTECTION // BRANDCONNECT</p>
+        <p class="copyright">© 2026 BRANDCONNECT. All Rights Reserved. · <a href="index.html">Homepage</a></p>
       </div>
     </div>
   </footer>
+
   <script src="js/platform-store.js"></script>
 </body>
 </html>

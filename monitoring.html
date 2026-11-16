@@ -3,140 +3,202 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Trademark Monitoring &amp; BRM Watchlist — BRANDCONNECT | Search Smart. Protect Better.</title>
-  <meta name="description" content="Pantau pengumuman Berita Resmi Merek (BRM) DJKI secara otomatis. Dapatkan peringatan dini sebelum masa oposisi 2 bulan berakhir." />
+  <title>Monitoring Merek & Proteksi Merek - BRANDCONNECT</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Crect width='36' height='36' rx='3' fill='%230D3B2E'/%3E%3Cpath d='M8 26V10h6.5c3.2 0 5.5 1.8 5.5 4.5 0 1.8-1 3.2-2.6 3.9 2.1.7 3.4 2.2 3.4 4.3 0 3-2.4 4.8-6.1 4.8H8zm3.5-9.3h2.6c1.6 0 2.6-.8 2.6-2.1s-1-2.1-2.6-2.1h-2.6v4.2zm0 6.8h2.9c1.8 0 3-.9 3-2.3 0-1.5-1.2-2.3-3-2.3h-2.9v4.6z' fill='%23FAF8F5'/%3E%3Ccircle cx='28' cy='23' r='2.5' fill='%235CD4A5'/%3E%3C/svg%3E" />
 </head>
 <body>
-  <div class="paper-grain" aria-hidden="true"></div>
-
   <header class="site-header">
     <div class="container nav-container">
       <a href="index.html" class="brand-logo" aria-label="BrandConnect Beranda">
         <img src="assets/images/brandconnect-logo.png" alt="BRANDCONNECT" class="logo-img" />
-        <span class="logo-sub">SEARCH SMART. PROTECT BETTER.</span>
       </a>
       <nav class="main-nav">
         <ul class="nav-list">
           <li><a href="trademark-checker.html" class="nav-link">Cek Merek</a></li>
-          <li><a href="class-finder.html" class="nav-link">Cari Kelas</a></li>
-          <li><a href="monitoring.html" class="nav-link active">Monitoring</a></li>
-          <li><a href="brand-protection.html" class="nav-link">Proteksi</a></li>
-          <li><a href="services.html" class="nav-link">Layanan (8)</a></li>
-          <li><a href="pendaftaran-merek.html" class="nav-link">Pendaftaran</a></li>
+          <li><a href="class-finder.html" class="nav-link">Cari Kelas Merek</a></li>
+          <li><a href="monitoring.html" class="nav-link active">Monitoring Merek</a></li>
+          <li><a href="brand-protection.html" class="nav-link">Proteksi Merek</a></li>
+          <li><a href="services.html" class="nav-link">Jasa Merek</a></li>
         </ul>
       </nav>
-      <div class="nav-actions" style="display:flex;gap:0.55rem;">
-        <a href="dashboard.html" class="nav-login-btn" style="text-decoration:none;">Dashboard Klien</a>
-        <a href="admin.html" class="nav-login-btn" style="text-decoration:none;background:var(--charcoal);color:var(--ivory);">Admin Panel</a>
+      <div class="nav-actions" style="display:flex;align-items:center;gap:0.75rem;">
+        <a href="dashboard.html" class="nav-login-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span>Login</span>
+        </a>
       </div>
     </div>
   </header>
 
   <main>
-    <section class="monitoring-section" style="padding-top:4rem;">
-      <div class="container">
-        <div class="monitoring-header-grid">
+    <div class="container">
+      <!-- IMAGE 5 TOP: MONITORING HERO DARK EMERALD -->
+      <section class="bc-monitoring-dark-hero">
+        <div class="bc-monitoring-dark-grid">
           <div>
-            <span class="badge-ai-intel" style="background-color:rgba(92,212,165,0.12);border-color:#5CD4A5;color:#5CD4A5;">
-              <span class="pulse-indicator" style="background-color:#5CD4A5;"></span>
-              BRM DJKI SURVEILLANCE &amp; WATCHLIST
-            </span>
-            <h1 class="monitoring-title">
-              Trademark Monitoring.<br />
-              Jaga Hak Eksklusif <span class="serif-italic">Merek Anda.</span>
+            <div class="bc-hero-eyebrow">MONITORING MEREK</div>
+            <h1 class="bc-hero-title">
+              Monitoring Merek.<br />
+              Cegah Peniruan <span class="serif-accent">Sejak Dini.</span>
             </h1>
-            <p class="monitoring-lead">
-              Berdasarkan Pasal 14 &amp; Pasal 16 UU No. 20 Tahun 2016, setiap permohonan merek baru diumumkan dalam Berita Resmi Merek (BRM) selama <strong>2 bulan</strong>. Daftarkan merek Anda ke dalam Watchlist BrandConnect untuk menerima peringatan dini apabila ada pihak lain yang mengajukan merek serupa.
+            <p class="bc-hero-desc">
+              Pantau merek Anda di DJKI dan dapatkan notifikasi jika ada permohonan baru yang berpotensi mirip.
             </p>
+
+            <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+              <a href="javascript:void(0)" onclick="window.BCStore && window.BCStore.openHandoverModal()" class="bc-btn-white-pill">
+                <span>🔔 Mulai Monitoring</span>
+              </a>
+              <a href="#cara-monitoring" class="bc-btn-outline-pill">
+                <span>▷ Lihat Caranya</span>
+              </a>
+            </div>
           </div>
 
-          <div class="monitoring-radar-card">
-            <h3 style="font-family:var(--font-heading);font-size:1.15rem;color:var(--ivory);margin-bottom:0.85rem;">Tambah Merek ke Watchlist Monitoring</h3>
-            <form id="mon-add-form" style="display:flex;flex-direction:column;gap:0.75rem;">
-              <input type="text" id="mon-brand" class="tm-search-input" style="padding-left:1rem;height:46px;" placeholder="Nama Merek Anda (cth: ZENOVA BOTANICA)" required />
-              <input type="text" id="mon-class" class="tm-search-input" style="padding-left:1rem;height:46px;" placeholder="Kelas yang Dipantau (cth: Kelas 03 & Kelas 35)" required />
-              <input type="text" id="mon-tokens" class="tm-search-input" style="padding-left:1rem;height:46px;" placeholder="Kata Kunci Fonetik Pantauan (cth: ZENOVA, ZENNOVA)" required />
-              <button type="submit" class="tm-submit-btn" style="background:#5CD4A5;color:#1C1D1B;height:48px;">
-                <span>+ Aktifkan Watchlist Monitoring</span>
-              </button>
-            </form>
+          <div class="bc-monitoring-mockup-wrap">
+            <img src="assets/images/monitoring-mockup.jpg" alt="BrandConnect Live Trademark Monitoring Mockup" />
           </div>
         </div>
 
-        <!-- Active Watchlist Table -->
-        <div style="background:var(--charcoal-elevated);border:1px solid rgba(244,241,234,0.16);border-radius:6px;padding:1.75rem;position:relative;z-index:2;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
-            <h2 style="font-family:var(--font-heading);font-size:1.25rem;color:var(--ivory);">Daftar Merek yang Sedang Dipantau (Active Watchlist)</h2>
-            <span style="font-family:var(--font-mono);font-size:0.72rem;color:#5CD4A5;">TERINTEGRASI CUSTOMER DASHBOARD &amp; ADMIN PANEL</span>
+        <!-- 4 Feature Points Bar (Image 5 Center) -->
+        <div class="bc-monitoring-points-bar" id="cara-monitoring">
+          <div class="bc-point-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <div>
+              <div class="bc-point-title">Notifikasi Otomatis</div>
+              <div class="bc-point-desc">Info terbaru langsung ke email/WhatsApp.</div>
+            </div>
           </div>
-          <div id="mon-list-container" style="display:flex;flex-direction:column;gap:0.85rem;"></div>
+
+          <div class="bc-point-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+            <div>
+              <div class="bc-point-title">Pantau Status Merek</div>
+              <div class="bc-point-desc">Ikuti perkembangan permohonan di DJKI.</div>
+            </div>
+          </div>
+
+          <div class="bc-point-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+            <div>
+              <div class="bc-point-title">Deteksi Merek Serupa</div>
+              <div class="bc-point-desc">Identifikasi potensi peniruan lebih awal.</div>
+            </div>
+          </div>
+
+          <div class="bc-point-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            <div>
+              <div class="bc-point-title">Tindak Lanjut Profesional</div>
+              <div class="bc-point-desc">Didampingi tim ahli BrandConnect.</div>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <!-- IMAGE 5 BOTTOM: BRAND PROTECTION SECTION -->
+      <section style="padding: 2.5rem 0 5rem;">
+        <div class="bc-features-header">
+          <div>
+            <div class="bc-features-eyebrow">BRAND PROTECTION</div>
+            <h2 class="bc-features-title">
+              Proteksi Merek <span class="serif-accent">Menyeluruh.</span>
+            </h2>
+          </div>
+          <p class="bc-features-intro">
+            Lindungi merek Anda dari peniruan, penggunaan tanpa izin, dan sengketa dengan dukungan tim profesional.
+          </p>
+        </div>
+
+        <div class="bc-features-grid-4">
+          <div class="bc-feature-card">
+            <div>
+              <div class="bc-card-icon-wrap" style="margin-bottom:1.25rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+              </div>
+              <h3 class="bc-feature-card-title">Cegah Pelanggaran Merek</h3>
+              <p class="bc-feature-card-desc">
+                Identifikasi dan tangani potensi pelanggaran sejak dini.
+              </p>
+            </div>
+            <a href="javascript:void(0)" onclick="window.BCStore && window.BCStore.openHandoverModal()" class="bc-feature-card-action">
+              <span>Konsultasi</span>
+              <span>→</span>
+            </a>
+          </div>
+
+          <div class="bc-feature-card">
+            <div>
+              <div class="bc-card-icon-wrap" style="margin-bottom:1.25rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m14 12-8.5 8.5a2.12 2.12 0 1 1-3-3L11 9"></path><path d="M15 13 9 7l4-4 6 6h3l3 3"></path></svg>
+              </div>
+              <h3 class="bc-feature-card-title">Oposisi &amp; Sanggahan</h3>
+              <p class="bc-feature-card-desc">
+                Dampingi proses oposisi atau tanggapan atas penolakan.
+              </p>
+            </div>
+            <a href="services.html" class="bc-feature-card-action">
+              <span>Ajukan Oposisi</span>
+              <span>→</span>
+            </a>
+          </div>
+
+          <div class="bc-feature-card">
+            <div>
+              <div class="bc-card-icon-wrap" style="margin-bottom:1.25rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+              </div>
+              <h3 class="bc-feature-card-title">Lisensi &amp; Pengalihan Merek</h3>
+              <p class="bc-feature-card-desc">
+                Pengurusan perjanjian lisensi atau pengalihan kepemilikan.
+              </p>
+            </div>
+            <a href="services.html" class="bc-feature-card-action">
+              <span>Lihat Layanan</span>
+              <span>→</span>
+            </a>
+          </div>
+
+          <div class="bc-feature-card">
+            <div>
+              <div class="bc-card-icon-wrap" style="margin-bottom:1.25rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path></svg>
+              </div>
+              <h3 class="bc-feature-card-title">Pendampingan Hukum</h3>
+              <p class="bc-feature-card-desc">
+                Konsultasi dan bantuan hukum atas sengketa merek.
+              </p>
+            </div>
+            <a href="javascript:void(0)" onclick="window.BCStore && window.BCStore.openHandoverModal()" class="bc-feature-card-action">
+              <span>Hubungi Tim Legal</span>
+              <span>→</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
 
   <footer class="site-footer">
     <div class="container">
+      <div class="footer-top-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-logo">
+            <img src="assets/images/brandconnect-logo-white.png" alt="BRANDCONNECT" class="footer-logo-img" />
+          </a>
+          <p class="footer-tagline">AI-POWERED TRADEMARK SEARCH &amp; BRAND PROTECTION</p>
+        </div>
+      </div>
       <div class="footer-bottom">
-        <p class="copyright">© 2026 BRANDCONNECT. All Rights Reserved. · <a href="index.html">Kembali ke Homepage</a></p>
-        <p class="footer-concept-note">TRADEMARK MONITORING // BRANDCONNECT</p>
+        <p class="copyright">© 2026 BRANDCONNECT. All Rights Reserved. · <a href="index.html">Homepage</a></p>
       </div>
     </div>
   </footer>
 
   <script src="js/platform-store.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const listEl = document.getElementById('mon-list-container');
-      const form = document.getElementById('mon-add-form');
-
-      const renderMonitors = () => {
-        const state = window.BCStore.getState();
-        listEl.innerHTML = state.monitors.map((m) => `
-          <div style="background:#1C1D1B;border:1px solid rgba(244,241,234,0.15);border-radius:4px;padding:1.15rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
-            <div>
-              <span style="font-family:var(--font-mono);font-size:0.7rem;color:#5CD4A5;">${m.niceClasses} · Dipantau sejak ${m.createdAt}</span>
-              <h4 style="font-family:var(--font-heading);font-size:1.15rem;color:var(--ivory);margin:0.2rem 0;">${m.trademarkName}</h4>
-              <div style="font-size:0.8rem;color:var(--pencil-light);">Kata Kunci Fonetik: <strong>${m.watchTokens}</strong> &nbsp;|&nbsp; BRM Terakhir: ${m.lastBrmChecked}</div>
-              <div style="font-size:0.82rem;margin-top:0.35rem;color:${m.alertStatus.includes('Perhatian') ? '#FFB347' : '#5CD4A5'};font-weight:600;">Status: ${m.alertStatus}</div>
-            </div>
-            <div style="display:flex;gap:0.5rem;">
-              <button type="button" class="btn btn-secondary btn-sm" style="background:rgba(244,241,234,0.1);color:var(--ivory);border-color:rgba(244,241,234,0.25);" onclick="window.BCStore.openOrderModal('SRV-OPP-05', '${m.trademarkName}', '${m.niceClasses}')">
-                Ajukan Oposisi BRM →
-              </button>
-            </div>
-          </div>
-        `).join('');
-      };
-
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const state = window.BCStore.getState();
-        const brand = document.getElementById('mon-brand').value.trim().toUpperCase();
-        const cls = document.getElementById('mon-class').value.trim();
-        const tokens = document.getElementById('mon-tokens').value.trim().toUpperCase();
-        state.monitors.unshift({
-          id: Date.now(),
-          trademarkName: brand,
-          niceClasses: cls,
-          watchTokens: tokens,
-          status: 'Active',
-          lastBrmChecked: 'BRM Seri-A No. 48/XI/2026',
-          alertStatus: 'Aman (Pantauan Baru Diaktifkan)',
-          createdAt: new Date().toISOString().slice(0, 10)
-        });
-        window.BCStore.logActivity(state.customerProfile.name, 'Customer', 'MONITOR_ADDED', brand, `Menambahkan merek ${brand} (${cls}) ke Watchlist Monitoring BRM.`);
-        window.BCStore.saveState();
-        form.reset();
-        renderMonitors();
-      });
-
-      renderMonitors();
-    });
-  </script>
 </body>
 </html>

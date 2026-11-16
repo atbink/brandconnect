@@ -3,178 +3,492 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Trademark Checker &amp; Similarity Analysis — BRANDCONNECT | Search Smart. Protect Better.</title>
-  <meta name="description" content="AI Trademark Checker BrandConnect: analisis kemiripan fonetik, ejaan visual, evaluasi etiket logo, kepatuhan Pasal 20 & 21 UU Merek, serta pembuatan laporan AI resmi." />
+  <title>Cek Merek AI (Pemeriksaan Kemiripan Merek DJKI) - BRANDCONNECT</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Crect width='36' height='36' rx='3' fill='%230D3B2E'/%3E%3Cpath d='M8 26V10h6.5c3.2 0 5.5 1.8 5.5 4.5 0 1.8-1 3.2-2.6 3.9 2.1.7 3.4 2.2 3.4 4.3 0 3-2.4 4.8-6.1 4.8H8zm3.5-9.3h2.6c1.6 0 2.6-.8 2.6-2.1s-1-2.1-2.6-2.1h-2.6v4.2zm0 6.8h2.9c1.8 0 3-.9 3-2.3 0-1.5-1.2-2.3-3-2.3h-2.9v4.6z' fill='%23FAF8F5'/%3E%3Ccircle cx='28' cy='23' r='2.5' fill='%235CD4A5'/%3E%3C/svg%3E" />
+  <style>
+    .tc-result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 2rem;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .tc-risk-card {
+      background: #FEF2F2;
+      border: 1px solid #FCA5A5;
+      border-radius: 16px;
+      padding: 1.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .tc-risk-card.safe {
+      background: #F0FDF4;
+      border-color: #86EFAC;
+    }
+    .tc-risk-badge-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #DC2626;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.5rem;
+    }
+    .tc-risk-title {
+      font-family: var(--font-heading);
+      font-size: 2.1rem;
+      font-weight: 800;
+      color: #991B1B;
+      margin-bottom: 0.5rem;
+      line-height: 1.1;
+    }
+    .tc-risk-desc {
+      font-size: 0.88rem;
+      color: #7F1D1D;
+      line-height: 1.5;
+      max-width: 320px;
+    }
+    .tc-meta-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      background: #FFFFFF;
+      border: 1px solid var(--bc-card-border);
+      border-radius: 16px;
+      padding: 1.75rem;
+    }
+    .tc-meta-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+    }
+    .tc-meta-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--bc-green-mint);
+      color: var(--bc-green);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .tc-meta-label {
+      font-size: 0.78rem;
+      color: #6B7280;
+      margin-bottom: 0.2rem;
+    }
+    .tc-meta-val {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--bc-text-dark);
+    }
+    .tc-subtabs {
+      display: inline-flex;
+      background: #ECE9E1;
+      padding: 0.3rem;
+      border-radius: 9999px;
+      gap: 0.4rem;
+      margin: 2rem 0 1.5rem;
+    }
+    .tc-subtab {
+      padding: 0.55rem 1.25rem;
+      border-radius: 9999px;
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #374151;
+      background: #FFFFFF;
+      border: 1px solid #DFDBD1;
+      cursor: pointer;
+    }
+    .tc-subtab.active {
+      background: var(--bc-green);
+      color: #FFFFFF;
+      border-color: var(--bc-green);
+    }
+    .tc-dim-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .tc-dim-card {
+      background: #FFFFFF;
+      border: 1px solid var(--bc-card-border);
+      border-radius: 14px;
+      padding: 1.35rem;
+    }
+    .tc-dim-head {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 0.85rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #4B5563;
+    }
+    .tc-dim-title {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--bc-text-dark);
+      margin-bottom: 0.45rem;
+    }
+    .tc-dim-desc {
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: #4B5563;
+    }
+    .tc-bottom-split {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .tc-comp-box {
+      background: #FFFFFF;
+      border: 1px solid var(--bc-card-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+    .tc-rec-box {
+      background: #FFFFFF;
+      border: 1px solid var(--bc-card-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+    .tc-rec-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      margin-bottom: 0.85rem;
+    }
+    .tc-rec-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--bc-green-mint);
+      color: var(--bc-green);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .tc-rec-text {
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: #374151;
+    }
+  </style>
 </head>
 <body>
-  <div class="paper-grain" aria-hidden="true"></div>
-
-  <header class="site-header" id="site-header">
+  <header class="site-header">
     <div class="container nav-container">
       <a href="index.html" class="brand-logo" aria-label="BrandConnect Beranda">
         <img src="assets/images/brandconnect-logo.png" alt="BRANDCONNECT" class="logo-img" />
-        <span class="logo-sub">SEARCH SMART. PROTECT BETTER.</span>
       </a>
       <nav class="main-nav">
         <ul class="nav-list">
           <li><a href="trademark-checker.html" class="nav-link active">Cek Merek</a></li>
-          <li><a href="class-finder.html" class="nav-link">Cari Kelas</a></li>
-          <li><a href="monitoring.html" class="nav-link">Monitoring</a></li>
-          <li><a href="brand-protection.html" class="nav-link">Proteksi</a></li>
-          <li><a href="services.html" class="nav-link">Layanan (8)</a></li>
-          <li><a href="pendaftaran-merek.html" class="nav-link">Pendaftaran</a></li>
+          <li><a href="class-finder.html" class="nav-link">Cari Kelas Merek</a></li>
+          <li><a href="monitoring.html" class="nav-link">Monitoring Merek</a></li>
+          <li><a href="brand-protection.html" class="nav-link">Proteksi Merek</a></li>
+          <li><a href="services.html" class="nav-link">Jasa Merek</a></li>
         </ul>
       </nav>
-      <div class="nav-actions" style="display:flex;gap:0.55rem;">
-        <a href="dashboard.html" class="nav-login-btn" style="text-decoration:none;">Dashboard Klien</a>
-        <a href="admin.html" class="nav-login-btn" style="text-decoration:none;background:var(--charcoal);color:var(--ivory);">Admin Panel</a>
+      <div class="nav-actions" style="display:flex;align-items:center;gap:0.75rem;">
+        <a href="dashboard.html" class="nav-login-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span>Login</span>
+        </a>
       </div>
     </div>
   </header>
 
-  <main>
-    <section class="hero-section" style="padding-top:2.5rem;padding-bottom:3.5rem;">
-      <div class="container" style="max-width:1160px;">
-        <!-- Clean Mebiso-style Title -->
-        <div style="text-align:center;max-width:760px;margin:0 auto 1.6rem auto;">
-          <h1 style="font-family:var(--font-heading);font-size:2.35rem;font-weight:900;color:#172B4D;letter-spacing:-0.02em;margin:0 0 0.45rem 0;">
-            Mulai Penelusuran Merek
-          </h1>
-          <p style="font-size:0.95rem;color:#64748B;margin:0;">
-            Pangkalan Data Resmi DJKI (PDKI) &amp; Live Penelusuran Merek Terdaftar di Indonesia
-          </p>
+  <main style="padding: 2.5rem 0 5rem;">
+    <div class="container" style="max-width:1160px;">
+      <!-- IMAGE 2/3 TOP: AI SEARCH CARD -->
+      <div class="bc-ai-search-card" style="margin-top:0;">
+        <div class="bc-hero-eyebrow" style="margin-bottom:0.75rem;">PENCARIAN MEREK</div>
+        <h1 class="bc-ai-search-title">
+          Pencarian Merek dengan <strong>Teknologi AI</strong>
+        </h1>
+        <p class="bc-ai-search-subtitle">
+          Ketahui potensi kemiripan merek, evaluasi daya pembeda, dan rekomendasi langkah perlindungan secara cepat dan akurat.
+        </p>
+
+        <div class="bc-mode-tabs" role="tablist">
+          <button type="button" class="bc-mode-tab active" data-search-mode="name">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <span>Nama Merek</span>
+          </button>
+          <button type="button" class="bc-mode-tab" data-search-mode="number">
+            <span># Nomor Permohonan</span>
+          </button>
+          <button type="button" class="bc-mode-tab" data-search-mode="logo">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span>Upload Logo (Visual)</span>
+          </button>
         </div>
 
-        <!-- Mebiso-style Direct & Simple Search Bar -->
-        <div style="max-width:880px;margin:0 auto 1.5rem auto;">
-          <form id="mebiso-search-form" style="display:flex;gap:0.5rem;background:#FFFFFF;border:2px solid #CBD5E1;border-radius:8px;padding:6px;box-shadow:0 4px 14px rgba(0,0,0,0.06);transition:border-color 0.2s;">
-            <div style="display:flex;align-items:center;flex:1;position:relative;">
-              <input
-                type="text"
-                id="dc-brand"
-                class="tm-search-input"
-                style="border:none;box-shadow:none;font-size:1.1rem;padding:0.75rem 2.5rem 0.75rem 1.15rem;width:100%;background:transparent;outline:none;"
-                placeholder="Ketik nama merek (contoh: adidas, nike, mebiso)..."
-                value="adidas"
-                required
-              />
-              <button type="button" id="clear-search-btn" style="position:absolute;right:10px;background:none;border:none;color:#94A3B8;font-size:1.15rem;cursor:pointer;" title="Hapus">✕</button>
-            </div>
-            <button type="submit" class="tm-submit-btn" style="background:#FACC15;color:#0F172A;border:none;border-radius:6px;font-family:var(--font-heading);font-weight:800;padding:0.75rem 2rem;font-size:0.98rem;cursor:pointer;display:inline-flex;align-items:center;gap:0.45rem;box-shadow:0 2px 6px rgba(250,204,21,0.3);">
-              <span>🔍 Cari</span>
-            </button>
-          </form>
-
-          <!-- Quick Chips & Advanced AI Toggle -->
-          <div style="margin-top:0.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.6rem;font-size:0.82rem;">
-            <div style="color:#64748B;">
-              <strong style="color:#334155;">Pencarian Populer:</strong>
-              <button type="button" class="quick-chip" data-q="adidas" style="background:#F1F5F9;border:1px solid #E2E8F0;padding:3px 9px;border-radius:4px;cursor:pointer;margin:0 2px;font-weight:600;color:#1E293B;">adidas</button>
-              <button type="button" class="quick-chip" data-q="nike" style="background:#F1F5F9;border:1px solid #E2E8F0;padding:3px 9px;border-radius:4px;cursor:pointer;margin:0 2px;font-weight:600;color:#1E293B;">nike</button>
-              <button type="button" class="quick-chip" data-q="mebiso" style="background:#F1F5F9;border:1px solid #E2E8F0;padding:3px 9px;border-radius:4px;cursor:pointer;margin:0 2px;font-weight:600;color:#1E293B;">mebiso</button>
-              <button type="button" class="quick-chip" data-q="meiso" style="background:#F1F5F9;border:1px solid #E2E8F0;padding:3px 9px;border-radius:4px;cursor:pointer;margin:0 2px;font-weight:600;color:#1E293B;">meiso</button>
-              <button type="button" class="quick-chip" data-q="wardah" style="background:#F1F5F9;border:1px solid #E2E8F0;padding:3px 9px;border-radius:4px;cursor:pointer;margin:0 2px;font-weight:600;color:#1E293B;">wardah</button>
-              <button type="button" class="quick-chip" data-q="kopi kenangan" style="background:#F1F5F9;border:1px solid #E2E8F0;padding:3px 9px;border-radius:4px;cursor:pointer;margin:0 2px;font-weight:600;color:#1E293B;">kopi kenangan</button>
-            </div>
-            <button type="button" id="toggle-advanced-ai" style="background:transparent;border:none;color:var(--green);font-family:var(--font-mono);font-size:0.75rem;font-weight:700;cursor:pointer;text-decoration:underline;display:inline-flex;align-items:center;gap:4px;">
-              <span>⚙️ Opsi Tambahan: Upload Logo &amp; Audit AI</span>
-              <span id="adv-arrow">▾</span>
+        <form id="tc-live-search-form">
+          <div class="bc-input-group">
+            <input
+              type="text"
+              id="tc-search-input"
+              value="kopi kenangan"
+              placeholder="Masukkan nama merek (contoh: kopi kenangan, adidas, nike)..."
+              required
+            />
+            <button type="submit" class="bc-btn-search-action">
+              <span>Cek Merek Gratis</span>
+              <span>→</span>
             </button>
           </div>
+        </form>
 
-          <!-- Collapsible Advanced Upload Box (hidden by default) -->
-          <div id="advanced-ai-panel" hidden style="margin-top:1rem;background:#FAF8F3;border:1.5px dashed var(--charcoal);padding:1.25rem;border-radius:6px;text-align:left;">
-            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:1.25rem;">
-              <div style="background:#FFF;border:1px solid #CBD5E1;border-radius:6px;padding:1rem;">
-                <strong style="font-family:var(--font-heading);font-size:0.85rem;display:block;margin-bottom:0.25rem;">1. Upload Logo Merek Anda (Audit Etiket &amp; Vienna)</strong>
-                <span style="font-size:0.76rem;color:#64748B;display:block;margin-bottom:0.75rem;" id="dc-file-status">Unggah gambar PNG/JPG untuk mendeteksi Klasifikasi Vienna, palet warna etiket, dan simetri.</span>
-                <label class="btn btn-secondary btn-sm" style="cursor:pointer;width:100%;justify-content:center;">
-                  <span>📎 Pilih File Logo Anda</span>
-                  <input type="file" id="dc-file-input" accept="image/*" hidden />
-                </label>
-              </div>
-              <div style="background:#FFF;border:1px solid #CBD5E1;border-radius:6px;padding:1rem;">
-                <strong style="font-family:var(--font-heading);font-size:0.85rem;display:block;margin-bottom:0.25rem;">2. Upload Logo Pembanding (Head-to-Head 1-on-1)</strong>
-                <span style="font-size:0.76rem;color:#64748B;display:block;margin-bottom:0.75rem;" id="dc-comp-file-status">Unggah logo kompetitor untuk menghitung persentase kemiripan bentuk siluet &amp; warna secara langsung.</span>
-                <label class="btn btn-secondary btn-sm" style="cursor:pointer;width:100%;justify-content:center;">
-                  <span>⚖️ Pilih Logo Pembanding</span>
-                  <input type="file" id="dc-comp-file-input" accept="image/*" hidden />
-                </label>
-              </div>
-            </div>
-            <div style="margin-top:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">
-              <span style="font-size:0.75rem;color:var(--pencil);">* Format etiket diverifikasi sesuai aturan Permohonan Merek DJKI.</span>
-              <button type="button" id="btn-run-advanced" class="btn btn-primary btn-sm">
-                <span>Perbarui Penelusuran dengan Logo →</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- DIRECT LIVE RESULTS CONTAINER (Mebiso Style Left Filter + Right Cards) -->
-        <div id="dc-visual-similarity-container" style="max-width:1120px;margin:0 auto;"></div>
-
-        <!-- 3-Tier AI Analysis Container (Revealed via 'Cek Sekarang' CTA Banner) -->
-        <div id="dc-result-box" hidden style="margin-top:2.5rem;background:#FFF;border:2px solid var(--charcoal);border-radius:8px;padding:2rem;max-width:1120px;margin-left:auto;margin-right:auto;text-align:left;box-shadow:0 8px 24px rgba(0,0,0,0.06);">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1.5px solid var(--border-sketch-strong);padding-bottom:1.15rem;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
-            <div>
-              <span style="font-family:var(--font-mono);font-size:0.74rem;color:var(--green);font-weight:700;" id="dc-res-ref">REF: BC-SRCH</span>
-              <h2 style="font-family:var(--font-heading);font-size:1.85rem;font-weight:900;color:#0F172A;margin:4px 0;" id="dc-res-brand">MEREK</h2>
-              <p style="font-family:var(--font-mono);font-size:0.8rem;color:var(--pencil);margin:0;" id="dc-res-classes">Rekomendasi Kelas: -</p>
-            </div>
-            <div class="tm-score-badge score-high" id="dc-res-badge">
-              <span class="tm-score-number" id="dc-res-score">89%</span>
-              <div class="tm-score-meta">
-                <span class="tm-score-label">Indeks Daya Pembeda</span>
-                <span class="tm-score-verdict" id="dc-res-verdict">POTENSI POSITIF</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- TIER 1: SEARCH PARAMETERS & PILL BARS -->
-          <div style="margin-bottom:1.5rem;">
-            <h3 style="font-family:var(--font-mono);font-size:0.74rem;letter-spacing:0.1em;color:var(--green);margin-bottom:0.75rem;">LAPISAN 01 // PARAMETER PENCARIAN &amp; KEMIRIPAN</h3>
-            <div class="tm-breakdown-grid">
-              <div class="tm-pill-card"><div class="tm-pill-title">FONETIK &amp; BUNYI</div><div class="tm-pill-status" id="dc-p1">-</div><div class="tm-pill-detail" id="dc-p1-d">-</div></div>
-              <div class="tm-pill-card"><div class="tm-pill-title">VISUAL &amp; EJAAN</div><div class="tm-pill-status" id="dc-p2">-</div><div class="tm-pill-detail" id="dc-p2-d">-</div></div>
-              <div class="tm-pill-card"><div class="tm-pill-title">REKOMENDASI KELAS</div><div class="tm-pill-status" id="dc-p3">-</div><div class="tm-pill-detail">Berdasarkan klasifikasi barang/jasa.</div></div>
-              <div class="tm-pill-card"><div class="tm-pill-title">KEPATUHAN UU MEREK</div><div class="tm-pill-status" id="dc-p4">-</div><div class="tm-pill-detail" id="dc-p4-d">-</div></div>
-            </div>
-          </div>
-
-          <!-- TIER 2: AI INTERPRETATION -->
-          <div style="margin-bottom:1.5rem;padding:1.15rem 1.35rem;background:var(--ivory);border-left:4px solid var(--green);border-radius:4px;">
-            <h3 style="font-family:var(--font-mono);font-size:0.74rem;letter-spacing:0.1em;color:var(--green);margin-bottom:0.45rem;">LAPISAN 02 // INTERPRETASI PRA-SKRINING AI</h3>
-            <p id="dc-ai-interp" style="font-size:0.92rem;line-height:1.65;color:#1E293B;margin:0;"></p>
-          </div>
-
-          <!-- TIER 3: PROFESSIONAL LEGAL ASSESSMENT -->
-          <div style="margin-bottom:1.5rem;padding:1.15rem 1.35rem;background:var(--ivory-subtle);border-left:4px solid var(--charcoal);border-radius:4px;">
-            <h3 style="font-family:var(--font-mono);font-size:0.74rem;letter-spacing:0.1em;color:var(--charcoal);margin-bottom:0.45rem;">LAPISAN 03 // PENILAIAN HUKUM PROFESIONAL (KONSULTAN MEREK)</h3>
-            <p id="dc-prof-assess" style="font-size:0.92rem;line-height:1.65;color:#1E293B;margin:0;"></p>
-          </div>
-
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;padding-top:1.15rem;border-top:1px dashed var(--border-sketch-strong);">
-            <button type="button" class="btn btn-secondary btn-sm" id="dc-btn-report">📄 Cetak Laporan AI Resmi</button>
-            <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
-              <button type="button" class="btn btn-secondary btn-sm" id="dc-btn-handover">👨‍⚖️ Handover ke Spesialis Merek</button>
-              <button type="button" class="btn btn-primary btn-sm" id="dc-btn-order">® Pesan Pendaftaran Merek →</button>
-            </div>
-          </div>
-        </div>
+        <p class="bc-footnote" style="margin-top:1.25rem;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          <span>Mengacu pada Kriteria Pemeriksaan Substantif Pasal 20 &amp; 21 UU Merek No. 20 Tahun 2016 (DJKI)</span>
+        </p>
       </div>
-    </section>
+
+      <!-- IMAGE 3: HASIL PENCARIAN & ANALISIS DETAIL -->
+      <section id="tc-result-section" style="margin-top:3.5rem;">
+        <div class="tc-result-header">
+          <div>
+            <div class="bc-features-eyebrow">HASIL PENCARIAN</div>
+            <h2 style="font-family:var(--font-heading);font-size:2.2rem;font-weight:800;color:var(--bc-text-dark);margin:0 0 0.35rem 0;" id="tc-res-title">
+              Hasil Analisis untuk "<span id="tc-query-display">KOPI KENANGAN</span>"
+            </h2>
+            <p style="font-size:0.95rem;color:#6B7280;margin:0;" id="tc-res-count">
+              Ditemukan 15 merek terkait pada data resmi DJKI.
+            </p>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="window.print()" style="padding:0.6rem 1.15rem;border-radius:9999px;">
+              <span>📥 Unduh Laporan PDF</span>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="navigator.clipboard && navigator.clipboard.writeText(location.href); alert('Tautan hasil telah disalin!');" style="padding:0.6rem 1.15rem;border-radius:9999px;">
+              <span>🔗 Bagikan Hasil</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Summary Grid (Image 3 Upper Grid) -->
+        <div style="display:grid;grid-template-columns:1fr 1.35fr;gap:1.5rem;margin-bottom:2.5rem;">
+          <!-- Left: Red Alert Box -->
+          <div class="tc-risk-card" id="tc-risk-card">
+            <div class="tc-risk-badge-label">
+              <span>✦</span>
+              <span>Ringkasan Analisis AI</span>
+            </div>
+            <div class="tc-risk-title" id="tc-risk-status">Risiko Tinggi</div>
+            <p class="tc-risk-desc" id="tc-risk-explanation">
+              Potensi penolakan tinggi karena memiliki persamaan pada pokoknya dengan merek terdaftar.
+            </p>
+          </div>
+
+          <!-- Right: Meta Parameters -->
+          <div class="tc-meta-list">
+            <div class="tc-meta-item">
+              <div class="tc-meta-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m20.59 13.41-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+              </div>
+              <div>
+                <div class="tc-meta-label">Merek Dicari</div>
+                <div class="tc-meta-val" id="tc-meta-searched">KOPI KENANGAN</div>
+              </div>
+            </div>
+
+            <div class="tc-meta-item">
+              <div class="tc-meta-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+              </div>
+              <div>
+                <div class="tc-meta-label">Kelas Terkait</div>
+                <div class="tc-meta-val" id="tc-meta-class">Kelas 30 ⓘ</div>
+              </div>
+            </div>
+
+            <div class="tc-meta-item">
+              <div class="tc-meta-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>
+              </div>
+              <div>
+                <div class="tc-meta-label">Merek Pembanding</div>
+                <div class="tc-meta-val" id="tc-meta-found">15 merek ditemukan</div>
+              </div>
+            </div>
+
+            <div class="tc-meta-item">
+              <div class="tc-meta-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              </div>
+              <div>
+                <div class="tc-meta-label">Sumber Data</div>
+                <div class="tc-meta-val">DJKI (Data Resmi) ⓘ</div>
+                <div style="font-size:0.7rem;color:#9CA3AF;margin-top:2px;">Diperbarui: 16 Nov 2026, 10:24 WIB</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analisis Detail Header & Tabs -->
+        <div>
+          <h3 style="font-family:var(--font-heading);font-size:1.65rem;font-weight:800;color:var(--bc-text-dark);margin-bottom:0.5rem;">
+            Analisis Detail
+          </h3>
+
+          <div class="tc-subtabs">
+            <button type="button" class="tc-subtab active">
+              <span>✦ Analisis AI</span>
+            </button>
+            <button type="button" class="tc-subtab" id="tab-data-terkait">
+              <span>📑 Data Merek Terkait (<span id="tc-badge-tab-count">15</span>)</span>
+            </button>
+            <button type="button" class="tc-subtab">
+              <span>📋 Rekomendasi</span>
+            </button>
+          </div>
+
+          <!-- 4 Dimension Cards (Image 3 Center) -->
+          <div class="tc-dim-grid">
+            <div class="tc-dim-card">
+              <div class="tc-dim-head">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--bc-green)" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                <span>01. Kemiripan Fonetik</span>
+              </div>
+              <div class="tc-dim-title" id="tc-d1-title">Persamaan Pada Pokoknya / Identik</div>
+              <p class="tc-dim-desc" id="tc-d1-desc">
+                Nama/lafal memiliki kesamaan signifikan dengan merek terdaftar milik pihak lain.
+              </p>
+            </div>
+
+            <div class="tc-dim-card">
+              <div class="tc-dim-head">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--bc-green)" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path></svg>
+                <span>02. Visual &amp; Ejaan</span>
+              </div>
+              <div class="tc-dim-title" id="tc-d2-title">Rawan Konflik Hak Eksklusif</div>
+              <p class="tc-dim-desc" id="tc-d2-desc">
+                Merek telah terdaftar resmi di DJKI. Pengajuan merek baru dengan unsur yang sama berpotensi ditolak.
+              </p>
+            </div>
+
+            <div class="tc-dim-card">
+              <div class="tc-dim-head">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--bc-green)" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                <span>03. Kelas Merek</span>
+              </div>
+              <div class="tc-dim-title" id="tc-d3-title">Kelas 30</div>
+              <p class="tc-dim-desc" id="tc-d3-desc">
+                Rekomendasi klasifikasi barang/jasa berdasarkan Nice Classification (Kopi, Teh, Roti &amp; Bumbu).
+              </p>
+            </div>
+
+            <div class="tc-dim-card">
+              <div class="tc-dim-head">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--bc-green)" stroke-width="2"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path></svg>
+                <span>04. Kriteria UU Merek</span>
+              </div>
+              <div class="tc-dim-title" id="tc-d4-title">Potensi Ditolak Pasal 21</div>
+              <p class="tc-dim-desc" id="tc-d4-desc">
+                Pasal 21 ayat (1) huruf a &amp; b UU No. 20/2016 melarang pendaftaran merek yang memiliki persamaan pada pokoknya dengan merek terdaftar pihak lain.
+              </p>
+            </div>
+          </div>
+
+          <!-- Bottom Two Cards: Merek Pembanding Utama & Rekomendasi (Image 3 Bottom) -->
+          <div class="tc-bottom-split">
+            <!-- Left: Merek Pembanding Utama -->
+            <div class="tc-comp-box">
+              <div style="font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:var(--bc-green);letter-spacing:0.1em;display:flex;align-items:center;gap:0.45rem;margin-bottom:1rem;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                <span>Merek Pembanding Utama</span>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:1.25rem;background:#FAF8F5;border:1px solid var(--bc-card-border);border-radius:12px;padding:1.25rem;" id="tc-comp-card">
+                <div style="width:110px;height:80px;background:#FFF;border:1px solid #E5E7EB;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:6px;overflow:hidden;" id="tc-comp-logo">
+                  <div style="font-family:Georgia,serif;font-weight:800;color:#111;text-align:center;"><div style="color:#B91C1C;">♥</div><div style="font-size:0.75rem;line-height:1.15;">kopi<br/>kenangan</div></div>
+                </div>
+
+                <div style="flex:1;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.35rem;">
+                    <strong style="font-family:var(--font-heading);font-size:1.15rem;color:var(--bc-text-dark);" id="tc-comp-name">KOPI KENANGAN</strong>
+                    <span style="background:#DCFCE7;color:#166534;font-family:var(--font-mono);font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:9999px;" id="tc-comp-status">TERDAFTAR</span>
+                  </div>
+                  <div style="font-size:0.82rem;color:#4B5563;line-height:1.45;">
+                    <div>Pemilik: <strong id="tc-comp-owner">PT. BUMI BERKAH BOGA</strong></div>
+                    <div>No. Permohonan: <span id="tc-comp-appno">D002018042299</span> · Kelas: <span id="tc-comp-class">30</span></div>
+                  </div>
+                </div>
+                <div style="color:var(--bc-green);font-size:1.25rem;font-weight:700;">›</div>
+              </div>
+            </div>
+
+            <!-- Right: Rekomendasi Langkah Selanjutnya -->
+            <div class="tc-rec-box">
+              <div style="font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:var(--bc-green);letter-spacing:0.1em;display:flex;align-items:center;gap:0.45rem;margin-bottom:1rem;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                <span>Rekomendasi Langkah Selanjutnya</span>
+              </div>
+
+              <div class="tc-rec-item">
+                <div class="tc-rec-num">1</div>
+                <div class="tc-rec-text">Konsultasi dengan tim ahli untuk evaluasi mendalam.</div>
+              </div>
+              <div class="tc-rec-item">
+                <div class="tc-rec-num">2</div>
+                <div class="tc-rec-text">Pertimbangkan penyesuaian nama merek agar lebih memiliki daya pembeda.</div>
+              </div>
+              <div class="tc-rec-item">
+                <div class="tc-rec-num">3</div>
+                <div class="tc-rec-text">Lakukan pengecekan lanjutan untuk alternatif nama dan kelas.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Action Buttons (Image 3 Bottom CTAs) -->
+          <div style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-top:2.5rem;">
+            <button type="button" class="bc-hero-search-btn" style="padding:0.95rem 2rem;font-size:0.95rem;" onclick="window.BCStore && window.BCStore.openHandoverModal()">
+              <span>🎧 Konsultasi dengan Spesialis Merek</span>
+              <span>→</span>
+            </button>
+            <a href="pendaftaran-merek.html" class="bc-service-btn" style="padding:0.95rem 2rem;border-radius:9999px;font-size:0.95rem;background:#FFFFFF;">
+              <span>📄 Ajukan Pendaftaran Merek</span>
+              <span>→</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
 
   <footer class="site-footer">
     <div class="container">
+      <div class="footer-top-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-logo">
+            <img src="assets/images/brandconnect-logo-white.png" alt="BRANDCONNECT" class="footer-logo-img" />
+          </a>
+          <p class="footer-tagline">AI-POWERED TRADEMARK SEARCH &amp; BRAND PROTECTION</p>
+        </div>
+      </div>
       <div class="footer-bottom">
-        <p class="copyright">© 2026 BRANDCONNECT. All Rights Reserved. · <a href="index.html">Kembali ke Homepage</a></p>
-        <p class="footer-concept-note">SEARCH SMART. PROTECT BETTER.</p>
+        <p class="copyright">© 2026 BRANDCONNECT. All Rights Reserved. · <a href="index.html">Homepage</a></p>
       </div>
     </div>
   </footer>
@@ -182,187 +496,51 @@
   <script src="js/platform-store.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const searchForm = document.getElementById('mebiso-search-form');
-      const brandInput = document.getElementById('dc-brand');
-      const clearBtn = document.getElementById('clear-search-btn');
-      const toggleAdvBtn = document.getElementById('toggle-advanced-ai');
-      const advPanel = document.getElementById('advanced-ai-panel');
-      const advArrow = document.getElementById('adv-arrow');
-      const fileInput = document.getElementById('dc-file-input');
-      const fileStatus = document.getElementById('dc-file-status');
-      const compFileInput = document.getElementById('dc-comp-file-input');
-      const compFileStatus = document.getElementById('dc-comp-file-status');
-      const btnRunAdv = document.getElementById('btn-run-advanced');
-      const visualSimContainer = document.getElementById('dc-visual-similarity-container');
-      const resultBox = document.getElementById('dc-result-box');
+      const searchForm = document.getElementById('tc-live-search-form');
+      const searchInput = document.getElementById('tc-search-input');
+      const queryDisplay = document.getElementById('tc-query-display');
+      const searchedMeta = document.getElementById('tc-meta-searched');
+      const compName = document.getElementById('tc-comp-name');
+      const compLogo = document.getElementById('tc-comp-logo');
 
-      let uploadedMeta = null;
-      let uploadedCompMeta = null;
-
-      // 1. Core Simple Search Runner (Direct PDKI DJKI Results just like Mebiso)
-      const doSearch = (queryStr) => {
-        const q = (queryStr || brandInput.value || 'adidas').trim();
-        if (!q) return;
-        brandInput.value = q;
-        if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
-
-        // Pre-fetch live API if key is available
-        if (window.BCStore && window.BCStore.fetchLivePdkiApi) {
-          window.BCStore.fetchLivePdkiApi(q).catch((e) => console.log('Live API note:', e));
-        }
-
-        // Mount PDKI Explorer immediately
-        if (visualSimContainer && window.BCStore && window.BCStore.mountPdkiExplorer) {
-          window.BCStore.mountPdkiExplorer(visualSimContainer, q, uploadedMeta, uploadedCompMeta);
-        }
-
-        // Hide AI deep result box when a new keyword search is initiated until user requests it
-        if (resultBox && !uploadedMeta) {
-          resultBox.hidden = true;
-        }
-      };
-
-      // 2. Global Deep AI Analysis Trigger (called by CTA banner "Cek Sekarang" inside search results)
-      window.runTrademarkCheck = (brandName) => {
-        const targetQ = (brandName || brandInput.value || 'MEREK BARU').trim();
-        const rec = window.BCStore.analyzeTrademark(targetQ, 'name', '', '', uploadedMeta, uploadedCompMeta);
-
-        document.getElementById('dc-res-ref').textContent = `LAPORAN ANALISIS // REF: ${rec.referenceCode}`;
-        document.getElementById('dc-res-brand').textContent = rec.trademarkName;
-        document.getElementById('dc-res-classes').textContent = `Rekomendasi Kelas: ${rec.recommendedClasses}`;
-        document.getElementById('dc-res-score').textContent = `${rec.distinctivenessIndex}%`;
-        document.getElementById('dc-res-verdict').textContent = rec.verdict;
-
-        const badge = document.getElementById('dc-res-badge');
-        badge.classList.remove('score-high', 'score-medium', 'score-low');
-        badge.classList.add(rec.riskLevel === 'low' ? 'score-high' : rec.riskLevel === 'moderate' ? 'score-medium' : 'score-low');
-
-        const scoreLabelEl = badge.querySelector('.tm-score-label');
-        if (scoreLabelEl) {
-          scoreLabelEl.textContent = rec.riskLevel === 'high' ? 'POTENSI PENOLAKAN DJKI' : 'INDEKS DAYA PEMBEDA';
-        }
-
-        document.getElementById('dc-p1').textContent = rec.phoneticStatus;
-        document.getElementById('dc-p1-d').textContent = rec.phoneticDetail;
-        document.getElementById('dc-p2').textContent = rec.visualStatus;
-        document.getElementById('dc-p2-d').textContent = rec.visualDetail;
-        document.getElementById('dc-p3').textContent = rec.recommendedClasses;
-        document.getElementById('dc-p4').textContent = rec.statuteStatus;
-        document.getElementById('dc-p4-d').textContent = rec.statuteDetail;
-
-        document.getElementById('dc-ai-interp').textContent = rec.aiInterpretation;
-        document.getElementById('dc-prof-assess').textContent = rec.professionalAssessment;
-
-        document.getElementById('dc-btn-report').onclick = () => window.BCStore.openReportModal(rec.id);
-        document.getElementById('dc-btn-handover').onclick = () => window.BCStore.openHandoverModal(rec.trademarkName);
-        document.getElementById('dc-btn-order').onclick = () => window.BCStore.openOrderModal('SRV-REG-01', rec.trademarkName, rec.recommendedClasses);
-
-        if (resultBox) {
-          resultBox.hidden = false;
-          resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-      };
-
-      // 3. Search Form Submit
-      if (searchForm) {
-        searchForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          doSearch(brandInput.value);
-        });
-      }
-
-      // 4. Input clear button behavior
-      if (brandInput && clearBtn) {
-        brandInput.addEventListener('input', () => {
-          clearBtn.style.display = brandInput.value ? 'block' : 'none';
-        });
-        clearBtn.addEventListener('click', () => {
-          brandInput.value = '';
-          clearBtn.style.display = 'none';
-          brandInput.focus();
-        });
-      }
-
-      // 5. Quick Brand Chips (adidas, nike, mebiso, etc.)
-      document.querySelectorAll('.quick-chip').forEach((chip) => {
-        chip.addEventListener('click', () => {
-          const q = chip.getAttribute('data-q');
-          if (q) doSearch(q);
-        });
-      });
-
-      // 6. Toggle Advanced AI Panel
-      if (toggleAdvBtn && advPanel) {
-        toggleAdvBtn.addEventListener('click', () => {
-          const isOpen = !advPanel.hidden;
-          advPanel.hidden = isOpen;
-          if (advArrow) advArrow.textContent = isOpen ? '▾' : '▴';
-        });
-      }
-
-      // 7. Logo Upload Handlers
-      if (fileInput) {
-        fileInput.addEventListener('change', (e) => {
-          const f = e.target.files?.[0];
-          if (!f || !f.type.startsWith('image/')) return;
-          const sizeKB = Math.round(f.size / 1024);
-          const reader = new FileReader();
-          reader.onload = (ev) => {
-            const img = new Image();
-            img.onload = () => {
-              uploadedMeta = window.BCStore.analyzeLogoPixels(img, f.name, sizeKB);
-              if (fileStatus) {
-                fileStatus.innerHTML = `
-                  <strong style="color:var(--green);">✓ Logo Terverifikasi:</strong> ${f.name} (${uploadedMeta.width}×${uploadedMeta.height} px)<br/>
-                  Vienna: <code>${uploadedMeta.viennaCode}</code> (${uploadedMeta.viennaTitle}) · Simetri: ${uploadedMeta.symmetryH}%
-                `;
-              }
-              doSearch(brandInput.value || uploadedMeta.inferredBrand);
-            };
-            img.src = ev.target.result;
-          };
-          reader.readAsDataURL(f);
-        });
-      }
-
-      if (compFileInput) {
-        compFileInput.addEventListener('change', (e) => {
-          const f = e.target.files?.[0];
-          if (!f || !f.type.startsWith('image/')) return;
-          const sizeKB = Math.round(f.size / 1024);
-          const reader = new FileReader();
-          reader.onload = (ev) => {
-            const img = new Image();
-            img.onload = () => {
-              uploadedCompMeta = window.BCStore.analyzeLogoPixels(img, f.name, sizeKB);
-              const cmp = uploadedMeta && window.BCStore.compareTwoLogos
-                ? window.BCStore.compareTwoLogos(uploadedMeta, uploadedCompMeta)
-                : null;
-              if (compFileStatus) {
-                compFileStatus.innerHTML = `
-                  <strong style="color:var(--green);">✓ Logo Pembanding Terbaca:</strong> ${f.name}<br/>
-                  ${cmp ? `<strong style="color:${cmp.badgeColor};">Hasil Uji 1-on-1: ${cmp.totalSim}% (${cmp.verdict})</strong>` : ''}
-                `;
-              }
-              doSearch(brandInput.value);
-            };
-            img.src = ev.target.result;
-          };
-          reader.readAsDataURL(f);
-        });
-      }
-
-      if (btnRunAdv) {
-        btnRunAdv.addEventListener('click', () => {
-          doSearch(brandInput.value);
-          window.runTrademarkCheck(brandInput.value);
-        });
-      }
-
-      // 8. Auto-load on Page Load (Checking URL search query or defaulting to 'adidas' matching screenshot)
       const urlParams = new URLSearchParams(window.location.search);
-      const initialQ = urlParams.get('q') || 'adidas';
-      doSearch(initialQ);
+      const prefillQ = urlParams.get('q');
+      if (prefillQ) {
+        searchInput.value = prefillQ;
+        executeSearch(prefillQ);
+      }
+
+      function executeSearch(query) {
+        const q = (query || searchInput.value || 'kopi kenangan').trim();
+        if (!q) return;
+        queryDisplay.textContent = q.toUpperCase();
+        searchedMeta.textContent = q.toUpperCase();
+        compName.textContent = q.toUpperCase();
+
+        if (window.BCStore && window.BCStore.fetchLivePdkiApi) {
+          window.BCStore.fetchLivePdkiApi(q).then(res => {
+            if (res && res.items && res.items.length > 0) {
+              const top = res.items[0];
+              document.getElementById('tc-res-count').textContent = `Ditemukan ${res.totalFound || res.items.length} merek terkait pada data resmi DJKI.`;
+              document.getElementById('tc-meta-found').textContent = `${res.totalFound || res.items.length} merek ditemukan`;
+              document.getElementById('tc-badge-tab-count').textContent = res.items.length;
+              document.getElementById('tc-comp-name').textContent = top.brand;
+              document.getElementById('tc-comp-owner').textContent = top.owner;
+              document.getElementById('tc-comp-appno').textContent = top.appNo;
+              document.getElementById('tc-comp-class').textContent = top.niceClass;
+              document.getElementById('tc-comp-status').textContent = top.status || 'TERDAFTAR';
+              if (top.etiquetteSvg) {
+                compLogo.innerHTML = top.etiquetteSvg;
+              }
+            }
+          });
+        }
+      }
+
+      searchForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        executeSearch(searchInput.value);
+      });
     });
   </script>
 </body>

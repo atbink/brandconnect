@@ -6247,3 +6247,1268 @@ button {
 }
 
 
+
+/* ==========================================================================
+   NEW BRANDCONNECT UI SPECIFICATION (IMAGES 1 - 8)
+   ========================================================================== */
+
+:root {
+  --bc-green: #0D3B2E;
+  --bc-green-hover: #08281F;
+  --bc-green-mint: #EAF4EE;
+  --bc-green-accent: #22C55E;
+  --bc-bg-canvas: #FAF8F5;
+  --bc-card-bg: #FFFFFF;
+  --bc-card-border: #E8E5DD;
+  --bc-text-dark: #1A1C19;
+  --bc-text-muted: #6B7280;
+}
+
+body {
+  background-color: var(--bc-bg-canvas);
+  color: var(--bc-text-dark);
+}
+
+.site-header {
+  background-color: rgba(250, 248, 245, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--bc-card-border);
+}
+
+.serif-accent {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--bc-green);
+}
+
+.nav-login-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--bc-green);
+  color: #FFFFFF !important;
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.55rem 1.35rem;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(13, 59, 46, 0.15);
+}
+
+.nav-login-pill:hover {
+  background-color: var(--bc-green-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(13, 59, 46, 0.22);
+}
+
+.nav-login-pill svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* --------------------------------------------------------------------------
+   IMAGE 1: HERO SECTION
+   -------------------------------------------------------------------------- */
+.bc-hero-wrap {
+  padding: 3.5rem 0 4rem;
+  background: var(--bc-bg-canvas);
+}
+
+.bc-hero-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.95fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+
+.bc-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--bc-green);
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+
+.bc-hero-eyebrow::before {
+  content: "";
+  display: inline-block;
+  width: 24px;
+  height: 2px;
+  background: var(--bc-green);
+}
+
+.bc-hero-title {
+  font-family: var(--font-heading);
+  font-size: 3.1rem;
+  font-weight: 800;
+  line-height: 1.14;
+  letter-spacing: -0.03em;
+  color: var(--bc-text-dark);
+  margin-bottom: 1.25rem;
+}
+
+.bc-hero-desc {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #4B5563;
+  margin-bottom: 2rem;
+  max-width: 540px;
+}
+
+.bc-hero-search-bar {
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid #D5D3CA;
+  border-radius: 9999px;
+  padding: 0.35rem 0.45rem 0.35rem 1.25rem;
+  box-shadow: 0 4px 24px rgba(13, 59, 46, 0.06);
+  margin-bottom: 1.75rem;
+  transition: all 0.2s ease;
+}
+
+.bc-hero-search-bar:focus-within {
+  border-color: var(--bc-green);
+  box-shadow: 0 6px 28px rgba(13, 59, 46, 0.12);
+}
+
+.bc-hero-search-bar svg {
+  width: 20px;
+  height: 20px;
+  color: #9CA3AF;
+  flex-shrink: 0;
+  margin-right: 0.75rem;
+}
+
+.bc-hero-search-bar input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  background: transparent;
+  color: var(--bc-text-dark);
+}
+
+.bc-hero-search-btn {
+  background: var(--bc-green);
+  color: #FFFFFF;
+  border: none;
+  outline: none;
+  border-radius: 9999px;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-heading);
+  font-size: 0.92rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.bc-hero-search-btn:hover {
+  background: var(--bc-green-hover);
+  transform: translateY(-1px);
+}
+
+.bc-trust-badges {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  flex-wrap: wrap;
+}
+
+.bc-trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.bc-trust-item svg {
+  width: 18px;
+  height: 18px;
+  color: var(--bc-green);
+  flex-shrink: 0;
+}
+
+.bc-hero-visual {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(13, 59, 46, 0.08);
+}
+
+.bc-hero-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   IMAGE 2: AI SEARCH ENGINE CARD & 4 FITUR UTAMA
+   -------------------------------------------------------------------------- */
+.bc-ai-search-card {
+  background: #FAF8F4;
+  border: 1px solid var(--bc-card-border);
+  border-radius: 24px;
+  padding: 3.5rem 2.5rem;
+  text-align: center;
+  margin: 2.5rem auto 4.5rem;
+  max-width: 1080px;
+  box-shadow: 0 4px 20px rgba(13, 59, 46, 0.03);
+}
+
+.bc-ai-search-title {
+  font-family: var(--font-heading);
+  font-size: 2.35rem;
+  font-weight: 800;
+  color: var(--bc-text-dark);
+  margin-bottom: 0.85rem;
+  letter-spacing: -0.02em;
+}
+
+.bc-ai-search-title strong {
+  position: relative;
+  display: inline-block;
+}
+
+.bc-ai-search-title strong::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--bc-green-accent);
+  border-radius: 2px;
+}
+
+.bc-ai-search-subtitle {
+  font-size: 0.98rem;
+  color: #4B5563;
+  max-width: 680px;
+  margin: 0 auto 2rem;
+  line-height: 1.6;
+}
+
+.bc-mode-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #ECE9E1;
+  padding: 0.35rem;
+  border-radius: 9999px;
+  margin-bottom: 1.5rem;
+}
+
+.bc-mode-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: 9999px;
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #374151;
+  background: #FFFFFF;
+  border: 1px solid #DFDBD1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bc-mode-tab.active {
+  background: var(--bc-green);
+  color: #FFFFFF;
+  border-color: var(--bc-green);
+}
+
+.bc-search-label {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--bc-text-dark);
+  margin-bottom: 0.85rem;
+}
+
+.bc-input-group {
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border: 1px solid #D5D3CA;
+  border-radius: 9999px;
+  padding: 0.35rem 0.45rem 0.35rem 1.35rem;
+  max-width: 760px;
+  margin: 0 auto 1rem;
+  box-shadow: 0 2px 12px rgba(13, 59, 46, 0.04);
+}
+
+.bc-input-group input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--bc-text-dark);
+  background: transparent;
+}
+
+.bc-btn-search-action {
+  background: var(--bc-green);
+  color: #FFFFFF;
+  border: none;
+  outline: none;
+  border-radius: 9999px;
+  padding: 0.75rem 1.6rem;
+  font-family: var(--font-heading);
+  font-size: 0.92rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bc-btn-search-action:hover {
+  background: var(--bc-green-hover);
+}
+
+.bc-footnote {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: #6B7280;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* 4 Fitur Utama Grid */
+.bc-features-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2.5rem;
+  gap: 2rem;
+}
+
+.bc-features-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--bc-green);
+  text-transform: uppercase;
+  margin-bottom: 0.65rem;
+}
+
+.bc-features-eyebrow::after {
+  content: "";
+  display: inline-block;
+  width: 24px;
+  height: 2px;
+  background: var(--bc-green);
+}
+
+.bc-features-title {
+  font-family: var(--font-heading);
+  font-size: 2.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--bc-text-dark);
+}
+
+.bc-features-intro {
+  font-size: 0.95rem;
+  color: #4B5563;
+  max-width: 440px;
+  line-height: 1.55;
+  text-align: right;
+}
+
+.bc-features-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 4.5rem;
+}
+
+.bc-feature-card {
+  background: #FFFFFF;
+  border: 1px solid var(--bc-card-border);
+  border-radius: 16px;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.25s ease;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 2px 10px rgba(13, 59, 46, 0.03);
+}
+
+.bc-feature-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--bc-green);
+  box-shadow: 0 12px 28px rgba(13, 59, 46, 0.08);
+}
+
+.bc-card-top-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.bc-card-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--bc-green-mint);
+  color: var(--bc-green);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bc-card-icon-wrap svg {
+  width: 22px;
+  height: 22px;
+}
+
+.bc-card-tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  background: #F3F1EB;
+  color: #4B5563;
+  text-transform: uppercase;
+}
+
+.bc-feature-card-title {
+  font-family: var(--font-heading);
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: var(--bc-text-dark);
+  margin-bottom: 0.6rem;
+}
+
+.bc-feature-card-desc {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #4B5563;
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.bc-feature-card-action {
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--bc-green);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* --------------------------------------------------------------------------
+   IMAGE 7: ALUR TERINTEGRASI (CARA KERJA)
+   -------------------------------------------------------------------------- */
+.bc-how-wrap {
+  padding: 4.5rem 0;
+  background: var(--bc-bg-canvas);
+  border-top: 1px solid var(--bc-card-border);
+}
+
+.bc-how-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr;
+  gap: 3.5rem;
+  align-items: flex-start;
+}
+
+.bc-how-team-card {
+  background: #FFFFFF;
+  border: 1px solid var(--bc-card-border);
+  border-radius: 20px;
+  padding: 2.25rem;
+  margin-top: 2.5rem;
+  box-shadow: 0 4px 16px rgba(13, 59, 46, 0.04);
+}
+
+.bc-team-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--bc-green-mint);
+  color: var(--bc-green);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.bc-team-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.bc-team-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #6B7280;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.bc-team-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--bc-text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.bc-team-desc {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #4B5563;
+  margin-bottom: 1.5rem;
+}
+
+.bc-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  position: relative;
+}
+
+.bc-step-item {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 1.5rem;
+  align-items: center;
+  position: relative;
+}
+
+.bc-step-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--bc-green);
+  text-transform: uppercase;
+}
+
+.bc-step-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--bc-green);
+  background: #FFFFFF;
+}
+
+.bc-step-card {
+  background: #FFFFFF;
+  border: 1px solid var(--bc-card-border);
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  box-shadow: 0 2px 10px rgba(13, 59, 46, 0.03);
+  transition: all 0.2s ease;
+}
+
+.bc-step-card.active {
+  background: var(--bc-green);
+  color: #FFFFFF;
+  border-color: var(--bc-green);
+  box-shadow: 0 8px 24px rgba(13, 59, 46, 0.18);
+}
+
+.bc-step-card.active .bc-step-card-title,
+.bc-step-card.active .bc-step-card-desc {
+  color: #FFFFFF;
+}
+
+.bc-step-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--bc-green-mint);
+  color: var(--bc-green);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bc-step-card.active .bc-step-card-icon {
+  background: rgba(255, 255, 255, 0.16);
+  color: #FFFFFF;
+}
+
+.bc-step-card-title {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--bc-text-dark);
+  margin-bottom: 0.25rem;
+}
+
+.bc-step-card-desc {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #4B5563;
+}
+
+/* --------------------------------------------------------------------------
+   IMAGE 8: KATALOG LAYANAN (SERVICES 8 CARDS)
+   -------------------------------------------------------------------------- */
+.bc-services-wrap {
+  padding: 4.5rem 0 5rem;
+  background: var(--bc-bg-canvas);
+  border-top: 1px solid var(--bc-card-border);
+}
+
+.bc-services-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2.75rem;
+  gap: 2rem;
+}
+
+.bc-services-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--bc-green);
+  text-transform: uppercase;
+  margin-bottom: 0.65rem;
+}
+
+.bc-services-eyebrow::after {
+  content: "";
+  display: inline-block;
+  width: 24px;
+  height: 2px;
+  background: var(--bc-green);
+}
+
+.bc-services-title {
+  font-family: var(--font-heading);
+  font-size: 2.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--bc-text-dark);
+}
+
+.bc-services-intro {
+  font-size: 0.95rem;
+  color: #4B5563;
+  max-width: 440px;
+  line-height: 1.55;
+  text-align: right;
+}
+
+.bc-services-grid-8 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.bc-service-card {
+  background: #FFFFFF;
+  border: 1px solid var(--bc-card-border);
+  border-radius: 16px;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 10px rgba(13, 59, 46, 0.03);
+}
+
+.bc-service-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--bc-green);
+  box-shadow: 0 12px 28px rgba(13, 59, 46, 0.08);
+}
+
+.bc-service-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--bc-green-mint);
+  color: var(--bc-green);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.bc-service-icon-wrap svg {
+  width: 22px;
+  height: 22px;
+}
+
+.bc-service-title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--bc-text-dark);
+  margin-bottom: 0.55rem;
+}
+
+.bc-service-desc {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #4B5563;
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.bc-service-btn {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--bc-text-dark);
+  border: 1px solid #D5D3CA;
+  border-radius: 9999px;
+  padding: 0.55rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  background: #FFFFFF;
+}
+
+.bc-service-btn:hover {
+  border-color: var(--bc-green);
+  color: var(--bc-green);
+  background: var(--bc-green-mint);
+}
+
+/* --------------------------------------------------------------------------
+   IMAGE 5: MONITORING HERO (DARK EMERALD)
+   -------------------------------------------------------------------------- */
+.bc-monitoring-dark-hero {
+  background: #0C2E24;
+  color: #FFFFFF;
+  padding: 4.5rem 0 3.5rem;
+  border-radius: 24px;
+  margin: 1.5rem 0 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.bc-monitoring-dark-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 3.5rem;
+  align-items: center;
+  padding: 0 3rem;
+  margin-bottom: 3.5rem;
+}
+
+.bc-monitoring-dark-hero .bc-hero-eyebrow {
+  color: #5CD4A5;
+}
+
+.bc-monitoring-dark-hero .bc-hero-eyebrow::before {
+  background: #5CD4A5;
+}
+
+.bc-monitoring-dark-hero .bc-hero-title {
+  color: #FFFFFF;
+}
+
+.bc-monitoring-dark-hero .serif-accent {
+  color: #5CD4A5;
+}
+
+.bc-monitoring-dark-hero .bc-hero-desc {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.bc-btn-white-pill {
+  background: #FFFFFF;
+  color: #0C2E24;
+  border: none;
+  outline: none;
+  border-radius: 9999px;
+  padding: 0.75rem 1.75rem;
+  font-family: var(--font-heading);
+  font-size: 0.92rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.bc-btn-white-pill:hover {
+  background: #F3F1EB;
+  transform: translateY(-1px);
+}
+
+.bc-btn-outline-pill {
+  background: transparent;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 9999px;
+  padding: 0.75rem 1.75rem;
+  font-family: var(--font-heading);
+  font-size: 0.92rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.bc-btn-outline-pill:hover {
+  border-color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.bc-monitoring-mockup-wrap {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.35);
+}
+
+.bc-monitoring-mockup-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.bc-monitoring-points-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 2.25rem 3rem 0;
+}
+
+.bc-point-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.bc-point-item svg {
+  width: 22px;
+  height: 22px;
+  color: #5CD4A5;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.bc-point-title {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 0.25rem;
+}
+
+.bc-point-desc {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+/* --------------------------------------------------------------------------
+   IMAGE 4: CLASS FINDER
+   -------------------------------------------------------------------------- */
+.bc-class-hero-wrap {
+  background: var(--bc-bg-canvas);
+  padding: 3.5rem 0 2.5rem;
+}
+
+.bc-class-hero-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 3rem;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.bc-filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 3.5rem;
+}
+
+.bc-filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1.25rem;
+  border-radius: 9999px;
+  background: #FFFFFF;
+  border: 1px solid #D5D3CA;
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.bc-filter-pill.active,
+.bc-filter-pill:hover {
+  background: var(--bc-green);
+  color: #FFFFFF;
+  border-color: var(--bc-green);
+}
+
+.bc-classes-grid-9 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.bc-class-card {
+  background: #FFFFFF;
+  border: 1px solid var(--bc-card-border);
+  border-radius: 16px;
+  padding: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(13, 59, 46, 0.03);
+}
+
+.bc-class-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--bc-green);
+  box-shadow: 0 8px 20px rgba(13, 59, 46, 0.08);
+}
+
+.bc-class-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.bc-class-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--bc-green-mint);
+  color: var(--bc-green);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bc-class-num {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--bc-green);
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.bc-class-name {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--bc-text-dark);
+}
+
+.bc-class-arrow-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bc-green-mint);
+  color: var(--bc-green);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.bc-class-card:hover .bc-class-arrow-btn {
+  background: var(--bc-green);
+  color: #FFFFFF;
+}
+
+/* --------------------------------------------------------------------------
+   IMAGE 6: PENDAFTARAN MEREK (REGISTRATION 4-STEP TIMELINE)
+   -------------------------------------------------------------------------- */
+.bc-reg-hero-wrap {
+  padding: 3.5rem 0 4.5rem;
+  background: var(--bc-bg-canvas);
+}
+
+.bc-reg-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  border: 1px solid var(--bc-green);
+  background: var(--bc-green-mint);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--bc-green);
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+
+.bc-reg-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+
+.bc-reg-stepper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.bc-reg-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  position: relative;
+}
+
+.bc-reg-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bc-green-mint);
+  color: var(--bc-green);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bc-reg-step-title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--bc-text-dark);
+  margin-bottom: 0.25rem;
+}
+
+.bc-reg-step-desc {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #4B5563;
+}
+
+.bc-reg-card-wrap {
+  background: #FFFFFF;
+  border: 1px solid var(--bc-card-border);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 16px 40px rgba(13, 59, 46, 0.08);
+}
+
+.bc-reg-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  color: #6B7280;
+}
+
+.bc-reg-card-img {
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+
+.bc-reg-card-img img {
+  width: 100%;
+  display: block;
+}
+
+.bc-reg-mini-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.bc-mini-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--bc-text-dark);
+}
+
+.bc-mini-step svg {
+  width: 20px;
+  height: 20px;
+  color: var(--bc-green);
+}
+
+.bc-banner-callout {
+  background: #0C2E24;
+  color: #FFFFFF;
+  border-radius: 20px;
+  padding: 2.25rem 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-top: 3.5rem;
+}
+
+.bc-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.bc-banner-left svg {
+  width: 48px;
+  height: 48px;
+  color: #5CD4A5;
+  flex-shrink: 0;
+}
+
+.bc-banner-title {
+  font-family: var(--font-heading);
+  font-size: 1.85rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.bc-banner-title .serif-accent {
+  color: #5CD4A5;
+}
+
+.bc-banner-desc {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 440px;
+  line-height: 1.5;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE QUERIES
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .bc-hero-grid,
+  .bc-how-grid,
+  .bc-class-hero-grid,
+  .bc-reg-grid,
+  .bc-monitoring-dark-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .bc-features-grid-4,
+  .bc-services-grid-8 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .bc-classes-grid-9 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .bc-monitoring-points-bar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .bc-banner-callout {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .bc-hero-title {
+    font-size: 2.2rem;
+  }
+  .bc-features-grid-4,
+  .bc-services-grid-8,
+  .bc-classes-grid-9,
+  .bc-monitoring-points-bar {
+    grid-template-columns: 1fr;
+  }
+  .bc-features-header,
+  .bc-services-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .bc-features-intro,
+  .bc-services-intro {
+    text-align: left;
+  }
+  .bc-mode-tabs {
+    flex-wrap: wrap;
+  }
+}
