@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Dashboard — BRANDCONNECT | Portal Pelanggan &amp; Portofolio Merek</title>
+  <meta name="description" content="Dashboard Pelanggan BrandConnect: Kelola profil bisnis, portofolio merek, riwayat pencarian AI, pesanan layanan, status kasus DJKI, dokumen, dan konsultasi." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .dash-layout { display: grid; grid-template-columns: 260px 1fr; gap: 2rem; padding: 2.5rem 0 5rem; align-items: start; }
+    @media (max-width: 960px) { .dash-layout { grid-template-columns: 1fr; } }
+    .dash-sidebar { background: var(--ivory-elevated); border: 1.5px solid var(--border-sketch-strong); border-radius: 6px; padding: 1.25rem; position: sticky; top: 92px; }
+    .dash-user-card { padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px dashed var(--border-sketch-strong); }
+    .dash-nav-list { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
+    .dash-nav-btn { width: 100%; text-align: left; padding: 0.65rem 0.85rem; border: none; background: transparent; border-radius: 4px; font-family: var(--font-heading); font-size: 0.84rem; font-weight: 700; color: var(--charcoal); cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.18s ease; }
+    .dash-nav-btn:hover { background: rgba(49,91,76,0.08); }
+    .dash-nav-btn.active { background: var(--green); color: var(--ivory); }
+    .dash-panel { display: none; background: var(--ivory-elevated); border: 1.5px solid var(--border-sketch-strong); border-radius: 6px; padding: 2rem; }
+    .dash-panel.active { display: block; }
+    .dash-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+    @media (max-width: 768px) { .dash-kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    .dash-kpi-card { background: #FFF; border: 1px solid var(--border-sketch-strong); border-radius: 4px; padding: 1.15rem; }
+    .dash-kpi-num { font-family: var(--font-heading); font-size: 1.75rem; font-weight: 800; color: var(--green); line-height: 1.1; }
+    .dash-kpi-label { font-family: var(--font-mono); font-size: 0.68rem; color: var(--pencil); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.25rem; }
+    .dash-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; background: #FFF; border: 1px solid var(--border-sketch-strong); }
+    .dash-table th, .dash-table td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border-sketch); text-align: left; }
+    .dash-table th { font-family: var(--font-mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--pencil); background: var(--ivory); }
+    .stage-stepper { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.4rem; margin: 1rem 0; }
+    @media (max-width: 768px) { .stage-stepper { grid-template-columns: 1fr; } }
+    .stage-step-pill { padding: 0.5rem; border-radius: 3px; border: 1px solid var(--border-sketch-strong); font-family: var(--font-mono); font-size: 0.65rem; background: var(--ivory); color: var(--pencil); text-align: center; }
+    .stage-step-pill.done { background: rgba(49,91,76,0.12); border-color: var(--green); color: var(--green); font-weight: 700; }
+    .stage-step-pill.current { background: var(--green); border-color: var(--green); color: var(--ivory); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="paper-grain" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        <span class="logo-mark">BRANDCONNECT<span class="logo-dot"></span></span>
+        <span class="logo-sub">CUSTOMER PORTAL // DASHBOARD</span>
+      </a>
+      <nav class="main-nav">
+        <ul class="nav-list">
+          <li><a href="index.html" class="nav-link">Homepage</a></li>
+          <li><a href="trademark-checker.html" class="nav-link">Cek Merek AI</a></li>
+          <li><a href="class-finder.html" class="nav-link">Cari Kelas</a></li>
+          <li><a href="services.html" class="nav-link">Katalog Layanan</a></li>
+          <li><a href="dashboard.html" class="nav-link active">Customer Dashboard</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions" style="display:flex;gap:0.55rem;">
+        <button type="button" class="btn btn-primary btn-sm" onclick="window.BCStore.openOrderModal('SRV-REG-01')">+ Order Layanan Baru</button>
+        <a href="admin.html" class="nav-login-btn" style="text-decoration:none;background:var(--charcoal);color:var(--ivory);">Buka Admin Panel</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="dash-layout">
+      <!-- Sidebar Navigation (9 Modules per Section G) -->
+      <aside class="dash-sidebar">
+        <div class="dash-user-card">
+          <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--green);font-weight:700;">PORTAL PELANGGAN AKTIF</span>
+          <h3 id="sb-user-name" style="font-family:var(--font-heading);font-size:1.05rem;font-weight:800;margin-top:0.2rem;">Nadia Kusuma</h3>
+          <p id="sb-company-name" style="font-size:0.78rem;color:var(--pencil);">PT Zenova Botanica Indonesia</p>
+        </div>
+
+        <ul class="dash-nav-list">
+          <li><button type="button" class="dash-nav-btn active" data-dash-tab="overview"><span>01. Overview &amp; Notifikasi</span><span id="badge-notif-count">2</span></button></li>
+          <li><button type="button" class="dash-nav-btn" data-dash-tab="profile"><span>02. Customer Profile</span></button></li>
+          <li><button type="button" class="dash-nav-btn" data-dash-tab="business"><span>03. Business Profile</span></button></li>
+          <li><button type="button" class="dash-nav-btn" data-dash-tab="portfolio"><span>04. Trademark Portfolio</span></button></li>
+          <li><button type="button" class="dash-nav-btn" data-dash-tab="searches"><span>05. AI Search History</span></button></li>
+          <li><button type="button" class="dash-nav-btn" data-dash-tab="orders"><span>06. Service Orders</span></button></li>
+          <li><button type="button" class="dash-nav-btn" data-dash-tab="cases"><span>07. Case Status (DJKI)</span></button></li>
+          <li><button type="button" class="dash-nav-btn" data-dash-tab="documents"><span>08. Private Documents</span></button></li>
+          <li><button type="button" class="dash-nav-btn" data-dash-tab="consultations"><span>09. Consultation History</span></button></li>
+        </ul>
+      </aside>
+
+      <!-- Main Content Panels -->
+      <section>
+        <!-- KPI Summary Bar -->
+        <div class="dash-kpi-grid">
+          <div class="dash-kpi-card"><div class="dash-kpi-num" id="kpi-portfolio">0</div><div class="dash-kpi-label">Portofolio Merek</div></div>
+          <div class="dash-kpi-card"><div class="dash-kpi-num" id="kpi-cases">0</div><div class="dash-kpi-label">Kasus DJKI Aktif</div></div>
+          <div class="dash-kpi-card"><div class="dash-kpi-num" id="kpi-searches">0</div><div class="dash-kpi-label">Riwayat Cek AI</div></div>
+          <div class="dash-kpi-card"><div class="dash-kpi-num" id="kpi-docs">0</div><div class="dash-kpi-label">Dokumen Terverifikasi</div></div>
+        </div>
+
+        <!-- PANEL 1: OVERVIEW & NOTIFICATIONS -->
+        <div class="dash-panel active" id="panel-overview">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
+            <div>
+              <span class="eyebrow">01 // NOTIFICATIONS &amp; CASE ALERTS</span>
+              <h2 style="font-family:var(--font-heading);font-size:1.5rem;font-weight:800;">Notifikasi &amp; Pembaruan Terkini</h2>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-mark-all-read">Tandai Semua Dibaca</button>
+          </div>
+          <div id="notif-list" style="display:flex;flex-direction:column;gap:0.85rem;"></div>
+        </div>
+
+        <!-- PANEL 2: CUSTOMER PROFILE -->
+        <div class="dash-panel" id="panel-profile">
+          <span class="eyebrow">02 // ACCOUNT INFORMATION</span>
+          <h2 style="font-family:var(--font-heading);font-size:1.5rem;font-weight:800;margin-bottom:1.25rem;">Customer Profile</h2>
+          <form id="form-cust-profile" class="consultation-form" style="padding:0;max-width:560px;">
+            <div class="form-group"><label>NAMA LENGKAP *</label><input type="text" id="cp-name" required /></div>
+            <div class="form-group"><label>EMAIL TERDAFTAR *</label><input type="email" id="cp-email" required /></div>
+            <div class="form-group"><label>NOMOR WHATSAPP / TELEPON *</label><input type="text" id="cp-phone" required /></div>
+            <button type="submit" class="btn btn-primary btn-sm">Simpan Profil Pelanggan</button>
+            <span id="cp-saved-msg" hidden style="color:var(--green);font-weight:700;font-size:0.84rem;margin-left:0.75rem;">✓ Tersimpan!</span>
+          </form>
+        </div>
+
+        <!-- PANEL 3: BUSINESS PROFILE -->
+        <div class="dash-panel" id="panel-business">
+          <span class="eyebrow">03 // APPLICANT ENTITY</span>
+          <h2 style="font-family:var(--font-heading);font-size:1.5rem;font-weight:800;margin-bottom:1.25rem;">Business Profile (Data Pemohon Merek)</h2>
+          <form id="form-biz-profile" class="consultation-form" style="padding:0;max-width:640px;">
+            <div class="form-row-split">
+              <div class="form-group"><label>NAMA PERUSAHAAN / ENTITAS *</label><input type="text" id="bp-company" required /></div>
+              <div class="form-group">
+                <label>KATEGORI PEMOHON DJKI *</label>
+                <select id="bp-type">
+                  <option value="umkm">UMKM (Binaan / Surat Dinas)</option>
+                  <option value="perorangan">Perorangan Umum</option>
+                  <option value="badan_usaha">Badan Usaha (PT / CV)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row-split">
+              <div class="form-group"><label>SEKTOR INDUSTRI</label><input type="text" id="bp-sector" /></div>
+              <div class="form-group"><label>NPWP PEMOHON / BADAN</label><input type="text" id="bp-npwp" /></div>
+            </div>
+            <div class="form-group"><label>ALAMAT LENGKAP SESUAI AKTA / KTP</label><textarea id="bp-address" rows="3"></textarea></div>
+            <button type="submit" class="btn btn-primary btn-sm">Simpan Profil Bisnis</button>
+            <span id="bp-saved-msg" hidden style="color:var(--green);font-weight:700;font-size:0.84rem;margin-left:0.75rem;">✓ Tersimpan!</span>
+          </form>
+        </div>
+
+        <!-- PANEL 4: TRADEMARK PORTFOLIO -->
+        <div class="dash-panel" id="panel-portfolio">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
+            <div>
+              <span class="eyebrow">04 // REGISTERED &amp; PENDING MARKS</span>
+              <h2 style="font-family:var(--font-heading);font-size:1.5rem;font-weight:800;">Trademark Portfolio</h2>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" onclick="window.BCStore.openOrderModal('SRV-REG-01')">+ Daftarkan Merek Baru</button>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="dash-table">
+              <thead><tr><th>Nama Merek</th><th>Kelas Nice</th><th>No. Permohonan</th><th>Filing Date</th><th>Status DJKI</th><th>Monitoring</th></tr></thead>
+              <tbody id="tb-portfolio"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- PANEL 5: AI SEARCH HISTORY -->
+        <div class="dash-panel" id="panel-searches">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
+            <div>
+              <span class="eyebrow">05 // AI PRE-SCREENING LOGS</span>
+              <h2 style="font-family:var(--font-heading);font-size:1.5rem;font-weight:800;">AI Search History</h2>
+            </div>
+            <a href="trademark-checker.html" class="btn btn-secondary btn-sm">+ Cek Merek Baru</a>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="dash-table">
+              <thead><tr><th>Ref Code</th><th>Merek / Query</th><th>Kelas Rekomendasi</th><th>Indeks AI</th><th>Hasil Evaluasi</th><th>Aksi</th></tr></thead>
+              <tbody id="tb-searches"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- PANEL 6: SERVICE ORDERS -->
+        <div class="dash-panel" id="panel-orders">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
+            <div>
+              <span class="eyebrow">06 // ORDERS &amp; INVOICING</span>
+              <h2 style="font-family:var(--font-heading);font-size:1.5rem;font-weight:800;">Service Orders</h2>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" onclick="window.BCStore.openOrderModal('SRV-REG-01')">+ Buat Pesanan Layanan</button>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="dash-table">
+              <thead><tr><th>No. Order</th><th>Layanan</th><th>Merek &amp; Kelas</th><th>Biaya</th><th>Pembayaran</th><th>Status Order</th></tr></thead>
+              <tbody id="tb-orders"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- PANEL 7: CASE STATUS -->
+        <div class="dash-panel" id="panel-cases">
+          <span class="eyebrow">07 // LIVE DJKI CASE TRACKING</span>
+          <h2 style="font-family:var(--font-heading);font-size:1.5rem;font-weight:800;margin-bottom:1.25rem;">Case Status &amp; In-House Team Progress</h2>
+          <div id="cases-list" style="display:flex;flex-direction:column;gap:1.25rem;"></div>
+        </div>
+
+        <!-- PANEL 8: PRIVATE DOCUMENTS -->
+        <div class="dash-panel" id="panel-documents">
+          <span class="eyebrow">08 // SECURE DOCUMENT VAULT</span>
+          <h2 style="font-family:var(--font-heading);font-size:1.5rem;font-weight:800;margin-bottom:1.25rem;">Dokumen Persyaratan &amp; Sertifikat Merek</h2>
+          <form id="form-upload-doc" style="background:#FFF;border:1px solid var(--border-sketch-strong);padding:1.25rem;border-radius:4px;margin-bottom:1.5rem;display:grid;grid-template-columns:1fr 1fr 1.2fr auto;gap:0.75rem;align-items:end;">
+            <div>
+              <label style="font-family:var(--font-mono);font-size:0.68rem;display:block;margin-bottom:0.3rem;">NOMOR KASUS</label>
+              <select id="doc-case" class="tm-class-select" style="height:42px;"></select>
+            </div>
+            <div>
+              <label style="font-family:var(--font-mono);font-size:0.68rem;display:block;margin-bottom:0.3rem;">JENIS DOKUMEN</label>
+              <select id="doc-type" class="tm-class-select" style="height:42px;">
+                <option value="Etiket Merek (Logo)">Etiket Merek (Logo PNG/JPG)</option>
+                <option value="KTP Pemohon">KTP Pemohon</option>
+                <option value="Surat Rekomendasi UMKM">Surat Rekomendasi UMKM</option>
+                <option value="Akta Pendirian PT/CV">Akta Pendirian PT/CV</option>
+                <option value="Surat Kuasa HAKI">Surat Kuasa HAKI</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-family:var(--font-mono);font-size:0.68rem;display:block;margin-bottom:0.3rem;">PILIH FILE *</label>
+              <input type="file" id="doc-file" required style="font-size:0.8rem;" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm" style="height:42px;">Unggah Dokumen</button>
+          </form>
+          <div style="overflow-x:auto;">
+            <table class="dash-table">
+              <thead><tr><th>Kasus</th><th>Jenis Dokumen</th><th>Nama File</th><th>Ukuran / Dimensi</th><th>Status Verifikasi</th><th>Catatan Document Officer</th></tr></thead>
+              <tbody id="tb-docs"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- PANEL 9: CONSULTATION HISTORY -->
+        <div class="dash-panel" id="panel-consultations">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
+            <div>
+              <span class="eyebrow">09 // SPECIALIST HANDOVER &amp; AI CONSULTATIONS</span>
+              <h2 style="font-family:var(--font-heading);font-size:1.5rem;font-weight:800;">Riwayat Konsultasi &amp; Handover</h2>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" onclick="window.BCStore.openHandoverModal()">+ Konsultasi Spesialis Baru</button>
+          </div>
+          <div id="consult-list" style="display:flex;flex-direction:column;gap:1rem;"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/platform-store.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabs = document.querySelectorAll('[data-dash-tab]');
+      const panels = document.querySelectorAll('.dash-panel');
+
+      tabs.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          tabs.forEach((b) => b.classList.remove('active'));
+          panels.forEach((p) => p.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById('panel-' + btn.getAttribute('data-dash-tab'))?.classList.add('active');
+        });
+      });
+
+      const STAGES = [
+        '1. Document Verification',
+        '2. Specialist Review',
+        '3. DJKI Filing',
+        '4. Formality Check',
+        '5. BRM Publication (2 Mo)',
+        '6. Substantive Exam',
+        '7. Certificate Issued'
+      ];
+
+      function renderDashboard() {
+        const state = window.BCStore.getState();
+        document.getElementById('sb-user-name').textContent = state.customerProfile.name;
+        document.getElementById('sb-company-name').textContent = state.businessProfile.companyName;
+
+        document.getElementById('kpi-portfolio').textContent = state.trademarkPortfolio.length;
+        document.getElementById('kpi-cases').textContent = state.trademarkCases.length;
+        document.getElementById('kpi-searches').textContent = state.searchLogs.length;
+        document.getElementById('kpi-docs').textContent = state.documents.length;
+
+        const unreadCount = state.notifications.filter((n) => !n.read).length;
+        document.getElementById('badge-notif-count').textContent = unreadCount;
+
+        // Notifications
+        document.getElementById('notif-list').innerHTML = state.notifications.map((n) => `
+          <div style="background:#FFF;border:1px solid var(--border-sketch-strong);border-left:4px solid ${n.type === 'warning' ? '#D98E2C' : 'var(--green)'};padding:1rem 1.25rem;border-radius:4px;opacity:${n.read ? '0.72' : '1'};">
+            <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:0.7rem;color:var(--pencil);margin-bottom:0.25rem;">
+              <span>${n.date}</span>
+              <span>${n.read ? 'SUDAH DIBACA' : '● BARU'}</span>
+            </div>
+            <strong style="font-family:var(--font-heading);font-size:0.95rem;display:block;margin-bottom:0.25rem;">${n.title}</strong>
+            <p style="font-size:0.86rem;color:var(--charcoal);">${n.message}</p>
+          </div>
+        `).join('');
+
+        // Profile inputs
+        document.getElementById('cp-name').value = state.customerProfile.name;
+        document.getElementById('cp-email').value = state.customerProfile.email;
+        document.getElementById('cp-phone').value = state.customerProfile.phone;
+
+        document.getElementById('bp-company').value = state.businessProfile.companyName;
+        document.getElementById('bp-type').value = state.businessProfile.applicantType;
+        document.getElementById('bp-sector').value = state.businessProfile.industrySector;
+        document.getElementById('bp-npwp').value = state.businessProfile.npwpNumber;
+        document.getElementById('bp-address').value = state.businessProfile.address;
+
+        // Portfolio
+        document.getElementById('tb-portfolio').innerHTML = state.trademarkPortfolio.map((p) => `
+          <tr>
+            <td><strong>${p.trademarkName}</strong></td>
+            <td>${p.niceClasses}</td>
+            <td style="font-family:var(--font-mono);font-size:0.78rem;">${p.applicationNo}</td>
+            <td>${p.filingDate}</td>
+            <td><span class="badge-ai-intel">${p.status}</span></td>
+            <td>${p.monitored ? '🟢 Aktif Dipantau' : '⚪ Nonaktif'}</td>
+          </tr>
+        `).join('');
+
+        // Searches
+        document.getElementById('tb-searches').innerHTML = state.searchLogs.map((s) => `
+          <tr>
+            <td style="font-family:var(--font-mono);font-size:0.74rem;">${s.referenceCode}</td>
+            <td><strong>${s.trademarkName}</strong></td>
+            <td>${s.recommendedClasses}</td>
+            <td><strong>${s.distinctivenessIndex}%</strong></td>
+            <td>${s.verdict}</td>
+            <td><button type="button" class="btn btn-secondary btn-sm" onclick="window.BCStore.openReportModal('${s.id}')">📄 Laporan AI</button></td>
+          </tr>
+        `).join('');
+
+        // Orders
+        document.getElementById('tb-orders').innerHTML = state.serviceOrders.map((o) => `
+          <tr>
+            <td style="font-family:var(--font-mono);font-size:0.76rem;"><strong>${o.orderNumber}</strong></td>
+            <td>${o.serviceName}</td>
+            <td><strong>${o.trademarkName}</strong> (${o.niceClasses})</td>
+            <td>${window.BCStore.formatIDR(o.amount)}</td>
+            <td><span class="badge-ai-intel">${o.paymentStatus.toUpperCase()}</span></td>
+            <td>${o.orderStatus.toUpperCase()}</td>
+          </tr>
+        `).join('');
+
+        // Cases
+        document.getElementById('cases-list').innerHTML = state.trademarkCases.map((c) => `
+          <div style="background:#FFF;border:1.5px solid var(--border-sketch-strong);border-radius:6px;padding:1.35rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+              <div>
+                <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--green);font-weight:700;">${c.caseNumber} // ORDER: ${c.orderNumber} // DJKI NO: ${c.djkiApplicationNo}</span>
+                <h3 style="font-family:var(--font-heading);font-size:1.25rem;font-weight:800;">${c.trademarkName} (${c.niceClasses})</h3>
+              </div>
+              <span class="badge-ai-intel">TAHAP AKTIF: ${c.stage.toUpperCase()}</span>
+            </div>
+            <div class="stage-stepper">
+              ${STAGES.map((st, idx) => {
+                const sIdx = idx + 1;
+                const cls = sIdx < c.stageIndex ? 'done' : sIdx === c.stageIndex ? 'current' : '';
+                return `<div class="stage-step-pill ${cls}">${st}</div>`;
+              }).join('')}
+            </div>
+            <div style="font-size:0.83rem;background:var(--ivory);padding:0.85rem;border-radius:4px;margin-top:0.5rem;">
+              <strong>Tim Penanggung Jawab In-House:</strong> Spesialis: ${c.specialist} · Legal Counsel: ${c.legalCounsel} · Document Officer: ${c.docOfficer}<br/>
+              <strong>Catatan Penilaian Hukum:</strong> ${c.legalAssessment}
+            </div>
+          </div>
+        `).join('');
+
+        // Documents
+        document.getElementById('doc-case').innerHTML = state.trademarkCases.map((c) => `<option value="${c.caseNumber}">${c.caseNumber} — ${c.trademarkName}</option>`).join('');
+        document.getElementById('tb-docs').innerHTML = state.documents.map((d) => `
+          <tr>
+            <td style="font-family:var(--font-mono);font-size:0.76rem;">${d.caseNumber}</td>
+            <td><strong>${d.docType}</strong></td>
+            <td>${d.fileName}</td>
+            <td style="font-family:var(--font-mono);font-size:0.75rem;">${d.fileSize} · ${d.dimensions}</td>
+            <td><span class="badge-ai-intel">${d.status}</span></td>
+            <td>${d.officerNotes}</td>
+          </tr>
+        `).join('');
+
+        // Consultations
+        document.getElementById('consult-list').innerHTML = state.consultationLeads.map((l) => `
+          <div style="background:#FFF;border:1px solid var(--border-sketch-strong);padding:1.25rem;border-radius:4px;">
+            <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:0.72rem;color:var(--green);margin-bottom:0.35rem;">
+              <span>${l.leadNumber} · ${l.createdAt}</span>
+              <span>STATUS: ${l.status.toUpperCase()} · DITANGANI: ${l.assignedTo}</span>
+            </div>
+            <h4 style="font-family:var(--font-heading);font-size:1.1rem;font-weight:800;">Merek: ${l.trademarkName} — ${l.requestedService}</h4>
+            <p style="font-size:0.85rem;margin:0.4rem 0;"><strong>Ringkasan AI &amp; Klien:</strong> ${l.conversationSummary}</p>
+            <p style="font-size:0.84rem;color:var(--green);"><strong>Catatan Spesialis Merek:</strong> ${l.specialistNotes}</p>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('btn-mark-all-read').addEventListener('click', () => {
+        const state = window.BCStore.getState();
+        state.notifications.forEach((n) => { n.read = true; });
+        window.BCStore.saveState();
+        renderDashboard();
+      });
+
+      document.getElementById('form-cust-profile').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const state = window.BCStore.getState();
+        state.customerProfile.name = document.getElementById('cp-name').value;
+        state.customerProfile.email = document.getElementById('cp-email').value;
+        state.customerProfile.phone = document.getElementById('cp-phone').value;
+        window.BCStore.logActivity(state.customerProfile.name, 'Customer', 'PROFILE_UPDATED', 'USER-101', 'Memperbarui profil kontak pelanggan.');
+        window.BCStore.saveState();
+        document.getElementById('cp-saved-msg').hidden = false;
+        renderDashboard();
+      });
+
+      document.getElementById('form-biz-profile').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const state = window.BCStore.getState();
+        state.businessProfile.companyName = document.getElementById('bp-company').value;
+        state.businessProfile.applicantType = document.getElementById('bp-type').value;
+        state.businessProfile.industrySector = document.getElementById('bp-sector').value;
+        state.businessProfile.npwpNumber = document.getElementById('bp-npwp').value;
+        state.businessProfile.address = document.getElementById('bp-address').value;
+        window.BCStore.logActivity(state.customerProfile.name, 'Customer', 'BUSINESS_PROFILE_UPDATED', state.businessProfile.companyName, 'Memperbarui data entitas bisnis pemohon merek.');
+        window.BCStore.saveState();
+        document.getElementById('bp-saved-msg').hidden = false;
+        renderDashboard();
+      });
+
+      document.getElementById('form-upload-doc').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const f = document.getElementById('doc-file').files?.[0];
+        if (!f) return;
+        const state = window.BCStore.getState();
+        const caseNum = document.getElementById('doc-case').value;
+        const docType = document.getElementById('doc-type').value;
+        const sizeKB = Math.round(f.size / 1024) + ' KB';
+
+        state.documents.unshift({
+          id: Date.now(),
+          caseNumber: caseNum,
+          docType,
+          fileName: f.name,
+          fileSize: sizeKB,
+          dimensions: f.type.startsWith('image/') ? 'Image Asset' : 'Document',
+          status: 'Pending Officer Verification',
+          officerNotes: 'Baru diunggah oleh klien. Menunggu verifikasi Document Officer.',
+          uploadedAt: new Date().toISOString().slice(0, 10)
+        });
+        window.BCStore.logActivity(state.customerProfile.name, 'Customer', 'DOCUMENT_UPLOADED', caseNum, `Mengunggah dokumen ${docType} (${f.name}).`);
+        window.BCStore.saveState();
+        e.target.reset();
+        renderDashboard();
+      });
+
+      window.addEventListener('bc:state-updated', renderDashboard);
+      renderDashboard();
+    });
+  </script>
+</body>
+</html>

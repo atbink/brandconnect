@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact &amp; Specialist Handover — BRANDCONNECT</title>
+  <meta name="description" content="Hubungi Tim Spesialis Merek & Konsultan Hukum BrandConnect. Teruskan hasil pencarian AI dan ringkasan konsultasi Anda secara instan." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="paper-grain" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        <span class="logo-mark">BRANDCONNECT<span class="logo-dot"></span></span>
+        <span class="logo-sub">SEARCH SMART. PROTECT BETTER.</span>
+      </a>
+      <nav class="main-nav">
+        <ul class="nav-list">
+          <li><a href="trademark-checker.html" class="nav-link">Cek Merek</a></li>
+          <li><a href="class-finder.html" class="nav-link">Cari Kelas</a></li>
+          <li><a href="monitoring.html" class="nav-link">Monitoring</a></li>
+          <li><a href="brand-protection.html" class="nav-link">Proteksi</a></li>
+          <li><a href="services.html" class="nav-link">Layanan (8)</a></li>
+          <li><a href="contact.html" class="nav-link active">Kontak</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions" style="display:flex;gap:0.55rem;">
+        <a href="dashboard.html" class="nav-login-btn" style="text-decoration:none;">Dashboard Klien</a>
+        <a href="admin.html" class="nav-login-btn" style="text-decoration:none;background:var(--charcoal);color:var(--ivory);">Admin Panel</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="sp-section" style="padding-top:4rem;">
+      <div class="container">
+        <div class="sp-two-col-grid">
+          <div class="sp-block">
+            <span class="badge-ai-intel"><span class="pulse-indicator"></span> HUMAN EXPERT HANDOVER</span>
+            <h1 class="sp-block-title" style="font-size:2.2rem;margin-top:0.75rem;">Konsultasikan Merek Anda dengan Tim Spesialis In-House.</h1>
+            <p>
+              Formulir ini terhubung langsung dengan modul <strong>Lead Management &amp; CRM</strong> di Admin Panel BrandConnect. Seluruh konteks pencarian AI terakhir dan dokumen yang Anda unggah otomatis disertakan untuk ditinjau oleh <strong>Trademark Specialist</strong> dan <strong>Legal Counsel</strong> kami.
+            </p>
+            <div style="margin-top:1.75rem;padding:1.25rem;background:var(--ivory-elevated);border:1px solid var(--border-sketch-strong);border-radius:4px;">
+              <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--green);font-weight:700;">DATA YANG DITRANSFER OTOMATIS:</span>
+              <ul style="margin-top:0.65rem;font-size:0.86rem;line-height:1.75;padding-left:1.1rem;">
+                <li>Informasi Pelanggan &amp; Kontak</li>
+                <li>Nama Merek &amp; Kategori Produk/Jasa</li>
+                <li>Layanan yang Diminta</li>
+                <li>Snapshot Hasil Pencarian &amp; Penilaian AI Terakhir</li>
+                <li>Ringkasan Percakapan AI Assistant &amp; Dokumen</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="sp-block" style="background:var(--ivory-elevated);border:1.5px solid var(--border-sketch-strong);padding:2rem;border-radius:6px;">
+            <form id="page-handover-form" class="consultation-form">
+              <div class="form-row-split">
+                <div class="form-group">
+                  <label>NAMA LENGKAP *</label>
+                  <input type="text" id="ph-name" required />
+                </div>
+                <div class="form-group">
+                  <label>WHATSAPP / EMAIL *</label>
+                  <input type="text" id="ph-contact" required />
+                </div>
+              </div>
+              <div class="form-row-split">
+                <div class="form-group">
+                  <label>NAMA MEREK *</label>
+                  <input type="text" id="ph-brand" required />
+                </div>
+                <div class="form-group">
+                  <label>KATEGORI PRODUK / JASA *</label>
+                  <input type="text" id="ph-cat" required />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>LAYANAN YANG DIMINTA *</label>
+                <select id="ph-service"></select>
+              </div>
+              <div class="form-group">
+                <label>LAMPIRKAN DOKUMEN / ETIKET LOGO (OPSIONAL)</label>
+                <input type="file" id="ph-doc" accept="image/*,.pdf" />
+              </div>
+              <div class="form-group">
+                <label>SNAPSHOT PENCARIAN AI &amp; CATATAN KONSULTASI</label>
+                <textarea id="ph-summary" rows="4" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary btn-full" style="justify-content:center;">
+                <span>Kirim Handover ke Spesialis Merek →</span>
+              </button>
+            </form>
+            <div id="ph-success" hidden style="text-align:center;padding:1.5rem;">
+              <span class="success-badge" id="ph-lead-code">LEAD TERKIRIM</span>
+              <h3 style="margin:0.85rem 0 0.5rem;">Berhasil Diteruskan ke Tim Spesialis!</h3>
+              <p style="font-size:0.88rem;color:var(--pencil);margin-bottom:1.25rem;">Anda dapat melihat status konsultasi ini di Customer Dashboard maupun mengelolanya di Admin Panel.</p>
+              <div style="display:flex;gap:0.65rem;justify-content:center;">
+                <a href="dashboard.html" class="btn btn-primary btn-sm">Buka Customer Dashboard</a>
+                <a href="admin.html" class="btn btn-secondary btn-sm">Buka Admin CRM</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p class="copyright">© 2026 BRANDCONNECT. All Rights Reserved. · <a href="index.html">Kembali ke Homepage</a></p>
+        <p class="footer-concept-note">CONTACT &amp; HANDOVER // BRANDCONNECT</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/platform-store.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const state = window.BCStore.getState();
+      const latest = state.searchLogs[0];
+      document.getElementById('ph-name').value = state.customerProfile.name;
+      document.getElementById('ph-contact').value = `${state.customerProfile.phone} / ${state.customerProfile.email}`;
+      document.getElementById('ph-brand').value = latest?.trademarkName || '';
+      document.getElementById('ph-cat').value = latest?.productCategory || state.businessProfile.industrySector;
+      document.getElementById('ph-service').innerHTML = state.services.map((s) => `<option value="${s.nameId}">${s.nameId}</option>`).join('');
+      document.getElementById('ph-summary').value = latest
+        ? `[Ref AI: ${latest.referenceCode}] Indeks: ${latest.distinctivenessIndex}% (${latest.verdict}). Rekomendasi Kelas: ${latest.recommendedClasses}.\nInterpretasi AI: ${latest.aiInterpretation}`
+        : 'Mohon verifikasi ketersediaan merek dan kelas pendaftaran di DJKI.';
+
+      const form = document.getElementById('page-handover-form');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fileName = document.getElementById('ph-doc').files?.[0]?.name;
+        const lead = window.BCStore.createHandoverLead({
+          customerName: document.getElementById('ph-name').value,
+          customerPhone: document.getElementById('ph-contact').value,
+          trademarkName: document.getElementById('ph-brand').value,
+          productCategory: document.getElementById('ph-cat').value,
+          requestedService: document.getElementById('ph-service').value,
+          conversationSummary: document.getElementById('ph-summary').value,
+          uploadedDocuments: fileName ? [fileName] : []
+        });
+        form.hidden = true;
+        const succ = document.getElementById('ph-success');
+        succ.hidden = false;
+        document.getElementById('ph-lead-code').textContent = `HANDOVER BERHASIL // ${lead.leadNumber}`;
+      });
+    });
+  </script>
+</body>
+</html>

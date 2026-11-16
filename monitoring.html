@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trademark Monitoring &amp; BRM Watchlist — BRANDCONNECT | Search Smart. Protect Better.</title>
+  <meta name="description" content="Pantau pengumuman Berita Resmi Merek (BRM) DJKI secara otomatis. Dapatkan peringatan dini sebelum masa oposisi 2 bulan berakhir." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="paper-grain" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        <span class="logo-mark">BRANDCONNECT<span class="logo-dot"></span></span>
+        <span class="logo-sub">SEARCH SMART. PROTECT BETTER.</span>
+      </a>
+      <nav class="main-nav">
+        <ul class="nav-list">
+          <li><a href="trademark-checker.html" class="nav-link">Cek Merek</a></li>
+          <li><a href="class-finder.html" class="nav-link">Cari Kelas</a></li>
+          <li><a href="monitoring.html" class="nav-link active">Monitoring</a></li>
+          <li><a href="brand-protection.html" class="nav-link">Proteksi</a></li>
+          <li><a href="services.html" class="nav-link">Layanan (8)</a></li>
+          <li><a href="pendaftaran-merek.html" class="nav-link">Pendaftaran</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions" style="display:flex;gap:0.55rem;">
+        <a href="dashboard.html" class="nav-login-btn" style="text-decoration:none;">Dashboard Klien</a>
+        <a href="admin.html" class="nav-login-btn" style="text-decoration:none;background:var(--charcoal);color:var(--ivory);">Admin Panel</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="monitoring-section" style="padding-top:4rem;">
+      <div class="container">
+        <div class="monitoring-header-grid">
+          <div>
+            <span class="badge-ai-intel" style="background-color:rgba(92,212,165,0.12);border-color:#5CD4A5;color:#5CD4A5;">
+              <span class="pulse-indicator" style="background-color:#5CD4A5;"></span>
+              BRM DJKI SURVEILLANCE &amp; WATCHLIST
+            </span>
+            <h1 class="monitoring-title">
+              Trademark Monitoring.<br />
+              Jaga Hak Eksklusif <span class="serif-italic">Merek Anda.</span>
+            </h1>
+            <p class="monitoring-lead">
+              Berdasarkan Pasal 14 &amp; Pasal 16 UU No. 20 Tahun 2016, setiap permohonan merek baru diumumkan dalam Berita Resmi Merek (BRM) selama <strong>2 bulan</strong>. Daftarkan merek Anda ke dalam Watchlist BrandConnect untuk menerima peringatan dini apabila ada pihak lain yang mengajukan merek serupa.
+            </p>
+          </div>
+
+          <div class="monitoring-radar-card">
+            <h3 style="font-family:var(--font-heading);font-size:1.15rem;color:var(--ivory);margin-bottom:0.85rem;">Tambah Merek ke Watchlist Monitoring</h3>
+            <form id="mon-add-form" style="display:flex;flex-direction:column;gap:0.75rem;">
+              <input type="text" id="mon-brand" class="tm-search-input" style="padding-left:1rem;height:46px;" placeholder="Nama Merek Anda (cth: ZENOVA BOTANICA)" required />
+              <input type="text" id="mon-class" class="tm-search-input" style="padding-left:1rem;height:46px;" placeholder="Kelas yang Dipantau (cth: Kelas 03 & Kelas 35)" required />
+              <input type="text" id="mon-tokens" class="tm-search-input" style="padding-left:1rem;height:46px;" placeholder="Kata Kunci Fonetik Pantauan (cth: ZENOVA, ZENNOVA)" required />
+              <button type="submit" class="tm-submit-btn" style="background:#5CD4A5;color:#1C1D1B;height:48px;">
+                <span>+ Aktifkan Watchlist Monitoring</span>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Active Watchlist Table -->
+        <div style="background:var(--charcoal-elevated);border:1px solid rgba(244,241,234,0.16);border-radius:6px;padding:1.75rem;position:relative;z-index:2;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
+            <h2 style="font-family:var(--font-heading);font-size:1.25rem;color:var(--ivory);">Daftar Merek yang Sedang Dipantau (Active Watchlist)</h2>
+            <span style="font-family:var(--font-mono);font-size:0.72rem;color:#5CD4A5;">TERINTEGRASI CUSTOMER DASHBOARD &amp; ADMIN PANEL</span>
+          </div>
+          <div id="mon-list-container" style="display:flex;flex-direction:column;gap:0.85rem;"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p class="copyright">© 2026 BRANDCONNECT. All Rights Reserved. · <a href="index.html">Kembali ke Homepage</a></p>
+        <p class="footer-concept-note">TRADEMARK MONITORING // BRANDCONNECT</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/platform-store.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const listEl = document.getElementById('mon-list-container');
+      const form = document.getElementById('mon-add-form');
+
+      const renderMonitors = () => {
+        const state = window.BCStore.getState();
+        listEl.innerHTML = state.monitors.map((m) => `
+          <div style="background:#1C1D1B;border:1px solid rgba(244,241,234,0.15);border-radius:4px;padding:1.15rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+            <div>
+              <span style="font-family:var(--font-mono);font-size:0.7rem;color:#5CD4A5;">${m.niceClasses} · Dipantau sejak ${m.createdAt}</span>
+              <h4 style="font-family:var(--font-heading);font-size:1.15rem;color:var(--ivory);margin:0.2rem 0;">${m.trademarkName}</h4>
+              <div style="font-size:0.8rem;color:var(--pencil-light);">Kata Kunci Fonetik: <strong>${m.watchTokens}</strong> &nbsp;|&nbsp; BRM Terakhir: ${m.lastBrmChecked}</div>
+              <div style="font-size:0.82rem;margin-top:0.35rem;color:${m.alertStatus.includes('Perhatian') ? '#FFB347' : '#5CD4A5'};font-weight:600;">Status: ${m.alertStatus}</div>
+            </div>
+            <div style="display:flex;gap:0.5rem;">
+              <button type="button" class="btn btn-secondary btn-sm" style="background:rgba(244,241,234,0.1);color:var(--ivory);border-color:rgba(244,241,234,0.25);" onclick="window.BCStore.openOrderModal('SRV-OPP-05', '${m.trademarkName}', '${m.niceClasses}')">
+                Ajukan Oposisi BRM →
+              </button>
+            </div>
+          </div>
+        `).join('');
+      };
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const state = window.BCStore.getState();
+        const brand = document.getElementById('mon-brand').value.trim().toUpperCase();
+        const cls = document.getElementById('mon-class').value.trim();
+        const tokens = document.getElementById('mon-tokens').value.trim().toUpperCase();
+        state.monitors.unshift({
+          id: Date.now(),
+          trademarkName: brand,
+          niceClasses: cls,
+          watchTokens: tokens,
+          status: 'Active',
+          lastBrmChecked: 'BRM Seri-A No. 48/XI/2026',
+          alertStatus: 'Aman (Pantauan Baru Diaktifkan)',
+          createdAt: new Date().toISOString().slice(0, 10)
+        });
+        window.BCStore.logActivity(state.customerProfile.name, 'Customer', 'MONITOR_ADDED', brand, `Menambahkan merek ${brand} (${cls}) ke Watchlist Monitoring BRM.`);
+        window.BCStore.saveState();
+        form.reset();
+        renderMonitors();
+      });
+
+      renderMonitors();
+    });
+  </script>
+</body>
+</html>

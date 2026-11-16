@@ -1248,6 +1248,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const mode = modeInput ? modeInput.value : 'name';
       const chosenClass = selectedClassHidden ? selectedClassHidden.value : '';
+      if (window.BCStore) {
+        window.BCStore.analyzeTrademark(val, mode, '', chosenClass, uploadedLogoInfo);
+      }
       const result = evaluateQuery(val, mode, chosenClass);
       renderResults(result);
     });

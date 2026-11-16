@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internal Admin Panel &amp; CRM — BRANDCONNECT | Role-Based Access Control</title>
+  <meta name="description" content="Panel Admin Internal BrandConnect: 6 Role (Super Admin, Admin, Customer Relations, Trademark Specialist, Legal Counsel, Document Officer) & 13 Modul Manajemen." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .adm-layout { display: grid; grid-template-columns: 270px 1fr; gap: 1.75rem; padding: 2rem 0 5rem; align-items: start; }
+    @media (max-width: 980px) { .adm-layout { grid-template-columns: 1fr; } }
+    .adm-sidebar { background: var(--charcoal); color: var(--ivory); border-radius: 6px; padding: 1.25rem; position: sticky; top: 88px; }
+    .adm-nav-list { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
+    .adm-nav-btn { width: 100%; text-align: left; padding: 0.6rem 0.85rem; border: none; background: transparent; border-radius: 4px; font-family: var(--font-heading); font-size: 0.8rem; font-weight: 600; color: var(--ivory-subtle); cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.15s ease; }
+    .adm-nav-btn:hover { background: rgba(244,241,234,0.08); color: #FFF; }
+    .adm-nav-btn.active { background: var(--green); color: #FFF; font-weight: 700; }
+    .adm-panel { display: none; background: var(--ivory-elevated); border: 1.5px solid var(--border-sketch-strong); border-radius: 6px; padding: 1.85rem; }
+    .adm-panel.active { display: block; }
+    .adm-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.75rem; }
+    @media (max-width: 768px) { .adm-kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    .adm-kpi-card { background: #FFF; border: 1px solid var(--border-sketch-strong); border-radius: 4px; padding: 1.1rem; }
+    .adm-kpi-num { font-family: var(--font-heading); font-size: 1.65rem; font-weight: 800; color: var(--charcoal); }
+    .adm-kpi-label { font-family: var(--font-mono); font-size: 0.66rem; color: var(--pencil); text-transform: uppercase; letter-spacing: 0.08em; }
+    .adm-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; background: #FFF; border: 1px solid var(--border-sketch-strong); }
+    .adm-table th, .adm-table td { padding: 0.75rem 0.85rem; border-bottom: 1px solid var(--border-sketch); text-align: left; vertical-align: top; }
+    .adm-table th { font-family: var(--font-mono); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--pencil); background: var(--ivory); }
+    .adm-input-sm { padding: 0.35rem 0.55rem; border: 1px solid var(--border-sketch-strong); border-radius: 3px; font-size: 0.8rem; font-family: var(--font-body); background: #FFF; }
+  </style>
+</head>
+<body>
+  <div class="paper-grain" aria-hidden="true"></div>
+
+  <header class="site-header" style="background:var(--charcoal);border-bottom:1px solid rgba(244,241,234,0.15);">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        <span class="logo-mark" style="color:var(--ivory);">BRANDCONNECT<span class="logo-dot" style="background:#5CD4A5;"></span></span>
+        <span class="logo-sub" style="color:#5CD4A5;">INTERNAL ADMIN &amp; CASE MANAGEMENT</span>
+      </a>
+
+      <!-- Role-Based Access Switcher (6 Roles per Section H) -->
+      <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:0.45rem;background:rgba(244,241,234,0.08);padding:0.35rem 0.75rem;border-radius:4px;border:1px solid rgba(244,241,234,0.2);">
+          <span style="font-family:var(--font-mono);font-size:0.65rem;color:#5CD4A5;">ACTIVE ROLE:</span>
+          <select id="adm-role-switcher" style="background:transparent;border:none;color:var(--ivory);font-family:var(--font-heading);font-size:0.8rem;font-weight:700;cursor:pointer;outline:none;">
+            <option value="Super Admin" style="color:#000;">Super Admin (Full Access)</option>
+            <option value="Admin" style="color:#000;">Admin (Operations)</option>
+            <option value="Customer Relations" style="color:#000;">Customer Relations (CRM &amp; Leads)</option>
+            <option value="Trademark Specialist" style="color:#000;">Trademark Specialist (Search &amp; DJKI)</option>
+            <option value="Legal Counsel" style="color:#000;">Legal Counsel (Refusal &amp; Opposition)</option>
+            <option value="Document Officer" style="color:#000;">Document Officer (Formality &amp; Docs)</option>
+          </select>
+        </div>
+        <a href="dashboard.html" class="btn btn-secondary btn-sm" style="background:rgba(244,241,234,0.12);color:var(--ivory);border-color:rgba(244,241,234,0.25);">Customer View</a>
+        <a href="index.html" class="btn btn-primary btn-sm">Public Site ↗</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="adm-layout">
+      <!-- 13 Admin Modules Sidebar (Section H) -->
+      <aside class="adm-sidebar">
+        <div style="padding-bottom:0.85rem;margin-bottom:0.85rem;border-bottom:1px dashed rgba(244,241,234,0.2);">
+          <span style="font-family:var(--font-mono);font-size:0.65rem;color:#5CD4A5;" id="sb-active-role-badge">ROLE: SUPER ADMIN</span>
+          <div style="font-size:0.75rem;color:var(--pencil-light);margin-top:0.2rem;" id="sb-role-perm-desc">Hak akses penuh ke seluruh 13 modul &amp; konfigurasi harga.</div>
+        </div>
+
+        <ul class="adm-nav-list">
+          <li><button type="button" class="adm-nav-btn active" data-adm-tab="dashboard"><span>01. Dashboard</span></button></li>
+          <li><button type="button" class="adm-nav-btn" data-adm-tab="crm"><span>02. CRM (Pelanggan)</span></button></li>
+          <li><button type="button" class="adm-nav-btn" data-adm-tab="leads"><span>03. Lead Management</span></button></li>
+          <li><button type="button" class="adm-nav-btn" data-adm-tab="catalog"><span>04. Service Catalog (8)</span></button></li>
+          <li><button type="button" class="adm-nav-btn" data-adm-tab="orders"><span>05. Order Management</span></button></li>
+          <li><button type="button" class="adm-nav-btn" data-adm-tab="cases"><span>06. Trademark Cases</span></button></li>
+          <li><button type="button" class="adm-nav-btn" data-adm-tab="team"><span>07. Team Assignment</span></button></li>
+          <li><button type="button" class="adm-nav-btn" data-adm-tab="documents"><span>08. Document Management</span></button></li>
+          <li><button type="button" class="adm-nav-btn" data-adm-tab="kb"><span>09. AI Knowledge Base</span></button></li>
+          <li><button type="button" class="adm-nav-btn" data-adm-tab="conversations"><span>10. AI Conversation Review</span></button></li>
+          <li><button type="button" class="adm-nav-btn" data-adm-tab="monitoring"><span>11. Monitoring &amp; Alerts</span></button></li>
+          <li><button type="button" class="adm-nav-btn" data-adm-tab="reports"><span>12. Reports &amp; Audit Logs</span></button></li>
+          <li><button type="button" class="adm-nav-btn" data-adm-tab="settings"><span>13. Settings</span></button></li>
+        </ul>
+      </aside>
+
+      <section>
+        <!-- KPI Row -->
+        <div class="adm-kpi-grid">
+          <div class="adm-kpi-card"><div class="adm-kpi-num" id="adm-kpi-leads">0</div><div class="adm-kpi-label">Handover Leads</div></div>
+          <div class="adm-kpi-card"><div class="adm-kpi-num" id="adm-kpi-orders">0</div><div class="adm-kpi-label">Service Orders</div></div>
+          <div class="adm-kpi-card"><div class="adm-kpi-num" id="adm-kpi-cases">0</div><div class="adm-kpi-label">Active DJKI Cases</div></div>
+          <div class="adm-kpi-card"><div class="adm-kpi-num" id="adm-kpi-rev">Rp 0</div><div class="adm-kpi-label">Total Nilai Order</div></div>
+        </div>
+
+        <!-- 01. DASHBOARD -->
+        <div class="adm-panel active" id="adm-panel-dashboard">
+          <span class="eyebrow">MODULE 01 // EXECUTIVE OVERVIEW</span>
+          <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin-bottom:1rem;">Ringkasan Operasional Platform &amp; Aktivitas Terbaru</h2>
+          <div style="overflow-x:auto;">
+            <table class="adm-table">
+              <thead><tr><th>Waktu</th><th>Aktor</th><th>Role</th><th>Aksi</th><th>Ref</th><th>Deskripsi</th></tr></thead>
+              <tbody id="adm-tb-recent-logs"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 02. CRM -->
+        <div class="adm-panel" id="adm-panel-crm">
+          <span class="eyebrow">MODULE 02 // CUSTOMER RELATIONSHIP MANAGEMENT</span>
+          <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin-bottom:1rem;">Data Pelanggan &amp; Entitas Bisnis</h2>
+          <div id="adm-crm-box"></div>
+        </div>
+
+        <!-- 03. LEAD MANAGEMENT (HUMAN EXPERT HANDOVER) -->
+        <div class="adm-panel" id="adm-panel-leads">
+          <span class="eyebrow">MODULE 03 // AI HANDOVER &amp; CONSULTATION LEADS</span>
+          <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin-bottom:1rem;">Lead Management (Konversi AI ke Konsultasi Spesialis)</h2>
+          <div id="adm-leads-list" style="display:flex;flex-direction:column;gap:1rem;"></div>
+        </div>
+
+        <!-- 04. SERVICE CATALOG (CONFIGURABLE PRICING) -->
+        <div class="adm-panel" id="adm-panel-catalog">
+          <span class="eyebrow">MODULE 04 // CONFIGURABLE SERVICE CATALOG</span>
+          <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin-bottom:1rem;">Manajemen 8 Layanan &amp; Konfigurasi Harga</h2>
+          <p style="font-size:0.84rem;color:var(--pencil);margin-bottom:1rem;">Ubah harga Tarif UMKM atau Tarif Umum di bawah ini dan klik Simpan—harga baru otomatis berlaku di seluruh halaman publik dan form pemesanan.</p>
+          <div style="overflow-x:auto;">
+            <table class="adm-table">
+              <thead><tr><th>Kode</th><th>Nama Layanan</th><th>Tarif UMKM (Rp)</th><th>Tarif Umum (Rp)</th><th>Durasi</th><th>Aksi</th></tr></thead>
+              <tbody id="adm-tb-catalog"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 05. ORDER MANAGEMENT -->
+        <div class="adm-panel" id="adm-panel-orders">
+          <span class="eyebrow">MODULE 05 // SERVICE ORDERS</span>
+          <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin-bottom:1rem;">Manajemen Pesanan Layanan</h2>
+          <div style="overflow-x:auto;">
+            <table class="adm-table">
+              <thead><tr><th>No. Order</th><th>Pelanggan</th><th>Layanan</th><th>Merek &amp; Kelas</th><th>Nominal</th><th>Pembayaran</th><th>Status Order</th></tr></thead>
+              <tbody id="adm-tb-orders"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 06. TRADEMARK CASE MANAGEMENT -->
+        <div class="adm-panel" id="adm-panel-cases">
+          <span class="eyebrow">MODULE 06 // DJKI TRADEMARK CASE MANAGEMENT</span>
+          <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin-bottom:1rem;">Manajemen Berkas Kasus Merek &amp; Tahapan DJKI</h2>
+          <div id="adm-cases-list" style="display:flex;flex-direction:column;gap:1.25rem;"></div>
+        </div>
+
+        <!-- 07. TEAM ASSIGNMENT -->
+        <div class="adm-panel" id="adm-panel-team">
+          <span class="eyebrow">MODULE 07 // IN-HOUSE SPECIALIST ASSIGNMENT</span>
+          <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin-bottom:1rem;">Penugasan Tim Internal (6 Role)</h2>
+          <div style="overflow-x:auto;">
+            <table class="adm-table">
+              <thead><tr><th>Nama Personel</th><th>Role</th><th>Jabatan</th><th>Kasus Ditangani</th></tr></thead>
+              <tbody id="adm-tb-team"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 08. DOCUMENT MANAGEMENT -->
+        <div class="adm-panel" id="adm-panel-documents">
+          <span class="eyebrow">MODULE 08 // DOCUMENT OFFICER VERIFICATION</span>
+          <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin-bottom:1rem;">Verifikasi Dokumen Pelanggan &amp; Etiket Merek</h2>
+          <div style="overflow-x:auto;">
+            <table class="adm-table">
+              <thead><tr><th>Kasus</th><th>Jenis Dokumen</th><th>File</th><th>Status</th><th>Catatan Officer</th><th>Tindakan Verifikasi</th></tr></thead>
+              <tbody id="adm-tb-docs"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 09. AI KNOWLEDGE BASE -->
+        <div class="adm-panel" id="adm-panel-kb">
+          <span class="eyebrow">MODULE 09 // RAG KNOWLEDGE SOURCES</span>
+          <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin-bottom:1rem;">Basis Pengetahuan Hukum Terverifikasi (UU Merek &amp; DJKI)</h2>
+          <form id="adm-kb-form" style="background:#FFF;border:1px solid var(--border-sketch-strong);padding:1.15rem;border-radius:4px;margin-bottom:1.25rem;display:flex;flex-direction:column;gap:0.65rem;">
+            <strong style="font-family:var(--font-heading);font-size:0.9rem;">+ Tambah Referensi Hukum / Aturan RAG Baru</strong>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1.5fr;gap:0.65rem;">
+              <input type="text" id="kb-code" class="adm-input-sm" placeholder="Kode (cth: KB-PASAL-35)" required />
+              <input type="text" id="kb-ref" class="adm-input-sm" placeholder="Dasar Hukum (cth: Pasal 35 UU Merek)" required />
+              <input type="text" id="kb-title" class="adm-input-sm" placeholder="Judul Topik" required />
+            </div>
+            <textarea id="kb-content" class="adm-input-sm" rows="2" placeholder="Isi aturan hukum terverifikasi..." required></textarea>
+            <button type="submit" class="btn btn-primary btn-sm" style="align-self:flex-start;">Simpan ke Knowledge Base</button>
+          </form>
+          <div id="adm-kb-list" style="display:flex;flex-direction:column;gap:0.75rem;"></div>
+        </div>
+
+        <!-- 10. AI CONVERSATION REVIEW -->
+        <div class="adm-panel" id="adm-panel-conversations">
+          <span class="eyebrow">MODULE 10 // AI ASSISTANT LOGS &amp; QUALITY AUDIT</span>
+          <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin-bottom:1rem;">Review Percakapan AI Assistant &amp; Riwayat Pencarian</h2>
+          <div id="adm-conv-list" style="display:flex;flex-direction:column;gap:1rem;"></div>
+        </div>
+
+        <!-- 11. MONITORING -->
+        <div class="adm-panel" id="adm-panel-monitoring">
+          <span class="eyebrow">MODULE 11 // BRM SURVEILLANCE &amp; ALERT DISPATCH</span>
+          <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin-bottom:1rem;">Manajemen Pantauan Merek &amp; Kirim Peringatan ke Klien</h2>
+          <div id="adm-mon-list" style="display:flex;flex-direction:column;gap:0.85rem;"></div>
+        </div>
+
+        <!-- 12. REPORTS -->
+        <div class="adm-panel" id="adm-panel-reports">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+            <div>
+              <span class="eyebrow">MODULE 12 // AUDIT TRAIL &amp; REPORTS</span>
+              <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;">Laporan Aktivitas Sistem Lengkap</h2>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="window.print()">🖨️ Cetak Laporan Audit</button>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="adm-table">
+              <thead><tr><th>Waktu</th><th>Aktor</th><th>Role</th><th>Tipe Aksi</th><th>Referensi</th><th>Rincian Operasi</th></tr></thead>
+              <tbody id="adm-tb-all-logs"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 13. SETTINGS -->
+        <div class="adm-panel" id="adm-panel-settings">
+          <span class="eyebrow">MODULE 13 // PLATFORM CONFIGURATION</span>
+          <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin-bottom:1rem;">Pengaturan Platform, AI Disclaimer &amp; Reset Data</h2>
+          <form id="adm-settings-form" style="max-width:640px;display:flex;flex-direction:column;gap:1rem;">
+            <div>
+              <label style="font-family:var(--font-mono);font-size:0.7rem;display:block;margin-bottom:0.3rem;">NOMOR WHATSAPP KONSULTASI RESMI</label>
+              <input type="text" id="set-wa" class="tm-search-input" style="padding-left:1rem;height:44px;" />
+            </div>
+            <div>
+              <label style="font-family:var(--font-mono);font-size:0.7rem;display:block;margin-bottom:0.3rem;">TEKS DISCLAIMER RESMI AI</label>
+              <textarea id="set-disclaimer" class="tm-search-input" style="padding:0.75rem 1rem;height:96px;"></textarea>
+            </div>
+            <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+              <button type="submit" class="btn btn-primary btn-sm">Simpan Pengaturan Platform</button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="window.BCStore.resetDemoData()">↺ Reset Seluruh Data Demo ke Awal</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/platform-store.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabs = document.querySelectorAll('[data-adm-tab]');
+      const panels = document.querySelectorAll('.adm-panel');
+      const roleSwitcher = document.getElementById('adm-role-switcher');
+
+      const ROLE_PERMS = {
+        'Super Admin': 'Hak akses penuh ke seluruh 13 modul, pengaturan harga, dan audit sistem.',
+        'Admin': 'Mengelola operasional harian, pesanan layanan, penugasan tim, dan laporan.',
+        'Customer Relations': 'Mengelola CRM pelanggan, menindaklanjuti Handover Leads, dan komunikasi.',
+        'Trademark Specialist': 'Mengelola evaluasi kemiripan merek, pemetaan kelas, dan tahapan kasus DJKI.',
+        'Legal Counsel': 'Menangani penilaian hukum profesional, surat sanggahan penolakan, dan oposisi BRM.',
+        'Document Officer': 'Memverifikasi etiket merek, KTP, akta, surat UMKM, dan kelengkapan formalitas DJKI.'
+      };
+
+      tabs.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          tabs.forEach((b) => b.classList.remove('active'));
+          panels.forEach((p) => p.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById('adm-panel-' + btn.getAttribute('data-adm-tab'))?.classList.add('active');
+        });
+      });
+
+      const CASE_STAGE_OPTIONS = [
+        { idx: 1, label: 'Document Verification' },
+        { idx: 2, label: 'Specialist Review' },
+        { idx: 3, label: 'DJKI Filing Submitted' },
+        { idx: 4, label: 'Formality Check' },
+        { idx: 5, label: 'BRM Publication (2 Months)' },
+        { idx: 6, label: 'Substantive Examination' },
+        { idx: 7, label: 'Certificate Issued (®)' }
+      ];
+
+      function getCurrentActor() {
+        const state = window.BCStore.getState();
+        const role = state.settings.currentAdminRole || 'Super Admin';
+        const member = state.teamMembers.find((m) => m.role === role) || state.teamMembers[0];
+        return { name: member.name, role };
+      }
+
+      function renderAdmin() {
+        const state = window.BCStore.getState();
+        const role = state.settings.currentAdminRole || 'Super Admin';
+        roleSwitcher.value = role;
+        document.getElementById('sb-active-role-badge').textContent = `ROLE: ${role.toUpperCase()}`;
+        document.getElementById('sb-role-perm-desc').textContent = ROLE_PERMS[role] || '';
+
+        // KPIs
+        document.getElementById('adm-kpi-leads').textContent = state.consultationLeads.length;
+        document.getElementById('adm-kpi-orders').textContent = state.serviceOrders.length;
+        document.getElementById('adm-kpi-cases').textContent = state.trademarkCases.length;
+        const totalRev = state.serviceOrders.reduce((acc, o) => acc + Number(o.amount || 0), 0);
+        document.getElementById('adm-kpi-rev').textContent = window.BCStore.formatIDR(totalRev);
+
+        // 01 & 12 Logs
+        const logRows = state.activityLogs.map((l) => `
+          <tr>
+            <td style="font-family:var(--font-mono);font-size:0.72rem;white-space:nowrap;">${l.time}</td>
+            <td><strong>${l.actor}</strong></td>
+            <td><span class="badge-ai-intel">${l.role}</span></td>
+            <td style="font-family:var(--font-mono);font-size:0.72rem;">${l.action}</td>
+            <td style="font-family:var(--font-mono);font-size:0.72rem;">${l.ref}</td>
+            <td>${l.desc}</td>
+          </tr>
+        `).join('');
+        document.getElementById('adm-tb-recent-logs').innerHTML = logRows;
+        document.getElementById('adm-tb-all-logs').innerHTML = logRows;
+
+        // 02 CRM
+        document.getElementById('adm-crm-box').innerHTML = `
+          <div style="background:#FFF;border:1px solid var(--border-sketch-strong);padding:1.25rem;border-radius:4px;">
+            <h3 style="font-family:var(--font-heading);font-size:1.15rem;font-weight:800;">${state.customerProfile.name} (${state.businessProfile.companyName})</h3>
+            <p style="font-size:0.85rem;margin-top:0.35rem;">
+              <strong>Email:</strong> ${state.customerProfile.email} &nbsp;|&nbsp; <strong>Telepon:</strong> ${state.customerProfile.phone}<br/>
+              <strong>Kategori Pemohon:</strong> ${state.businessProfile.applicantType.toUpperCase()} &nbsp;|&nbsp; <strong>Sektor:</strong> ${state.businessProfile.industrySector}<br/>
+              <strong>NPWP:</strong> ${state.businessProfile.npwpNumber} &nbsp;|&nbsp; <strong>Alamat:</strong> ${state.businessProfile.address}
+            </p>
+          </div>
+        `;
+
+        // 03 Leads
+        document.getElementById('adm-leads-list').innerHTML = state.consultationLeads.map((l, idx) => `
+          <div style="background:#FFF;border:1.5px solid var(--border-sketch-strong);padding:1.25rem;border-radius:4px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">
+              <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--green);font-weight:700;">${l.leadNumber} · ${l.createdAt} · Pelanggan: ${l.customerName} (${l.customerPhone})</span>
+              <select class="adm-input-sm" onchange="window.updateLeadStatus(${idx}, this.value)">
+                <option value="new" ${l.status === 'new' ? 'selected' : ''}>Status: NEW</option>
+                <option value="in_review" ${l.status === 'in_review' ? 'selected' : ''}>Status: IN REVIEW</option>
+                <option value="assigned" ${l.status === 'assigned' ? 'selected' : ''}>Status: ASSIGNED</option>
+                <option value="converted_to_order" ${l.status === 'converted_to_order' ? 'selected' : ''}>Status: CONVERTED TO ORDER</option>
+              </select>
+            </div>
+            <h4 style="font-family:var(--font-heading);font-size:1.15rem;font-weight:800;">Merek: ${l.trademarkName} (${l.productCategory}) — ${l.requestedService}</h4>
+            <p style="font-size:0.83rem;margin:0.4rem 0;background:var(--ivory);padding:0.65rem;border-radius:3px;"><strong>Snapshot AI &amp; Ringkasan Chat:</strong> ${l.conversationSummary}</p>
+            <div style="display:flex;gap:0.5rem;align-items:center;margin-top:0.65rem;flex-wrap:wrap;">
+              <input type="text" class="adm-input-sm" style="flex:1;" id="lead-note-${idx}" value="${l.specialistNotes}" placeholder="Catatan Spesialis Merek..." />
+              <button type="button" class="btn btn-primary btn-sm" onclick="window.saveLeadNote(${idx})">Simpan Catatan Lead</button>
+            </div>
+          </div>
+        `).join('');
+
+        // 04 Service Catalog
+        document.getElementById('adm-tb-catalog').innerHTML = state.services.map((s, idx) => `
+          <tr>
+            <td style="font-family:var(--font-mono);font-size:0.74rem;"><strong>${s.code}</strong></td>
+            <td><strong>${s.name}</strong><br/><span style="font-size:0.76rem;color:var(--pencil);">${s.nameId}</span></td>
+            <td><input type="number" class="adm-input-sm" style="width:125px;" id="srv-umkm-${idx}" value="${s.umkmPrice}" /></td>
+            <td><input type="number" class="adm-input-sm" style="width:125px;" id="srv-base-${idx}" value="${s.basePrice}" /></td>
+            <td style="font-size:0.76rem;">${s.duration}</td>
+            <td><button type="button" class="btn btn-primary btn-sm" onclick="window.saveServicePrice(${idx})">Simpan Harga</button></td>
+          </tr>
+        `).join('');
+
+        // 05 Orders
+        document.getElementById('adm-tb-orders').innerHTML = state.serviceOrders.map((o, idx) => `
+          <tr>
+            <td style="font-family:var(--font-mono);font-size:0.74rem;"><strong>${o.orderNumber}</strong></td>
+            <td>${o.customerName}</td>
+            <td>${o.serviceName}</td>
+            <td><strong>${o.trademarkName}</strong> (${o.niceClasses})</td>
+            <td>${window.BCStore.formatIDR(o.amount)}</td>
+            <td>
+              <select class="adm-input-sm" onchange="window.updateOrderPayment(${idx}, this.value)">
+                <option value="unpaid" ${o.paymentStatus === 'unpaid' ? 'selected' : ''}>UNPAID</option>
+                <option value="paid" ${o.paymentStatus === 'paid' ? 'selected' : ''}>PAID</option>
+              </select>
+            </td>
+            <td>
+              <select class="adm-input-sm" onchange="window.updateOrderStatus(${idx}, this.value)">
+                <option value="pending_review" ${o.orderStatus === 'pending_review' ? 'selected' : ''}>PENDING REVIEW</option>
+                <option value="in_progress" ${o.orderStatus === 'in_progress' ? 'selected' : ''}>IN PROGRESS</option>
+                <option value="completed" ${o.orderStatus === 'completed' ? 'selected' : ''}>COMPLETED</option>
+              </select>
+            </td>
+          </tr>
+        `).join('');
+
+        // 06 Cases
+        document.getElementById('adm-cases-list').innerHTML = state.trademarkCases.map((c, idx) => `
+          <div style="background:#FFF;border:1.5px solid var(--border-sketch-strong);padding:1.25rem;border-radius:4px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">
+              <div>
+                <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--green);font-weight:700;">${c.caseNumber} · Order: ${c.orderNumber}</span>
+                <h4 style="font-family:var(--font-heading);font-size:1.2rem;font-weight:800;">${c.trademarkName} (${c.niceClasses})</h4>
+              </div>
+              <div style="display:flex;gap:0.5rem;align-items:center;">
+                <input type="text" class="adm-input-sm" id="case-djki-${idx}" value="${c.djkiApplicationNo}" placeholder="No. Permohonan DJKI" />
+                <select class="adm-input-sm" id="case-stage-${idx}">
+                  ${CASE_STAGE_OPTIONS.map((opt) => `<option value="${opt.idx}" ${c.stageIndex === opt.idx ? 'selected' : ''}>Tahap ${opt.idx}: ${opt.label}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+            <div style="display:flex;gap:0.5rem;align-items:center;">
+              <input type="text" class="adm-input-sm" style="flex:1;" id="case-assess-${idx}" value="${c.legalAssessment}" placeholder="Penilaian Hukum Profesional / Status Pemeriksaan..." />
+              <button type="button" class="btn btn-primary btn-sm" onclick="window.saveCaseUpdate(${idx})">Update Kasus DJKI</button>
+            </div>
+          </div>
+        `).join('');
+
+        // 07 Team
+        document.getElementById('adm-tb-team').innerHTML = state.teamMembers.map((m) => `
+          <tr>
+            <td><strong>${m.name}</strong></td>
+            <td><span class="badge-ai-intel">${m.role}</span></td>
+            <td>${m.title}</td>
+            <td>Aktif menangani portofolio kasus merek BrandConnect</td>
+          </tr>
+        `).join('');
+
+        // 08 Documents
+        document.getElementById('adm-tb-docs').innerHTML = state.documents.map((d, idx) => `
+          <tr>
+            <td style="font-family:var(--font-mono);font-size:0.74rem;">${d.caseNumber}</td>
+            <td><strong>${d.docType}</strong></td>
+            <td>${d.fileName} (${d.fileSize})</td>
+            <td><span class="badge-ai-intel">${d.status}</span></td>
+            <td><input type="text" class="adm-input-sm" id="doc-note-${idx}" value="${d.officerNotes}" /></td>
+            <td>
+              <button type="button" class="btn btn-primary btn-sm" onclick="window.verifyDocument(${idx}, 'Verified')">✓ Verify</button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="window.verifyDocument(${idx}, 'Revision Required')">Revisi</button>
+            </td>
+          </tr>
+        `).join('');
+
+        // 09 KB
+        document.getElementById('adm-kb-list').innerHTML = state.aiKnowledgeBase.map((kb) => `
+          <div style="background:#FFF;border:1px solid var(--border-sketch-strong);padding:1rem;border-radius:4px;">
+            <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--green);font-weight:700;">${kb.code} // ${kb.reference}</span>
+            <h4 style="font-family:var(--font-heading);font-size:1rem;font-weight:800;margin:0.2rem 0;">${kb.title}</h4>
+            <p style="font-size:0.84rem;color:var(--charcoal);">${kb.content}</p>
+          </div>
+        `).join('');
+
+        // 10 Conversations
+        document.getElementById('adm-conv-list').innerHTML = state.aiConversations.map((cv) => `
+          <div style="background:#FFF;border:1px solid var(--border-sketch-strong);padding:1.15rem;border-radius:4px;">
+            <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--green);font-weight:700;">${cv.sessionCode} · Pelanggan: ${cv.customerName} · Konteks Merek: ${cv.trademarkContext}</span>
+            <div style="margin-top:0.65rem;display:flex;flex-direction:column;gap:0.45rem;font-size:0.83rem;">
+              ${cv.messages.map((m) => `<div style="padding:0.5rem 0.75rem;background:${m.sender === 'user' ? 'var(--ivory-subtle)' : 'var(--ivory)'};border-radius:3px;"><strong>${m.sender.toUpperCase()}:</strong> ${m.text}</div>`).join('')}
+            </div>
+          </div>
+        `).join('');
+
+        // 11 Monitoring
+        document.getElementById('adm-mon-list').innerHTML = state.monitors.map((m, idx) => `
+          <div style="background:#FFF;border:1px solid var(--border-sketch-strong);padding:1.15rem;border-radius:4px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+            <div>
+              <strong style="font-family:var(--font-heading);font-size:1.05rem;">${m.trademarkName} (${m.niceClasses})</strong>
+              <div style="font-size:0.8rem;color:var(--pencil);">Kata Kunci: ${m.watchTokens} · Status: ${m.alertStatus}</div>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" onclick="window.triggerMonitorAlert(${idx})">🔔 Kirim Notifikasi Alert BRM ke Klien</button>
+          </div>
+        `).join('');
+
+        // 13 Settings
+        document.getElementById('set-wa').value = state.settings.whatsappNumber;
+        document.getElementById('set-disclaimer').value = state.settings.aiDisclaimer;
+      }
+
+      roleSwitcher.addEventListener('change', () => {
+        const state = window.BCStore.getState();
+        state.settings.currentAdminRole = roleSwitcher.value;
+        const actor = getCurrentActor();
+        window.BCStore.logActivity(actor.name, actor.role, 'ROLE_SWITCHED', actor.role, `Beralih peran aktif di Admin Panel ke ${actor.role}.`);
+        renderAdmin();
+      });
+
+      window.updateLeadStatus = (idx, val) => {
+        const state = window.BCStore.getState();
+        const actor = getCurrentActor();
+        state.consultationLeads[idx].status = val;
+        window.BCStore.logActivity(actor.name, actor.role, 'LEAD_STATUS_UPDATED', state.consultationLeads[idx].leadNumber, `Mengubah status lead menjadi ${val.toUpperCase()}.`);
+        renderAdmin();
+      };
+
+      window.saveLeadNote = (idx) => {
+        const state = window.BCStore.getState();
+        const actor = getCurrentActor();
+        const note = document.getElementById(`lead-note-${idx}`).value;
+        state.consultationLeads[idx].specialistNotes = note;
+        window.BCStore.logActivity(actor.name, actor.role, 'LEAD_NOTE_SAVED', state.consultationLeads[idx].leadNumber, `Memperbarui catatan spesialis pada lead ${state.consultationLeads[idx].trademarkName}.`);
+        renderAdmin();
+      };
+
+      window.saveServicePrice = (idx) => {
+        const state = window.BCStore.getState();
+        const actor = getCurrentActor();
+        const umkm = Number(document.getElementById(`srv-umkm-${idx}`).value);
+        const base = Number(document.getElementById(`srv-base-${idx}`).value);
+        state.services[idx].umkmPrice = umkm;
+        state.services[idx].basePrice = base;
+        window.BCStore.logActivity(actor.name, actor.role, 'SERVICE_PRICE_UPDATED', state.services[idx].code, `Memperbarui konfigurasi harga layanan ${state.services[idx].name} (UMKM: Rp ${umkm.toLocaleString('id-ID')}, Umum: Rp ${base.toLocaleString('id-ID')}).`);
+        renderAdmin();
+      };
+
+      window.updateOrderPayment = (idx, val) => {
+        const state = window.BCStore.getState();
+        const actor = getCurrentActor();
+        state.serviceOrders[idx].paymentStatus = val;
+        window.BCStore.logActivity(actor.name, actor.role, 'ORDER_PAYMENT_UPDATED', state.serviceOrders[idx].orderNumber, `Mengubah status pembayaran order menjadi ${val.toUpperCase()}.`);
+        renderAdmin();
+      };
+
+      window.updateOrderStatus = (idx, val) => {
+        const state = window.BCStore.getState();
+        const actor = getCurrentActor();
+        state.serviceOrders[idx].orderStatus = val;
+        window.BCStore.logActivity(actor.name, actor.role, 'ORDER_STATUS_UPDATED', state.serviceOrders[idx].orderNumber, `Mengubah status pengerjaan order menjadi ${val.toUpperCase()}.`);
+        renderAdmin();
+      };
+
+      window.saveCaseUpdate = (idx) => {
+        const state = window.BCStore.getState();
+        const actor = getCurrentActor();
+        const djkiNo = document.getElementById(`case-djki-${idx}`).value;
+        const stageIdx = Number(document.getElementById(`case-stage-${idx}`).value);
+        const stageObj = CASE_STAGE_OPTIONS.find((o) => o.idx === stageIdx) || CASE_STAGE_OPTIONS[0];
+        const assess = document.getElementById(`case-assess-${idx}`).value;
+
+        state.trademarkCases[idx].djkiApplicationNo = djkiNo;
+        state.trademarkCases[idx].stageIndex = stageIdx;
+        state.trademarkCases[idx].stage = stageObj.label;
+        state.trademarkCases[idx].legalAssessment = assess;
+
+        state.notifications.unshift({
+          id: Date.now(),
+          title: `Pembaruan Tahapan Kasus: ${state.trademarkCases[idx].trademarkName}`,
+          message: `Kasus ${state.trademarkCases[idx].caseNumber} (${djkiNo}) kini berada pada tahap "${stageObj.label}". Catatan: ${assess}`,
+          type: 'success',
+          read: false,
+          date: new Date().toISOString().slice(0, 10)
+        });
+
+        window.BCStore.logActivity(actor.name, actor.role, 'CASE_UPDATED', state.trademarkCases[idx].caseNumber, `Memperbarui kasus ${state.trademarkCases[idx].trademarkName} ke tahap ${stageObj.label}.`);
+        renderAdmin();
+      };
+
+      window.verifyDocument = (idx, status) => {
+        const state = window.BCStore.getState();
+        const actor = getCurrentActor();
+        const note = document.getElementById(`doc-note-${idx}`).value;
+        state.documents[idx].status = status;
+        state.documents[idx].officerNotes = note;
+        window.BCStore.logActivity(actor.name, actor.role, 'DOCUMENT_VERIFIED', state.documents[idx].caseNumber, `Menetapkan status dokumen ${state.documents[idx].fileName} menjadi ${status}.`);
+        renderAdmin();
+      };
+
+      window.triggerMonitorAlert = (idx) => {
+        const state = window.BCStore.getState();
+        const actor = getCurrentActor();
+        const m = state.monitors[idx];
+        m.alertStatus = 'Peringatan BRM Terkirim ke Pelanggan';
+        state.notifications.unshift({
+          id: Date.now(),
+          title: `Peringatan Monitoring BRM: ${m.trademarkName}`,
+          message: `Tim Monitoring mendeteksi indikasi merek serupa pada publikasi BRM terbaru untuk kelas ${m.niceClasses}. Silakan tinjau rekomendasi oposisi.`,
+          type: 'warning',
+          read: false,
+          date: new Date().toISOString().slice(0, 10)
+        });
+        window.BCStore.logActivity(actor.name, actor.role, 'MONITOR_ALERT_SENT', m.trademarkName, `Mengirim peringatan dini Monitoring BRM ke Dashboard Pelanggan.`);
+        renderAdmin();
+      };
+
+      document.getElementById('adm-kb-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const state = window.BCStore.getState();
+        const actor = getCurrentActor();
+        const code = document.getElementById('kb-code').value.trim().toUpperCase();
+        const ref = document.getElementById('kb-ref').value.trim();
+        const title = document.getElementById('kb-title').value.trim();
+        const content = document.getElementById('kb-content').value.trim();
+        state.aiKnowledgeBase.unshift({ id: Date.now(), code, category: 'UU Merek', reference: ref, title, content });
+        window.BCStore.logActivity(actor.name, actor.role, 'KB_ADDED', code, `Menambahkan aturan RAG baru: ${title}.`);
+        e.target.reset();
+        renderAdmin();
+      });
+
+      document.getElementById('adm-settings-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const state = window.BCStore.getState();
+        const actor = getCurrentActor();
+        state.settings.whatsappNumber = document.getElementById('set-wa').value.trim();
+        state.settings.aiDisclaimer = document.getElementById('set-disclaimer').value.trim();
+        window.BCStore.logActivity(actor.name, actor.role, 'SETTINGS_UPDATED', 'PLATFORM', 'Memperbarui konfigurasi kontak & disclaimer AI.');
+        renderAdmin();
+      });
+
+      window.addEventListener('bc:state-updated', renderAdmin);
+      renderAdmin();
+    });
+  </script>
+</body>
+</html>
