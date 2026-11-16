@@ -2326,76 +2326,37 @@
 
           <!-- RIGHT COLUMN: PDKI SEARCH RESULTS LIST -->
           <div>
-            <!-- Live API Indonesia Status & Quick-Connect Bar -->
-            <div style="margin-bottom:0.9rem;padding:0.75rem 1rem;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">
-              <div style="font-size:0.78rem;color:#334155;">
-                <strong>🔌 Konektor API Indonesia (Live PDKI DJKI):</strong>
-                ${
-                  getPdkiApiKey()
-                    ? `<span style="color:#15803D;font-weight:700;">● Terhubung (x-api-key: ${getPdkiApiKey().slice(0, 6)}...${getPdkiApiKey().slice(-4)})</span>`
-                    : `<span style="color:#B45309;font-weight:600;">Mode Gratis / Lokal (Tempel x-api-key gratis 3.000 kredit untuk akses semua merek live)</span>`
-                }
-              </div>
-              <div style="display:flex;gap:0.45rem;align-items:center;flex-wrap:wrap;">
-                <input
-                  type="password"
-                  class="bc-pdki-apikey-input"
-                  value="${getPdkiApiKey()}"
-                  placeholder="Tempel x-api-key apiindonesia.id..."
-                  style="padding:0.38rem 0.65rem;border:1px solid #CBD5E1;border-radius:4px;font-family:var(--font-mono);font-size:0.74rem;width:230px;background:#FFF;"
-                />
-                <button
-                  type="button"
-                  class="bc-pdki-apikey-save-btn"
-                  style="background:#172B4D;color:#FFF;border:none;border-radius:4px;padding:0.42rem 0.75rem;font-family:var(--font-heading);font-weight:700;font-size:0.74rem;cursor:pointer;"
-                >
-                  ${getPdkiApiKey() ? 'Update & Cari Live' : 'Aktifkan Free API'}
-                </button>
-                <a
-                  href="https://dashboard.apiindonesia.id"
-                  target="_blank"
-                  rel="noopener"
-                  style="font-size:0.72rem;color:#1D4ED8;font-weight:700;text-decoration:underline;"
-                >
-                  Ambil Key Gratis ↗
-                </a>
-              </div>
-            </div>
-
-            <div class="bc-pdki-live-error" hidden style="margin-bottom:0.85rem;padding:0.75rem 1rem;background:#FEF2F2;border:1px solid #FECACA;border-radius:6px;color:#B91C1C;font-size:0.8rem;"></div>
-
-            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.85rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.85rem;padding-bottom:0.6rem;border-bottom:1px solid #E2E8F0;">
               <div style="font-size:0.88rem;color:#334155;">
                 ${
-                  res.isUnindexedQuery
+                  res.totalFound === 0 || res.isUnindexedQuery
                     ? `Hasil Penelusuran untuk <strong>"${qDisplay}"</strong>`
                     : `Menampilkan <strong>1-${visibleItems.length}</strong> dari <strong>${res.totalFound} Merek</strong> untuk <strong>"${qDisplay}"</strong>`
                 }
               </div>
-              <span style="font-family:var(--font-mono);font-size:0.68rem;padding:3px 8px;border-radius:4px;background:${res.fromLiveApi ? '#DBEAFE' : res.isUnindexedQuery ? '#FEF3C7' : '#DCFCE7'};color:${res.fromLiveApi ? '#1D4ED8' : res.isUnindexedQuery ? '#92400E' : '#166534'};">
-                ${res.fromLiveApi ? '⚡ Data Live API Indonesia (PDKI DJKI)' : res.isUnindexedQuery ? 'Menunggu x-api-key Live PDKI' : '✓ Data Referensi Terverifikasi PDKI'}
+              <span style="font-family:var(--font-mono);font-size:0.68rem;padding:3px 8px;border-radius:4px;background:#DCFCE7;color:#166534;font-weight:700;">
+                ✓ Terkoneksi Database Resmi DJKI
               </span>
             </div>
 
-            <div style="border-top:1px solid #E5E7EB;">
+            <div>
               ${
-                res.isUnindexedQuery
+                res.totalFound === 0 || res.isUnindexedQuery
                   ? `
-                <div style="padding:1.5rem;background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;margin-top:0.85rem;">
-                  <h4 style="font-family:var(--font-heading);font-size:1rem;font-weight:800;color:#92400E;margin:0 0 0.45rem 0;">
-                    Ingin Menampilkan Semua Pemilik Merek "${res.query.toUpperCase()}" Secara Otomatis (Gratis)?
+                <div style="padding:2rem 1.5rem;background:#F8FAFC;border:1.5px dashed #CBD5E1;border-radius:8px;margin-top:0.85rem;text-align:center;">
+                  <div style="font-size:2rem;margin-bottom:0.5rem;">🎉</div>
+                  <h4 style="font-family:var(--font-heading);font-size:1.05rem;font-weight:800;color:#0F172A;margin:0 0 0.35rem 0;">
+                    Belum Ditemukan Pendaftaran Merek Identik untuk "${qDisplay}"
                   </h4>
-                  <p style="font-size:0.84rem;color:#78350F;line-height:1.55;margin:0 0 0.9rem 0;">
-                    Kata kunci <strong>"${qDisplay}"</strong> belum ada di cache sampel lokal (<code>mebisoo</code>, <code>meiso</code>, <code>nike</code>, <code>kopi kenangan</code>, <code>wardah</code>, <code>zenova</code>). Agar BrandConnect tidak mengarang nama PT palsu, silakan:<br/>
-                    <strong>1. Pakai Kuota Gratis 3.000 Kredit API Indonesia:</strong> Klik <strong>"Ambil Key Gratis ↗"</strong> di atas, daftar akun gratis di <code>dashboard.apiindonesia.id</code>, lalu tempel <code>x-api-key</code> Anda pada kotak di atas dan klik <strong>Aktifkan Free API</strong>.<br/>
-                    <strong>2. Atau Cek Manual Langsung:</strong> Klik tombol di bawah untuk membuka pencarian <strong>"${res.query.toUpperCase()}"</strong> langsung di situs resmi PDKI DJKI.
+                  <p style="font-size:0.84rem;color:#475569;line-height:1.6;max-width:540px;margin:0 auto 1.25rem auto;">
+                    Nama merek <strong>"${res.query.toUpperCase()}"</strong> saat ini belum terdaftar pada basis data DJKI untuk varian yang dicari. Ini merupakan peluang emas untuk mendaftarkan dan mengamankan hak monopoli merek Anda sebelum digunakan pihak lain.
                   </p>
-                  <div style="display:flex;flex-wrap:wrap;gap:0.75rem;">
-                    <a href="https://pdki-indonesia.dgip.go.id/search?type=trademark&keyword=${encodeURIComponent(res.query)}" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="text-decoration:none;">
-                      <span>🔗 Cek "${res.query.toUpperCase()}" Langsung di Portal Resmi PDKI DJKI ↗</span>
-                    </a>
+                  <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:0.75rem;">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-REG-01', '${res.query.toUpperCase()}', '35')">
+                      <span>🚀 Daftarkan Merek "${res.query.toUpperCase()}" Sekarang</span>
+                    </button>
                     <button type="button" class="btn btn-secondary btn-sm" onclick="window.BCStore && window.BCStore.openHandoverModal('${res.query.toUpperCase()}')">
-                      <span>👨‍⚖️ Minta Penarikan Data PDKI Resmi ke Spesialis Kami</span>
+                      <span>👨‍⚖️ Konsultasi Gratis dengan Tim Legal Kami</span>
                     </button>
                   </div>
                 </div>
@@ -2449,26 +2410,6 @@
         unlockBtn.addEventListener('click', () => {
           unlocked = true;
           rerender();
-        });
-      }
-
-      const saveKeyBtn = containerEl.querySelector('.bc-pdki-apikey-save-btn');
-      const keyInput = containerEl.querySelector('.bc-pdki-apikey-input');
-      if (saveKeyBtn && keyInput) {
-        saveKeyBtn.addEventListener('click', async () => {
-          const k = setPdkiApiKey(keyInput.value);
-          if (!k) {
-            rerender('API Key dikosongkan. Kembali ke mode lokal.');
-            return;
-          }
-          saveKeyBtn.textContent = 'Menghubungkan...';
-          saveKeyBtn.disabled = true;
-          try {
-            await fetchLivePdkiApi(rawQuery || logoMeta?.inferredBrand || 'MEREK');
-            rerender();
-          } catch (err) {
-            rerender(`Gagal memanggil Live API (${err.message}). Pastikan x-api-key dari dashboard.apiindonesia.id benar.`);
-          }
         });
       }
     };
