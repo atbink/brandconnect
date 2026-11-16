@@ -201,12 +201,10 @@
                 const swatches = (uploadedMeta.dominantColors || [])
                   .map((c) => `<span style="display:inline-flex;align-items:center;gap:4px;margin-right:8px;"><span style="width:11px;height:11px;border-radius:2px;background:${c.hex};border:1px solid #333;display:inline-block;"></span>${c.nameId} (${c.hex})</span>`)
                   .join('');
-                const topVis = uploadedMeta.visualMatches?.[0];
                 fileStatus.innerHTML = `
-                  <div style="color:var(--green);font-weight:700;">✓ Analisis Piksel &amp; Kemiripan Visual Selesai: ${f.name} (${uploadedMeta.width}×${uploadedMeta.height} px · ${sizeKB} KB)</div>
+                  <div style="color:var(--green);font-weight:700;">✓ Analisis Piksel &amp; Etiket Logo Selesai: ${f.name} (${uploadedMeta.width}×${uploadedMeta.height} px · ${sizeKB} KB)</div>
                   <div style="margin-top:4px;color:var(--charcoal);"><strong>Palet Warna Dominan:</strong> ${swatches}</div>
                   <div style="margin-top:2px;color:var(--charcoal);"><strong>Vienna Code:</strong> <code>${uploadedMeta.viennaCode}</code> · <strong>Simetri:</strong> H:${uploadedMeta.symmetryH}% / V:${uploadedMeta.symmetryV}% · <strong>64-bit dHash:</strong> <code>${uploadedMeta.dHash}</code></div>
-                  <div style="margin-top:2px;color:#B45309;font-weight:700;"><strong>Kemiripan Visual Tertinggi:</strong> ${uploadedMeta.maxVisualSimilarity}% ${topVis ? `(terhadap pola ${topVis.name})` : ''}</div>
                   <div style="margin-top:2px;color:var(--green);font-weight:600;"><strong>Auto-Draft Uraian Warna DJKI:</strong> "${uploadedMeta.djkiColorDescription}"</div>
                 `;
               };
@@ -270,11 +268,8 @@
           document.getElementById('dc-p4').textContent = rec.statuteStatus;
           document.getElementById('dc-p4-d').textContent = rec.statuteDetail;
 
-          if (visualSimContainer) {
-            visualSimContainer.innerHTML =
-              uploadedMeta && uploadedMeta.dHash && window.BCStore.renderVisualSimilarityHtml
-                ? window.BCStore.renderVisualSimilarityHtml(uploadedMeta, uploadedCompMeta)
-                : '';
+          if (visualSimContainer && window.BCStore.mountPdkiExplorer) {
+            window.BCStore.mountPdkiExplorer(visualSimContainer, rec.trademarkName, uploadedMeta, uploadedCompMeta);
           }
 
           document.getElementById('dc-ai-interp').textContent = rec.aiInterpretation;

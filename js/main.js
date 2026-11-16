@@ -1082,11 +1082,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const swatchesHtml = (uploadedLogoInfo.dominantColors || [])
                   .map((c) => `<span style="display:inline-flex;align-items:center;gap:4px;margin-right:8px;"><span style="width:11px;height:11px;border-radius:2px;background:${c.hex};border:1px solid #333;display:inline-block;"></span>${c.nameId} (${c.hex})</span>`)
                   .join('');
-                const topVis = uploadedLogoInfo.visualMatches?.[0];
                 logoFileMetaEl.innerHTML = `
                   <div style="margin-top:3px;"><strong>Palet Warna Terdeteksi:</strong> ${swatchesHtml}</div>
                   <div style="margin-top:2px;"><strong>Vienna Code:</strong> <code>${uploadedLogoInfo.viennaCode || '-'}</code> · <strong>Simetri:</strong> H:${uploadedLogoInfo.symmetryH || 80}% / V:${uploadedLogoInfo.symmetryV || 75}% · <strong>dHash:</strong> <code>${uploadedLogoInfo.dHash || '-'}</code></div>
-                  <div style="margin-top:2px;color:#B45309;font-weight:700;"><strong>Kemiripan Visual Tertinggi:</strong> ${uploadedLogoInfo.maxVisualSimilarity || 45}% ${topVis ? `(terhadap pola ${topVis.name})` : ''} — Klik "Cek Merek Gratis" untuk melihat matriks perbandingan lengkap!</div>
+                  <div style="margin-top:2px;color:var(--green);font-weight:700;">✓ Klik "Cek Merek Gratis" untuk menampilkan Daftar Penelusuran Merek PDKI &amp; Filter Lanjutan!</div>
                 `;
               }
               if (logoPlaceholder) logoPlaceholder.hidden = true;
@@ -1279,11 +1278,8 @@ document.addEventListener('DOMContentLoaded', () => {
         pillStatuteEl.querySelector('.tm-pill-detail').textContent = data.statuteDetail;
       }
 
-      if (visualSimContainer) {
-        visualSimContainer.innerHTML =
-          uploadedLogoInfo && window.BCStore && window.BCStore.renderVisualSimilarityHtml
-            ? window.BCStore.renderVisualSimilarityHtml(uploadedLogoInfo, uploadedCompLogoInfo)
-            : '';
+      if (visualSimContainer && window.BCStore && window.BCStore.mountPdkiExplorer) {
+        window.BCStore.mountPdkiExplorer(visualSimContainer, data.brand, uploadedLogoInfo, uploadedCompLogoInfo);
       }
 
       if (waActionBtn) {
