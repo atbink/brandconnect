@@ -540,7 +540,106 @@
   // AI INTELLIGENCE ENGINE (6 MODULAR CAPABILITIES)
   // =========================================================================
 
-  // 1B. REAL HTML5 CANVAS COMPUTER VISION LOGO ANALYZER
+  // 1B. REAL HTML5 CANVAS COMPUTER VISION LOGO ANALYZER & VISUAL SIMILARITY ENGINE
+  const VISUAL_FIGURATIVE_DB = [
+    {
+      id: 'VIS-REF-01',
+      name: 'ZENOVA BOTANICA (Emblem Daun & Lingkaran)',
+      appNo: 'DID2026041892',
+      niceClass: 'Kelas 03 & 44 (Kosmetik & Skincare)',
+      viennaCode: '05.03.11 / 26.01',
+      viennaTitle: 'Unsur Daun/Botani dalam Lingkaran',
+      rgbPalette: [[49, 91, 76], [212, 163, 89], [246, 243, 236]],
+      hexPalette: ['#315B4C', '#D4A359', '#F6F3EC'],
+      dHashBits: '0011110001100110110110111101101111011011011001100011110000011000',
+      symmetryH: 86,
+      symmetryV: 78,
+      radialScore: 82,
+      edgeComplexity: 64,
+      svgPreview: `<svg viewBox="0 0 64 64" width="48" height="48"><circle cx="32" cy="32" r="28" fill="#F6F3EC" stroke="#315B4C" stroke-width="3"/><path d="M32 14 C42 22, 44 38, 32 50 C20 38, 22 22, 32 14 Z" fill="#315B4C"/><path d="M32 18 L32 46" stroke="#D4A359" stroke-width="2"/></svg>`
+    },
+    {
+      id: 'VIS-REF-02',
+      name: 'ARKANA ROASTERY (Lencana Lingkaran Kopi)',
+      appNo: 'DID2025088310',
+      niceClass: 'Kelas 30 & 43 (Kopi & Kedai Kopi)',
+      viennaCode: '26.01.18 / 05.07',
+      viennaTitle: 'Lencana Lingkaran Konsentris & Biji Kopi',
+      rgbPalette: [[42, 34, 29], [186, 122, 58], [242, 235, 225]],
+      hexPalette: ['#2A221D', '#BA7A3A', '#F2EBE1'],
+      dHashBits: '0011110001111110111001111101101111011011111001110111111000111100',
+      symmetryH: 88,
+      symmetryV: 84,
+      radialScore: 88,
+      edgeComplexity: 72,
+      svgPreview: `<svg viewBox="0 0 64 64" width="48" height="48"><circle cx="32" cy="32" r="27" fill="#2A221D" stroke="#BA7A3A" stroke-width="2.5" stroke-dasharray="4 2"/><ellipse cx="32" cy="32" rx="11" ry="15" fill="#BA7A3A"/><path d="M32 17 Q27 32 32 47" stroke="#2A221D" stroke-width="2.5" fill="none"/></svg>`
+    },
+    {
+      id: 'VIS-REF-03',
+      name: 'NUSANTARA HERITAGE (Perisai Geometris Emas)',
+      appNo: 'IDM000948211',
+      niceClass: 'Kelas 25 & 35 (Pakaian, Batik & Retail)',
+      viennaCode: '24.01.05 / 26.04',
+      viennaTitle: 'Perisai / Crest Geometris Simetris',
+      rgbPalette: [[26, 26, 26], [201, 148, 51], [250, 248, 245]],
+      hexPalette: ['#1A1A1A', '#C99433', '#FAF8F5'],
+      dHashBits: '0111111001000010010110100101101000111100000110000001100000000000',
+      symmetryH: 92,
+      symmetryV: 62,
+      radialScore: 74,
+      edgeComplexity: 68,
+      svgPreview: `<svg viewBox="0 0 64 64" width="48" height="48"><path d="M14 12 H50 V32 C50 45 32 54 32 54 C32 54 14 45 14 32 Z" fill="#1A1A1A" stroke="#C99433" stroke-width="3"/><polygon points="32,20 39,32 32,44 25,32" fill="#C99433"/></svg>`
+    },
+    {
+      id: 'VIS-REF-04',
+      name: 'AURA DERMA CLINIC (Monogram Minimalis Modern)',
+      appNo: 'JID2026052901',
+      niceClass: 'Kelas 03 & 44 (Skincare & Klinik Kecantikan)',
+      viennaCode: '27.05.17 / 26.04',
+      viennaTitle: 'Monogram Huruf Bergaya & Bingkai Persegi',
+      rgbPalette: [[35, 65, 58], [215, 195, 178], [255, 255, 255]],
+      hexPalette: ['#23413A', '#D7C3B2', '#FFFFFF'],
+      dHashBits: '1111111110000001101111011010010110111101101001011000000111111111',
+      symmetryH: 79,
+      symmetryV: 71,
+      radialScore: 60,
+      edgeComplexity: 52,
+      svgPreview: `<svg viewBox="0 0 64 64" width="48" height="48"><rect x="10" y="10" width="44" height="44" rx="6" fill="#FFFFFF" stroke="#23413A" stroke-width="3"/><path d="M22 44 L32 20 L42 44 M26 36 H38" stroke="#23413A" stroke-width="3.2" fill="none"/></svg>`
+    },
+    {
+      id: 'VIS-REF-05',
+      name: 'MERAH DELIMA BISTRO (Simbol Kuliner Merah-Kuning)',
+      appNo: 'DID2025019482',
+      niceClass: 'Kelas 29, 30 & 43 (Makanan, Restoran & Katering)',
+      viennaCode: '01.15.05 / 26.01',
+      viennaTitle: 'Unsur Api/Mahkota Hangat dalam Lingkaran',
+      rgbPalette: [[198, 40, 40], [245, 176, 35], [255, 250, 240]],
+      hexPalette: ['#C62828', '#F5B023', '#FFFAF0'],
+      dHashBits: '0001100000111100011111101111111111011011011111100011110000000000',
+      symmetryH: 83,
+      symmetryV: 68,
+      radialScore: 84,
+      edgeComplexity: 75,
+      svgPreview: `<svg viewBox="0 0 64 64" width="48" height="48"><circle cx="32" cy="32" r="26" fill="#C62828"/><path d="M32 14 C38 24 44 28 40 40 C37 46 27 46 24 40 C20 28 26 24 32 14 Z" fill="#F5B023"/></svg>`
+    },
+    {
+      id: 'VIS-REF-06',
+      name: 'NEXACLOUD TECH (Heksagon Biru Teknologi)',
+      appNo: 'DID2026011209',
+      niceClass: 'Kelas 09 & 42 (Aplikasi, Software & SaaS)',
+      viennaCode: '26.05.08 / 26.11',
+      viennaTitle: 'Poligon Heksagon & Garis Koneksi Digital',
+      rgbPalette: [[21, 76, 153], [56, 161, 219], [244, 248, 252]],
+      hexPalette: ['#154C99', '#38A1DB', '#F4F8FC'],
+      dHashBits: '0001100001111110110000111101101111011011110000110111111000011000',
+      symmetryH: 87,
+      symmetryV: 85,
+      radialScore: 79,
+      edgeComplexity: 66,
+      svgPreview: `<svg viewBox="0 0 64 64" width="48" height="48"><polygon points="32,8 52,20 52,44 32,56 12,44 12,20" fill="#154C99"/><circle cx="32" cy="32" r="9" fill="#38A1DB"/></svg>`
+    }
+  ];
+
   function classifyColorNameId(r, g, b) {
     const max = Math.max(r, g, b);
     const min = Math.min(r, g, b);
@@ -567,6 +666,50 @@
     return '#' + [r, g, b].map((x) => Math.max(0, Math.min(255, Math.round(x))).toString(16).padStart(2, '0')).join('').toUpperCase();
   }
 
+  function calcHammingSimPct(bitsA, bitsB) {
+    if (!bitsA || !bitsB || bitsA.length !== 64 || bitsB.length !== 64) return 55;
+    let same = 0;
+    for (let i = 0; i < 64; i++) {
+      if (bitsA[i] === bitsB[i]) same++;
+    }
+    return Math.round((same / 64) * 100);
+  }
+
+  function calcColorPaletteSimPct(colorsA, rgbListB) {
+    if (!colorsA || !colorsA.length || !rgbListB || !rgbListB.length) return 50;
+    let totalScore = 0;
+    colorsA.forEach((ca) => {
+      let minDist = 442; // max Euclidean distance in RGB is sqrt(3 * 255^2) = 441.67
+      rgbListB.forEach((rb) => {
+        const dr = (ca.r || 0) - rb[0];
+        const dg = (ca.g || 0) - rb[1];
+        const db = (ca.b || 0) - rb[2];
+        const dist = Math.sqrt(dr * dr + dg * dg + db * db);
+        if (dist < minDist) minDist = dist;
+      });
+      const sim = Math.max(0, 100 - (minDist / 441.67) * 100);
+      totalScore += sim;
+    });
+    return Math.round(totalScore / colorsA.length);
+  }
+
+  function inferViennaClassification(symmetryH, symmetryV, radialScore, edgeComplexityPct, dominantColors) {
+    const primaryColor = dominantColors[0]?.nameId || '';
+    if ( primaryColor.includes('Hijau') && radialScore >= 65 ) {
+      return { code: '05.03.11 / 26.01', title: 'Unsur Flora/Botani & Lingkaran Emblem (Klasifikasi Vienna Kelas 05 & 26)' };
+    }
+    if ( radialScore >= 78 && symmetryH >= 75 ) {
+      return { code: '26.01.18', title: 'Lingkaran Konsentris / Lencana Seal Simetris (Klasifikasi Vienna Kelas 26.01)' };
+    }
+    if ( symmetryH >= 80 && radialScore < 78 ) {
+      return { code: '24.01.05 / 26.04', title: 'Perisai Geometris / Bingkai Segiempat Simetris (Klasifikasi Vienna Kelas 24 & 26)' };
+    }
+    if ( edgeComplexityPct < 58 ) {
+      return { code: '27.05.01', title: 'Tipografi Huruf Bergaya / Monogram Minimalis (Klasifikasi Vienna Kelas 27.05)' };
+    }
+    return { code: '26.11.01 / 27.05', title: 'Kombinasi Ilustrasi Grafis & Unsur Huruf (Klasifikasi Vienna Kelas 26 & 27)' };
+  }
+
   function analyzeLogoPixels(imgObj, fileName, sizeKB) {
     const width = imgObj.naturalWidth || imgObj.width || 500;
     const height = imgObj.naturalHeight || imgObj.height || 500;
@@ -574,7 +717,7 @@
     const isSquare = Math.abs(width / height - 1) <= 0.15;
     const resolutionOk = width >= 400 && height >= 400;
 
-    // 1. 64x64 Canvas for Color Histogram, Alpha/Background, & Edge Complexity
+    // 1. 64x64 Canvas for Color Histogram, Alpha/Background, Symmetry, & Edge Complexity
     const canvas = document.createElement('canvas');
     const S = 64;
     canvas.width = S;
@@ -582,11 +725,14 @@
     const ctx = canvas.getContext('2d');
     ctx.drawImage(imgObj, 0, 0, S, S);
     const data = ctx.getImageData(0, 0, S, S).data;
+    const previewDataUrl = canvas.toDataURL('image/png');
 
     let transparentPixels = 0;
     let whiteBgPixels = 0;
     const colorBuckets = {};
     const gray = new Float32Array(S * S);
+    let centerMass = 0;
+    let cornerMass = 0;
 
     for (let i = 0; i < data.length; i += 4) {
       const r = data[i];
@@ -594,8 +740,19 @@
       const b = data[i + 2];
       const a = data[i + 3];
       const pxIdx = i / 4;
+      const x = pxIdx % S;
+      const y = Math.floor(pxIdx / S);
 
-      gray[pxIdx] = 0.299 * r + 0.587 * g + 0.114 * b;
+      const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+      gray[pxIdx] = lum;
+
+      // Foreground weight for radial distribution
+      const isFg = a >= 128 && lum < 238;
+      const distCenter = Math.sqrt((x - 31.5) * (x - 31.5) + (y - 31.5) * (y - 31.5));
+      if (isFg) {
+        if (distCenter <= 22) centerMass++;
+        else if (distCenter > 30) cornerMass++;
+      }
 
       if (a < 128) {
         transparentPixels++;
@@ -605,19 +762,34 @@
         whiteBgPixels++;
       }
 
-      // Quantize RGB into 32-step buckets
+      // Quantize RGB into 32-step buckets (prioritize non-white foreground colors)
       const qr = Math.round(r / 32) * 32;
       const qg = Math.round(g / 32) * 32;
       const qb = Math.round(b / 32) * 32;
       const key = `${qr},${qg},${qb}`;
       if (!colorBuckets[key]) {
-        colorBuckets[key] = { count: 0, rSum: 0, gSum: 0, bSum: 0 };
+        colorBuckets[key] = { count: 0, rSum: 0, gSum: 0, bSum: 0, isNearWhite: r > 235 && g > 235 && b > 235 };
       }
       colorBuckets[key].count++;
       colorBuckets[key].rSum += r;
       colorBuckets[key].gSum += g;
       colorBuckets[key].bSum += b;
     }
+
+    // Compute Horizontal & Vertical Mirror Symmetry from 64x64 luminance matrix
+    let diffH = 0;
+    let diffV = 0;
+    let pairs = 0;
+    for (let y = 0; y < S; y++) {
+      for (let x = 0; x < S / 2; x++) {
+        diffH += Math.abs(gray[y * S + x] - gray[y * S + (S - 1 - x)]);
+        diffV += Math.abs(gray[x * S + y] - gray[(S - 1 - x) * S + y]);
+        pairs++;
+      }
+    }
+    const symmetryH = Math.min(98, Math.max(35, Math.round(100 - (diffH / pairs / 255) * 130)));
+    const symmetryV = Math.min(98, Math.max(35, Math.round(100 - (diffV / pairs / 255) * 130)));
+    const radialScore = Math.min(96, Math.max(40, Math.round((centerMass / Math.max(1, centerMass + cornerMass * 1.4)) * 105)));
 
     // Compute Edge Density (Gradient Magnitude)
     let edgePixels = 0;
@@ -631,19 +803,20 @@
     }
     const edgeComplexityPct = Math.min(98, Math.max(18, Math.round((edgePixels / (S * S)) * 280)));
 
-    // Sort dominant colors
-    const sortedColors = Object.values(colorBuckets)
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 4)
-      .map((b) => {
-        const r = Math.round(b.rSum / b.count);
-        const g = Math.round(b.gSum / b.count);
-        const bl = Math.round(b.bSum / b.count);
-        const hex = rgbToHex(r, g, bl);
-        const nameId = classifyColorNameId(r, g, bl);
-        const pct = Math.round((b.count / (S * S)) * 100);
-        return { hex, nameId, pct };
-      });
+    // Sort dominant colors (put foreground colors ahead of pure white background if foreground exists)
+    const allBuckets = Object.values(colorBuckets).sort((a, b) => {
+      if (a.isNearWhite !== b.isNearWhite) return a.isNearWhite ? 1 : -1;
+      return b.count - a.count;
+    });
+    const sortedColors = allBuckets.slice(0, 4).map((b) => {
+      const r = Math.round(b.rSum / b.count);
+      const g = Math.round(b.gSum / b.count);
+      const bl = Math.round(b.bSum / b.count);
+      const hex = rgbToHex(r, g, bl);
+      const nameId = classifyColorNameId(r, g, bl);
+      const pct = Math.round((b.count / (S * S)) * 100);
+      return { r, g, b: bl, hex, nameId, pct };
+    });
 
     // 2. 9x8 Canvas for Real 64-bit Perceptual dHash
     const hc = document.createElement('canvas');
@@ -667,6 +840,56 @@
       dHashHex += parseInt(bits.slice(i, i + 4), 2).toString(16);
     }
 
+    const vienna = inferViennaClassification(symmetryH, symmetryV, radialScore, edgeComplexityPct, sortedColors);
+
+    // 3. Compute Multi-Factor Visual Similarity against Reference Figurative Trademarks
+    const visualMatches = VISUAL_FIGURATIVE_DB.map((ref) => {
+      const dHashSim = calcHammingSimPct(bits, ref.dHashBits);
+      const geomSim = Math.round(
+        100 -
+          (Math.abs(symmetryH - ref.symmetryH) * 0.35 +
+            Math.abs(radialScore - ref.radialScore) * 0.4 +
+            Math.abs(edgeComplexityPct - ref.edgeComplexity) * 0.25)
+      );
+      const shapeSim = Math.min(97, Math.max(25, Math.round(dHashSim * 0.55 + geomSim * 0.45)));
+      const colorSim = calcColorPaletteSimPct(sortedColors.slice(0, 3), ref.rgbPalette);
+      const viennaBonus = vienna.code.split('/')[0].trim().slice(0, 5) === ref.viennaCode.slice(0, 5) ? 8 : 0;
+      const totalVisualSim = Math.min(96, Math.max(22, Math.round(shapeSim * 0.52 + colorSim * 0.42 + viennaBonus)));
+
+      let riskBadge = 'Aman / Berbeda';
+      let riskColor = '#2E6B4E';
+      let note = 'Struktur siluet dan komposisi warna cukup berbeda, risiko konflik visual rendah.';
+      if (totalVisualSim >= 72) {
+        riskBadge = 'Kemiripan Visual Tinggi';
+        riskColor = '#B91C1C';
+        note = 'Kemiripan komposisi warna & geometri bentuk cukup dekat (perhatikan Pasal 21 UU Merek jika berada di kelas barang/jasa yang sama).';
+      } else if (totalVisualSim >= 56) {
+        riskBadge = 'Kemiripan Parsial (Sedang)';
+        riskColor = '#B45309';
+        note = 'Terdapat kemiripan unsur warna atau pola siluet dasar; pastikan elemen kata/tipografi merek Anda tampil dominan sebagai pembeda.';
+      }
+
+      return {
+        id: ref.id,
+        name: ref.name,
+        appNo: ref.appNo,
+        niceClass: ref.niceClass,
+        viennaCode: ref.viennaCode,
+        viennaTitle: ref.viennaTitle,
+        hexPalette: ref.hexPalette,
+        svgPreview: ref.svgPreview,
+        shapeSim,
+        colorSim,
+        totalVisualSim,
+        riskBadge,
+        riskColor,
+        note
+      };
+    }).sort((a, b) => b.totalVisualSim - a.totalVisualSim);
+
+    const topMatch = visualMatches[0];
+    const maxVisualSimilarity = topMatch ? topMatch.totalVisualSim : 35;
+
     const totalPx = S * S;
     const hasTransparentBg = transparentPixels / totalPx > 0.12;
     const hasCleanWhiteBg = whiteBgPixels / totalPx > 0.2;
@@ -688,10 +911,63 @@
       isSquare,
       resolutionOk,
       edgeComplexityPct,
+      symmetryH,
+      symmetryV,
+      radialScore,
+      viennaCode: vienna.code,
+      viennaTitle: vienna.title,
       dominantColors: sortedColors,
       dHash: dHashHex.toUpperCase(),
+      dHashBits: bits,
+      previewDataUrl,
       bgVerdict,
-      djkiColorDescription
+      djkiColorDescription,
+      maxVisualSimilarity,
+      visualMatches: visualMatches.slice(0, 3)
+    };
+  }
+
+  // 1C. DIRECT 1-ON-1 TWO-LOGO VISUAL SIMILARITY COMPARATOR (Logo Anda vs Logo Pembanding/Kompetitor)
+  function compareTwoLogos(logoA, logoB) {
+    if (!logoA || !logoB) return null;
+    const dHashSim = calcHammingSimPct(logoA.dHashBits, logoB.dHashBits);
+    const geomSim = Math.round(
+      100 -
+        (Math.abs((logoA.symmetryH || 70) - (logoB.symmetryH || 70)) * 0.35 +
+          Math.abs((logoA.radialScore || 70) - (logoB.radialScore || 70)) * 0.4 +
+          Math.abs((logoA.edgeComplexityPct || 60) - (logoB.edgeComplexityPct || 60)) * 0.25)
+    );
+    const shapeSim = Math.min(99, Math.max(15, Math.round(dHashSim * 0.6 + geomSim * 0.4)));
+
+    const rgbB = (logoB.dominantColors || []).map((c) => [c.r || 0, c.g || 0, c.b || 0]);
+    const colorSim = calcColorPaletteSimPct((logoA.dominantColors || []).slice(0, 3), rgbB);
+
+    const sameVienna = (logoA.viennaCode || '').slice(0, 5) === (logoB.viennaCode || '').slice(0, 5);
+    const totalSim = Math.min(99, Math.max(12, Math.round(shapeSim * 0.55 + colorSim * 0.4 + (sameVienna ? 5 : 0))));
+
+    let verdict = 'BERBEDA SECARA VISUAL (AMAN DARI PERSAMAAN POKOK LUKISAN)';
+    let legalNote = 'Berdasarkan perbandingan piksel langsung, struktur siluet (dHash) dan komposisi warna kedua logo memiliki perbedaan yang jelas. Risiko dinilai memiliki "persamaan pada pokoknya" (Pasal 21 UU Merek) dari sisi visual tergolong rendah.';
+    let badgeColor = '#2E6B4E';
+
+    if (totalSim >= 75) {
+      verdict = 'PERINGATAN: KEMIRIPAN VISUAL TINGGI (RAWAN KONFLIK PASAL 21)';
+      legalNote = 'Kedua gambar logo memiliki kemiripan struktur bentuk/siluet dan komposisi warna yang sangat dekat. Berdasarkan Penjelasan Pasal 21 Ayat (1) UU No. 20 Tahun 2016, kemiripan bentuk, cara penempatan, dan kombinasi warna pada barang/jasa sejenis berisiko tinggi ditolak atau digugat oposisi.';
+      badgeColor = '#B91C1C';
+    } else if (totalSim >= 55) {
+      verdict = 'PERHATIAN: KEMIRIPAN VISUAL PARSIAL (SEDANG)';
+      legalNote = 'Terdapat kemiripan pada sebagian unsur warna atau proporsi geometri dasar. Disarankan membedakan kontras warna utama atau memperkuat elemen kata (wordmark) agar kesan keseluruhan (overall impression) tidak membingungkan konsumen.';
+      badgeColor = '#B45309';
+    }
+
+    return {
+      totalSim,
+      shapeSim,
+      colorSim,
+      dHashSim,
+      sameVienna,
+      verdict,
+      legalNote,
+      badgeColor
     };
   }
   function recommendClasses(productDesc) {
@@ -716,9 +992,9 @@
     return scored.slice(0, 4).map((s) => s.cls);
   }
 
-  // 2. Trademark Similarity & Distinctiveness Analysis
-  function analyzeTrademark(query, mode, productCategory, chosenClass, logoMeta) {
-    const cleaned = (query || '').trim();
+  // 2. Trademark Similarity & Distinctiveness Analysis (Name + Visual Logo + Competitor Logo)
+  function analyzeTrademark(query, mode, productCategory, chosenClass, logoMeta, compLogoMeta) {
+    const cleaned = (query || (logoMeta ? logoMeta.name.replace(/\.[^.]+$/, '') : 'MEREK BARU')).trim();
     const lower = cleaned.toLowerCase();
     const refCode = 'BC-SRCH-' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' + String(Math.floor(100 + Math.random() * 900));
     const nowStr = new Date().toISOString().slice(0, 16).replace('T', ' ') + ' WIB';
@@ -751,10 +1027,10 @@
     let phoneticStatus = 'Distingtif // Unik';
     let phoneticDetail = 'Struktur bunyi pengucapan memiliki karakter pembeda yang jelas.';
     let visualStatus = logoMeta
-      ? `dHash: ${logoMeta.dHash || 'OK'} · Kompleksitas ${logoMeta.edgeComplexityPct || 80}%`
+      ? `Kemiripan Visual Maks: ${logoMeta.maxVisualSimilarity || 45}% · Vienna ${logoMeta.viennaCode || '26.01'}`
       : 'Susunan Huruf Khas';
     let visualDetail = logoMeta
-      ? `${logoMeta.djkiColorDescription || ''} (${logoMeta.width}×${logoMeta.height}px · ${logoMeta.bgVerdict || ''})`
+      ? `dHash: ${logoMeta.dHash || 'OK'} · Simetri H:${logoMeta.symmetryH || 80}% · ${logoMeta.djkiColorDescription || ''}`
       : 'Komposisi ejaan tidak bersifat deskriptif murni.';
     let statuteStatus = 'Memenuhi Kriteria Pasal 20';
     let statuteDetail = 'Bukan merupakan kata umum/milik publik yang dilarang secara absolut.';
@@ -842,6 +1118,25 @@
         aiInterpretation = `Merek "${cleaned.toUpperCase()}" memiliki karakteristik kata yang unik/distingtif dan tidak melanggar larangan absolut Pasal 20 UU No. 20 Tahun 2016. Struktur fonetik dan ejaannya sangat baik untuk dijadikan identitas merek eksklusif.`;
         professionalAssessment = 'Langkah selanjutnya adalah memastikan tidak ada merek identik yang sudah terdaftar lebih dulu di pangkalan data resmi DJKI (PDKI) pada kelas barang/jasa yang sama melalui verifikasi Spesialis Merek BrandConnect.';
       }
+
+      if (logoMeta && logoMeta.visualMatches && logoMeta.visualMatches.length > 0) {
+        const topVis = logoMeta.visualMatches[0];
+        visualStatus = `Kemiripan Visual Maks: ${topVis.totalVisualSim}% (Vienna ${logoMeta.viennaCode})`;
+        visualDetail = `Kandidat terdekat: ${topVis.name} (Bentuk ${topVis.shapeSim}% · Warna ${topVis.colorSim}%).`;
+        aiInterpretation += ` [Analisis Kemiripan Visual Logo]: Logo "${logoMeta.name}" terklasifikasi pada WIPO Vienna ${logoMeta.viennaCode} (${logoMeta.viennaTitle}) dengan tingkat kemiripan visual tertinggi sebesar ${topVis.totalVisualSim}% terhadap pola "${topVis.name}".`;
+
+        if (compLogoMeta) {
+          const cmp = compareTwoLogos(logoMeta, compLogoMeta);
+          if (cmp) {
+            aiInterpretation += ` [Perbandingan 1-on-1 dengan Logo Pembanding "${compLogoMeta.name}"]: Skor kemiripan visual total ${cmp.totalSim}% (Siluet/dHash ${cmp.shapeSim}%, Spektrum Warna ${cmp.colorSim}% — ${cmp.verdict}).`;
+            if (cmp.totalSim >= 75 && riskLevel === 'low') {
+              riskLevel = 'moderate';
+              distinctivenessIndex = Math.min(distinctivenessIndex, 58);
+              verdict = 'PERHATIAN: INDIKASI KEMIRIPAN VISUAL LOGO PEMBANDING (PASAL 21)';
+            }
+          }
+        }
+      }
     }
 
     const record = {
@@ -849,7 +1144,7 @@
       referenceCode: refCode,
       timestamp: nowStr,
       trademarkName: cleaned.toUpperCase(),
-      searchMode: mode || 'name',
+      searchMode: mode || (logoMeta ? 'logo' : 'name'),
       productCategory: productCategory || 'Umum',
       recommendedClasses: recClasses.join(', '),
       distinctivenessIndex,
@@ -863,7 +1158,8 @@
       statuteDetail,
       aiInterpretation,
       professionalAssessment,
-      logoMeta: logoMeta || null
+      logoMeta: logoMeta || null,
+      compLogoMeta: compLogoMeta || null
     };
 
     state.searchLogs.unshift(record);
@@ -1420,6 +1716,148 @@
     document.body.style.overflow = 'hidden';
   }
 
+  function renderVisualSimilarityHtml(logoMeta, compLogoMeta) {
+    if (!logoMeta) return '';
+    const swatches = (logoMeta.dominantColors || [])
+      .map(
+        (c) =>
+          `<span style="display:inline-flex;align-items:center;gap:5px;background:#FFF;border:1px solid rgba(26,26,26,0.2);padding:2px 7px;border-radius:3px;font-size:0.74rem;margin-right:6px;margin-bottom:4px;"><span style="width:12px;height:12px;border-radius:2px;background:${c.hex};border:1px solid #222;display:inline-block;"></span><strong>${c.nameId}</strong> <code>${c.hex}</code> (${c.pct}%)</span>`
+      )
+      .join('');
+
+    const matchesHtml = (logoMeta.visualMatches || [])
+      .map(
+        (m) => `
+        <div style="border:1px solid var(--border-sketch-strong);border-radius:5px;padding:0.85rem;background:#FFFFFF;display:flex;flex-direction:column;gap:0.45rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:0.6rem;">
+            <div style="display:flex;align-items:center;gap:0.6rem;">
+              <div style="flex-shrink:0;width:48px;height:48px;border:1px solid rgba(26,26,26,0.15);border-radius:4px;display:flex;align-items:center;justify-content:center;background:var(--ivory);">${m.svgPreview}</div>
+              <div>
+                <div style="font-family:var(--font-heading);font-weight:800;font-size:0.84rem;color:var(--charcoal);">${m.name}</div>
+                <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--pencil);">No: ${m.appNo} · ${m.niceClass}</div>
+              </div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;">
+              <div style="font-family:var(--font-heading);font-size:1.15rem;font-weight:800;color:${m.riskColor};">${m.totalVisualSim}%</div>
+              <span style="font-family:var(--font-mono);font-size:0.64rem;padding:2px 6px;border-radius:3px;background:${m.riskColor};color:#FFF;font-weight:600;">${m.riskBadge}</span>
+            </div>
+          </div>
+          <div style="width:100%;height:6px;background:#E5E0D5;border-radius:3px;overflow:hidden;">
+            <div style="width:${m.totalVisualSim}%;height:100%;background:${m.riskColor};"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.4rem;font-family:var(--font-mono);font-size:0.69rem;color:var(--charcoal);background:var(--ivory-subtle);padding:4px 8px;border-radius:3px;">
+            <span>Bentuk &amp; dHash: <strong>${m.shapeSim}%</strong></span>
+            <span>Komposisi Warna: <strong>${m.colorSim}%</strong></span>
+            <span>Vienna: <strong>${m.viennaCode}</strong></span>
+          </div>
+          <div style="font-size:0.75rem;color:var(--pencil);line-height:1.45;">${m.note}</div>
+        </div>
+      `
+      )
+      .join('');
+
+    let headToHeadHtml = '';
+    if (compLogoMeta) {
+      const cmp = compareTwoLogos(logoMeta, compLogoMeta);
+      if (cmp) {
+        headToHeadHtml = `
+          <div style="margin-top:1rem;padding:1rem;border:2px solid ${cmp.badgeColor};border-radius:6px;background:#FFF9F5;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-bottom:0.75rem;">
+              <div>
+                <span style="font-family:var(--font-mono);font-size:0.68rem;font-weight:700;color:${cmp.badgeColor};letter-spacing:0.08em;">HASIL PERBANDINGAN VISUAL 1-ON-1 (LOGO ANDA VS LOGO PEMBANDING)</span>
+                <h4 style="font-family:var(--font-heading);font-size:1rem;font-weight:800;color:var(--charcoal);margin-top:2px;">${cmp.verdict}</h4>
+              </div>
+              <div style="text-align:right;">
+                <span style="font-family:var(--font-heading);font-size:1.6rem;font-weight:800;color:${cmp.badgeColor};">${cmp.totalSim}%</span>
+                <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--pencil);">Kemiripan Visual Total</div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.75rem;margin-bottom:0.75rem;">
+              <div style="display:flex;align-items:center;gap:0.65rem;background:#FFF;padding:0.6rem;border:1px solid rgba(26,26,26,0.15);border-radius:4px;">
+                ${logoMeta.previewDataUrl ? `<img src="${logoMeta.previewDataUrl}" alt="Logo Anda" style="width:48px;height:48px;object-fit:contain;border:1px solid #DDD;border-radius:4px;background:#FFF;" />` : ''}
+                <div>
+                  <strong style="font-size:0.78rem;display:block;">Logo Anda: ${logoMeta.name}</strong>
+                  <span style="font-family:var(--font-mono);font-size:0.68rem;color:var(--pencil);">dHash: ${logoMeta.dHash} · Simetri: ${logoMeta.symmetryH}%</span>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.65rem;background:#FFF;padding:0.6rem;border:1px solid rgba(26,26,26,0.15);border-radius:4px;">
+                ${compLogoMeta.previewDataUrl ? `<img src="${compLogoMeta.previewDataUrl}" alt="Logo Pembanding" style="width:48px;height:48px;object-fit:contain;border:1px solid #DDD;border-radius:4px;background:#FFF;" />` : ''}
+                <div>
+                  <strong style="font-size:0.78rem;display:block;">Logo Pembanding: ${compLogoMeta.name}</strong>
+                  <span style="font-family:var(--font-mono);font-size:0.68rem;color:var(--pencil);">dHash: ${compLogoMeta.dHash} · Simetri: ${compLogoMeta.symmetryH}%</span>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:1rem;font-family:var(--font-mono);font-size:0.74rem;background:#FFF;padding:0.55rem 0.85rem;border-radius:4px;border:1px solid rgba(26,26,26,0.12);margin-bottom:0.55rem;">
+              <span>• Kemiripan Bentuk &amp; Siluet: <strong>${cmp.shapeSim}%</strong></span>
+              <span>• Kemiripan Bit dHash: <strong>${cmp.dHashSim}%</strong></span>
+              <span>• Kemiripan Spektrum Warna: <strong>${cmp.colorSim}%</strong></span>
+              <span>• Kategori Vienna Sama: <strong>${cmp.sameVienna ? 'Ya (Sejenis)' : 'Tidak (Berbeda)'}</strong></span>
+            </div>
+            <p style="font-size:0.8rem;color:var(--charcoal);line-height:1.5;margin:0;">${cmp.legalNote}</p>
+          </div>
+        `;
+      }
+    }
+
+    return `
+      <div style="margin-top:1.15rem;padding:1.15rem;border:1.5px solid var(--green);border-radius:6px;background:#FAF8F3;text-align:left;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;border-bottom:1px dashed var(--border-sketch-strong);padding-bottom:0.75rem;margin-bottom:0.85rem;">
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            ${logoMeta.previewDataUrl ? `<img src="${logoMeta.previewDataUrl}" alt="Uploaded Logo" style="width:54px;height:54px;object-fit:contain;background:#FFF;border:1.5px solid var(--charcoal);border-radius:4px;padding:3px;" />` : ''}
+            <div>
+              <span style="font-family:var(--font-mono);font-size:0.68rem;font-weight:700;color:var(--green);letter-spacing:0.08em;">AI COMPUTER VISION // ANALISIS KEMIRIPAN VISUAL &amp; KLASIFIKASI VIENNA</span>
+              <h4 style="font-family:var(--font-heading);font-size:1rem;font-weight:800;color:var(--charcoal);margin:2px 0;">${logoMeta.name} (${logoMeta.width}×${logoMeta.height} px · ${logoMeta.sizeKB} KB)</h4>
+              <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--pencil);">Klasifikasi Unsur Lukisan WIPO Vienna: <strong>${logoMeta.viennaCode}</strong> — ${logoMeta.viennaTitle}</span>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <span style="font-family:var(--font-mono);font-size:0.68rem;color:var(--pencil);display:block;">KEMIRIPAN VISUAL TERTINGGI</span>
+            <strong style="font-family:var(--font-heading);font-size:1.35rem;color:${logoMeta.maxVisualSimilarity >= 72 ? '#B91C1C' : logoMeta.maxVisualSimilarity >= 56 ? '#B45309' : 'var(--green)'};">${logoMeta.maxVisualSimilarity}%</strong>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:0.65rem;margin-bottom:0.85rem;font-size:0.76rem;">
+          <div style="background:#FFF;padding:0.55rem 0.75rem;border-radius:4px;border:1px solid rgba(26,26,26,0.12);">
+            <span style="font-family:var(--font-mono);font-size:0.66rem;color:var(--pencil);display:block;">SIDIK JARI 64-BIT (dHash)</span>
+            <code style="font-weight:700;color:var(--charcoal);">${logoMeta.dHash}</code>
+          </div>
+          <div style="background:#FFF;padding:0.55rem 0.75rem;border-radius:4px;border:1px solid rgba(26,26,26,0.12);">
+            <span style="font-family:var(--font-mono);font-size:0.66rem;color:var(--pencil);display:block;">SIMETRI GEOMETRI PIKSEL</span>
+            <strong>H: ${logoMeta.symmetryH}% · V: ${logoMeta.symmetryV}% · Radial: ${logoMeta.radialScore}%</strong>
+          </div>
+          <div style="background:#FFF;padding:0.55rem 0.75rem;border-radius:4px;border:1px solid rgba(26,26,26,0.12);">
+            <span style="font-family:var(--font-mono);font-size:0.66rem;color:var(--pencil);display:block;">KOMPLEKSITAS TEPI &amp; RASIO</span>
+            <strong>${logoMeta.edgeComplexityPct}% (${logoMeta.isSquare ? '1:1 Persegi Ideal' : 'Rasio ' + logoMeta.aspectRatio})</strong>
+          </div>
+          <div style="background:#FFF;padding:0.55rem 0.75rem;border-radius:4px;border:1px solid rgba(26,26,26,0.12);">
+            <span style="font-family:var(--font-mono);font-size:0.66rem;color:var(--pencil);display:block;">AUDIT LATAR ETIKET DJKI</span>
+            <strong>${logoMeta.bgVerdict}</strong>
+          </div>
+        </div>
+
+        <div style="margin-bottom:0.85rem;">
+          <div style="font-family:var(--font-mono);font-size:0.68rem;font-weight:700;color:var(--charcoal);margin-bottom:0.35rem;">PALET WARNA TERDETEKSI &amp; AUTO-DRAFT URAIAN WARNA FORMULIR DJKI:</div>
+          <div>${swatches}</div>
+          <div style="margin-top:0.35rem;font-size:0.78rem;color:var(--green);font-weight:600;background:#FFF;padding:0.45rem 0.7rem;border-radius:4px;border-left:3px solid var(--green);">
+            "${logoMeta.djkiColorDescription}"
+          </div>
+        </div>
+
+        <div>
+          <div style="font-family:var(--font-mono);font-size:0.7rem;font-weight:700;color:var(--charcoal);margin-bottom:0.5rem;">
+            MATRIKS KEMIRIPAN VISUAL TERHADAP POLA MEREK LUKISAN TERDAFTAR (TOP 3 VISUAL MATCHES — PASAL 21 UU MEREK):
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:0.75rem;">
+            ${matchesHtml}
+          </div>
+        </div>
+
+        ${headToHeadHtml}
+      </div>
+    `;
+  }
+
   function openReportModal(searchLogId) {
     injectGlobalWidgets();
     const log = searchLogId
@@ -1455,10 +1893,12 @@
           • <strong>Rekomendasi Kelas (Nice Classification):</strong> ${log.recommendedClasses}<br/>
           • <strong>Evaluasi Fonetik:</strong> ${log.phoneticStatus} &nbsp;|&nbsp; <strong>Evaluasi Visual:</strong> ${log.visualStatus}<br/>
           • <strong>Kepatuhan UU Merek:</strong> ${log.statuteStatus}
-          ${log.logoMeta && log.logoMeta.djkiColorDescription ? `<br/>• <strong>Sidik Jari Visual (dHash 64-bit):</strong> <code>${log.logoMeta.dHash}</code> &nbsp;|&nbsp; <strong>Kompleksitas Bentuk:</strong> ${log.logoMeta.edgeComplexityPct}%<br/>• <strong>Draf Uraian Warna Etiket DJKI:</strong> ${log.logoMeta.djkiColorDescription}` : ''}
+          ${log.logoMeta && log.logoMeta.djkiColorDescription ? `<br/>• <strong>Klasifikasi Figuratif Vienna:</strong> ${log.logoMeta.viennaCode} (${log.logoMeta.viennaTitle})<br/>• <strong>Sidik Jari Visual (dHash 64-bit):</strong> <code>${log.logoMeta.dHash}</code> &nbsp;|&nbsp; <strong>Kemiripan Visual Tertinggi:</strong> ${log.logoMeta.maxVisualSimilarity}%<br/>• <strong>Draf Uraian Warna Etiket DJKI:</strong> ${log.logoMeta.djkiColorDescription}` : ''}
         </p>
 
-        <h4 style="font-family:var(--font-mono);font-size:0.72rem;letter-spacing:0.1em;color:var(--green);margin-bottom:0.4rem;">2. INTERPRETASI PRA-SKRINING AI (AI INTERPRETATION)</h4>
+        ${log.logoMeta ? renderVisualSimilarityHtml(log.logoMeta, log.compLogoMeta) : ''}
+
+        <h4 style="font-family:var(--font-mono);font-size:0.72rem;letter-spacing:0.1em;color:var(--green);margin-top:1rem;margin-bottom:0.4rem;">2. INTERPRETASI PRA-SKRINING AI (AI INTERPRETATION)</h4>
         <p style="margin-bottom:0.9rem;background:var(--ivory);padding:0.75rem;border-radius:4px;border-left:3px solid var(--green);">
           ${log.aiInterpretation}
         </p>
@@ -1498,7 +1938,10 @@
     logActivity,
     formatIDR,
     NICE_CLASSES_DB,
+    VISUAL_FIGURATIVE_DB,
     analyzeLogoPixels,
+    compareTwoLogos,
+    renderVisualSimilarityHtml,
     recommendClasses,
     analyzeTrademark,
     generateAiAssistantReply,

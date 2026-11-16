@@ -265,20 +265,32 @@
             <!-- Conditional Logo Upload Area (Shown when Upload Logo tab is active) -->
             <div class="tm-logo-upload-area" id="tm-logo-upload-area" hidden>
               <input type="file" id="tm-logo-file-input" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden />
-              <div id="tm-logo-upload-placeholder">
+              <div id="tm-logo-upload-placeholder" style="cursor:pointer;">
                 <strong style="font-family:var(--font-heading);font-size:0.9rem;color:var(--charcoal);display:block;margin-bottom:0.25rem;">
-                  Klik untuk Pilih File Logo (PNG, JPG, SVG)
+                  📎 Klik untuk Pilih File Logo Anda (PNG, JPG, WEBP, SVG)
                 </strong>
                 <span style="font-size:0.78rem;color:var(--pencil);">
-                  Unggah gambar etiket/logo merek Anda untuk dievaluasi bersama nama merek di atas.
+                  Sistem akan otomatis menjalankan <strong>Cek Kemiripan Visual (dHash, Geometri Simetri, Klasifikasi Vienna &amp; Palet Warna)</strong> terhadap referensi merek lukisan terdaftar.
                 </span>
               </div>
               <div class="tm-logo-preview-wrap" id="tm-logo-preview-wrap" hidden>
                 <img src="" alt="Preview Logo Merek" class="tm-logo-preview-img" id="tm-logo-preview-img" />
-                <div style="text-align:left;">
+                <div style="text-align:left;flex:1;">
                   <strong id="tm-logo-file-name" style="font-size:0.84rem;display:block;color:var(--charcoal);">logo.png</strong>
-                  <span id="tm-logo-file-meta" style="font-family:var(--font-mono);font-size:0.72rem;color:var(--green);">Siap dianalisis</span>
+                  <span id="tm-logo-file-meta" style="font-family:var(--font-mono);font-size:0.72rem;color:var(--green);display:block;">Siap dianalisis</span>
                 </div>
+              </div>
+
+              <!-- Optional 2nd Logo Upload for 1-on-1 Direct Competitor Comparison -->
+              <div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px dashed rgba(26,26,26,0.2);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.65rem;" onclick="event.stopPropagation();">
+                <div style="text-align:left;">
+                  <strong style="font-family:var(--font-mono);font-size:0.7rem;color:var(--charcoal);display:block;">⚖️ OPSIONAL: BANDINGKAN DENGAN LOGO KOMPETITOR (CEK KEMIRIPAN 2 GAMBAR 1-ON-1)</strong>
+                  <span id="tm-comp-logo-status" style="font-size:0.74rem;color:var(--pencil);">Punya gambar logo merek lain yang ingin dibandingkan langsung dengan logo Anda? Unggah di sini.</span>
+                </div>
+                <label class="btn btn-secondary btn-sm" style="cursor:pointer;font-size:0.74rem;padding:0.4rem 0.75rem;">
+                  <span>+ Pilih Logo Pembanding</span>
+                  <input type="file" id="tm-comp-logo-input" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden />
+                </label>
               </div>
             </div>
           </form>
@@ -331,6 +343,9 @@
                 <div class="tm-pill-detail">Bukan merupakan kata umum/milik publik.</div>
               </div>
             </div>
+
+            <!-- Dynamic Visual Logo Similarity Matrix Container -->
+            <div id="tm-visual-similarity-container"></div>
 
             <!-- Recommended Next Steps -->
             <div class="tm-next-steps-box">

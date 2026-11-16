@@ -1008,7 +1008,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!searchForm || !brandInput) return;
 
+    const compLogoInput = document.getElementById('tm-comp-logo-input');
+    const compLogoStatus = document.getElementById('tm-comp-logo-status');
+    const visualSimContainer = document.getElementById('tm-visual-similarity-container');
+
     let uploadedLogoInfo = null;
+    let uploadedCompLogoInfo = null;
 
     // Mode Tabs Switching
     modeTabs.forEach((tab) => {
@@ -1032,8 +1037,8 @@ document.addEventListener('DOMContentLoaded', () => {
           if (modePrompt) modePrompt.textContent = 'Cek Status Nomor Permohonan Merek DJKI';
           if (logoUploadArea) logoUploadArea.hidden = true;
         } else if (mode === 'logo') {
-          brandInput.placeholder = 'Masukkan nama merek pada logo Anda...';
-          if (modePrompt) modePrompt.textContent = 'Unggah Logo & Masukkan Nama Merek untuk Evaluasi Visual';
+          brandInput.placeholder = 'Masukkan nama merek pada logo Anda (opsional, otomatis terisi dari nama file)...';
+          if (modePrompt) modePrompt.textContent = 'Unggah Logo untuk Cek Kemiripan Visual (dHash, Vienna Code & Komposisi Warna)';
           if (logoUploadArea) logoUploadArea.hidden = false;
         }
         brandInput.focus();
@@ -1042,7 +1047,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Logo Upload Handling
     if (logoUploadArea && logoFileInput) {
-      logoUploadArea.addEventListener('click', () => {
+      logoUploadArea.addEventListener('click', (ev) => {
+        if (ev.target.closest('label')) return;
         logoFileInput.click();
       });
 
@@ -1066,19 +1072,54 @@ document.addEventListener('DOMContentLoaded', () => {
                     width: imgObj.naturalWidth,
                     height: imgObj.naturalHeight
                   };
+
+              if (!brandInput.value.trim()) {
+                brandInput.value = file.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').toUpperCase();
+              }
+
               if (logoFileNameEl) logoFileNameEl.textContent = `${file.name} (${uploadedLogoInfo.width}×${uploadedLogoInfo.height} px · ${sizeKB} KB)`;
               if (logoFileMetaEl) {
                 const swatchesHtml = (uploadedLogoInfo.dominantColors || [])
                   .map((c) => `<span style="display:inline-flex;align-items:center;gap:4px;margin-right:8px;"><span style="width:11px;height:11px;border-radius:2px;background:${c.hex};border:1px solid #333;display:inline-block;"></span>${c.nameId} (${c.hex})</span>`)
                   .join('');
+                const topVis = uploadedLogoInfo.visualMatches?.[0];
                 logoFileMetaEl.innerHTML = `
                   <div style="margin-top:3px;"><strong>Palet Warna Terdeteksi:</strong> ${swatchesHtml}</div>
-                  <div style="margin-top:2px;"><strong>Sidik Jari Visual (dHash):</strong> <code>${uploadedLogoInfo.dHash || '-'}</code> · <strong>Kompleksitas Grafis:</strong> ${uploadedLogoInfo.edgeComplexityPct || 75}% · <strong>Rasio:</strong> ${uploadedLogoInfo.isSquare ? '1:1 Persegi (Ideal DJKI)' : uploadedLogoInfo.aspectRatio}</div>
-                  <div style="margin-top:2px;color:var(--charcoal);"><strong>Draf Uraian Warna DJKI:</strong> ${uploadedLogoInfo.djkiColorDescription || '-'}</div>
+                  <div style="margin-top:2px;"><strong>Vienna Code:</strong> <code>${uploadedLogoInfo.viennaCode || '-'}</code> · <strong>Simetri:</strong> H:${uploadedLogoInfo.symmetryH || 80}% / V:${uploadedLogoInfo.symmetryV || 75}% · <strong>dHash:</strong> <code>${uploadedLogoInfo.dHash || '-'}</code></div>
+                  <div style="margin-top:2px;color:#B45309;font-weight:700;"><strong>Kemiripan Visual Tertinggi:</strong> ${uploadedLogoInfo.maxVisualSimilarity || 45}% ${topVis ? `(terhadap pola ${topVis.name})` : ''} — Klik "Cek Merek Gratis" untuk melihat matriks perbandingan lengkap!</div>
                 `;
               }
               if (logoPlaceholder) logoPlaceholder.hidden = true;
               if (logoPreviewWrap) logoPreviewWrap.hidden = false;
+            };
+            imgObj.src = dataUrl;
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Competitor Logo 1-on-1 Upload Handling
+    if (compLogoInput) {
+      compLogoInput.addEventListener('change', (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const dataUrl = ev.target?.result;
+          if (typeof dataUrl === 'string') {
+            const imgObj = new Image();
+            imgObj.onload = () => {
+              const sizeKB = Math.round(file.size / 1024);
+              uploadedCompLogoInfo = window.BCStore && window.BCStore.analyzeLogoPixels
+                ? window.BCStore.analyzeLogoPixels(imgObj, file.name, sizeKB)
+                : null;
+              if (compLogoStatus && uploadedCompLogoInfo) {
+                const cmp = uploadedLogoInfo && window.BCStore.compareTwoLogos
+                  ? window.BCStore.compareTwoLogos(uploadedLogoInfo, uploadedCompLogoInfo)
+                  : null;
+                compLogoStatus.innerHTML = `<strong style="color:var(--green);">✓ Logo Pembanding Terbaca: ${file.name}</strong> (dHash: <code>${uploadedCompLogoInfo.dHash}</code>)${cmp ? ` — <strong>Kemiripan 1-on-1: ${cmp.totalSim}% (${cmp.verdict})</strong>` : ''}`;
+              }
             };
             imgObj.src = dataUrl;
           }
@@ -1144,10 +1185,10 @@ document.addEventListener('DOMContentLoaded', () => {
       let phoneticVerdict = 'Distingtif // Unik';
       let phoneticDetail = 'Struktur bunyi kata memiliki karakter pembeda yang jelas.';
       let visualVerdict = uploadedLogoInfo
-        ? `Visual dHash: ${uploadedLogoInfo.dHash || 'OK'} (${uploadedLogoInfo.edgeComplexityPct || 80}% Kompleksitas)`
+        ? `Kemiripan Visual Maks: ${uploadedLogoInfo.maxVisualSimilarity || 45}% · Vienna ${uploadedLogoInfo.viennaCode || '26.01'}`
         : 'Susunan Huruf Khas';
       let visualDetail = uploadedLogoInfo
-        ? `${uploadedLogoInfo.djkiColorDescription || ''} (${uploadedLogoInfo.bgVerdict || ''})`
+        ? `dHash: ${uploadedLogoInfo.dHash || 'OK'} · Simetri H:${uploadedLogoInfo.symmetryH || 80}% · ${uploadedLogoInfo.djkiColorDescription || ''}`
         : 'Penulisan tidak semata-mata mendeskripsikan jenis barang.';
       let classVerdict = chosenClass || 'Pilih Kelas (Nice 1–45)';
       let classDetail = chosenClass
@@ -1189,13 +1230,13 @@ document.addEventListener('DOMContentLoaded', () => {
       return {
         mode,
         brand: cleaned.toUpperCase(),
-        subtitle: mode === 'logo' && uploadedLogoInfo
-          ? `METODE: EVALUASI NAMA & LOGO (${uploadedLogoInfo.name.toUpperCase()})`
+        subtitle: uploadedLogoInfo
+          ? `METODE: EVALUASI NAMA & KEMIRIPAN VISUAL LOGO (${uploadedLogoInfo.name.toUpperCase()})`
           : `METODE: ANALISIS KARAKTERISTIK NAMA MEREK // PRA-SKRINING AI`,
         scoreText,
         badgeClass,
         verdictText,
-        honestNotice: 'Status Analisis Pra-Skrining AI: Evaluasi ini menilai daya pembeda kata, kemiripan fonetik terhadap merek terkenal, dan kepatuhan Pasal 20 UU Merek secara jujur tanpa mengarang nomor registrasi. Untuk pengecekan silang terhadap seluruh merek terdaftar di database resmi DJKI (PDKI), konsultasikan gratis bersama tim kami.',
+        honestNotice: 'Status Analisis Pra-Skrining AI: Evaluasi ini menilai daya pembeda kata, kemiripan fonetik, serta ekstraksi piksel & matriks kemiripan visual logo (64-bit dHash, Geometri Simetri, Klasifikasi Vienna & Komposisi Warna) secara nyata. Untuk pengecekan silang terhadap seluruh merek terdaftar di database resmi DJKI (PDKI), konsultasikan gratis bersama tim Spesialis Merek kami.',
         phoneticVerdict,
         phoneticDetail,
         visualVerdict,
@@ -1238,6 +1279,13 @@ document.addEventListener('DOMContentLoaded', () => {
         pillStatuteEl.querySelector('.tm-pill-detail').textContent = data.statuteDetail;
       }
 
+      if (visualSimContainer) {
+        visualSimContainer.innerHTML =
+          uploadedLogoInfo && window.BCStore && window.BCStore.renderVisualSimilarityHtml
+            ? window.BCStore.renderVisualSimilarityHtml(uploadedLogoInfo, uploadedCompLogoInfo)
+            : '';
+      }
+
       if (waActionBtn) {
         const msg = encodeURIComponent(
           `Halo BrandConnect, saya baru saja mengecek merek "${data.brand}" (${data.classVerdict}) di website dengan hasil evaluasi awal: ${data.verdictText}. Saya ingin verifikasi database resmi DJKI dan konsultasi pendaftaran merek.`
@@ -1251,7 +1299,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     searchForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const val = brandInput.value.trim();
+      let val = brandInput.value.trim();
+      if (!val && uploadedLogoInfo) {
+        val = uploadedLogoInfo.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').toUpperCase();
+        brandInput.value = val;
+      }
       if (!val) {
         brandInput.focus();
         return;
@@ -1259,7 +1311,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const mode = modeInput ? modeInput.value : 'name';
       const chosenClass = selectedClassHidden ? selectedClassHidden.value : '';
       if (window.BCStore) {
-        window.BCStore.analyzeTrademark(val, mode, '', chosenClass, uploadedLogoInfo);
+        window.BCStore.analyzeTrademark(val, mode, '', chosenClass, uploadedLogoInfo, uploadedCompLogoInfo);
       }
       const result = evaluateQuery(val, mode, chosenClass);
       renderResults(result);
