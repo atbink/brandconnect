@@ -1,0 +1,23 @@
+{
+  "name": "brandconnect",
+  "version": "1.0.0",
+  "description": "BRANDCONNECT — AI-Powered Trademark & Brand Protection Platform",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve . -p 3000",
+    "dev": "npx serve . -p 3000",
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "keywords": [
+    "trademark-search",
+    "ai-trademark-checker",
+    "cek-merek",
+    "nice-classification",
+    "brand-protection",
+    "haki",
+    "djki",
+    "brandconnect"
+  ],
+  "author": "BRANDCONNECT",
+  "license": "ISC"
+}
