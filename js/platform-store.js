@@ -834,6 +834,77 @@
           etiquetteSvg: `<div style="font-family:serif;font-weight:700;font-size:0.95rem;color:#666;">XENOVA</div>`
         }
       ]
+    },
+    // ADIDAS (Exact match to PDKI DJKI & Mebiso reference screenshot: 188 Merek)
+    {
+      keywords: ['adidas', 'adida', 'adidass'],
+      totalFound: 188,
+      items: [
+        {
+          brand: 'ADIDAS',
+          niceClass: '25',
+          appNo: 'D002009032810',
+          owner: 'adidas AG',
+          status: '(TM) DIDAFTAR',
+          statusKey: 'didaftar',
+          similarityPct: 100,
+          etiquetteSvg: `<div style="text-align:center;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;font-weight:900;font-size:1.65rem;letter-spacing:-0.05em;color:#111;line-height:1;">adidas</div>`
+        },
+        {
+          brand: 'ADIDAS',
+          niceClass: '9',
+          appNo: 'R992001005537',
+          owner: 'adidas AG',
+          status: '(TM) DIDAFTAR',
+          statusKey: 'didaftar',
+          similarityPct: 100,
+          etiquetteSvg: `<div style="text-align:center;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;font-weight:900;font-size:1.65rem;letter-spacing:-0.05em;color:#111;line-height:1;">adidas</div>`
+        },
+        {
+          brand: 'ADIDAS',
+          niceClass: '9',
+          appNo: 'R992001005538',
+          owner: 'Adidas AG',
+          status: '(TM) DIDAFTAR',
+          statusKey: 'didaftar',
+          similarityPct: 100,
+          etiquetteSvg: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:4px;">
+            <svg viewBox="0 0 100 80" style="width:78px;max-height:64px;" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="12,50 24,50 38,30 26,30" fill="#111" />
+              <polygon points="34,50 46,50 68,16 56,16" fill="#111" />
+              <polygon points="56,50 68,50 98,2 86,2" fill="#111" />
+              <text x="52" y="69" font-family="'Inter',-apple-system,sans-serif" font-weight="900" font-size="19" letter-spacing="-0.8px" text-anchor="middle" fill="#111">adidas</text>
+            </svg>
+          </div>`
+        },
+        {
+          brand: 'LOGO ADIDAS',
+          niceClass: '18',
+          appNo: 'D002007007576',
+          owner: 'adidas AG',
+          status: '(TM) DIDAFTAR',
+          statusKey: 'didaftar',
+          similarityPct: 94,
+          etiquetteSvg: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:4px;">
+            <svg viewBox="0 0 100 80" style="width:78px;max-height:64px;" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="12,50 24,50 38,30 26,30" fill="#111" />
+              <polygon points="34,50 46,50 68,16 56,16" fill="#111" />
+              <polygon points="56,50 68,50 98,2 86,2" fill="#111" />
+              <text x="52" y="69" font-family="'Inter',-apple-system,sans-serif" font-weight="900" font-size="19" letter-spacing="-0.8px" text-anchor="middle" fill="#111">adidas</text>
+            </svg>
+          </div>`
+        },
+        {
+          brand: 'LOGO ADIDAS',
+          niceClass: '14',
+          appNo: 'D002008008561',
+          owner: 'adidas AG',
+          status: '(TM) DIDAFTAR',
+          statusKey: 'didaftar',
+          similarityPct: 94,
+          etiquetteSvg: `<div style="text-align:center;font-family:'Inter',-apple-system,sans-serif;font-weight:900;font-size:1.5rem;letter-spacing:-0.05em;color:#111;">adidas</div>`
+        }
+      ]
     }
   ];
 
@@ -892,8 +963,32 @@
 
   function getOfficialBrandEtiquette(brand, appNo) {
     const b = (brand || '').toUpperCase().trim();
+    if (b === 'ADIDAS' || b.startsWith('ADIDAS ') || b.includes('ADIDAS')) {
+      if (appNo === 'R992001005538' || b.includes('LOGO') || b.includes('EQUIPMENT') || b.includes('GUNUNG')) {
+        return `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:4px;">
+          <svg viewBox="0 0 100 80" style="width:78px;max-height:64px;" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="12,50 24,50 38,30 26,30" fill="#111" />
+            <polygon points="34,50 46,50 68,16 56,16" fill="#111" />
+            <polygon points="56,50 68,50 98,2 86,2" fill="#111" />
+            <text x="52" y="69" font-family="'Inter',-apple-system,sans-serif" font-weight="900" font-size="19" letter-spacing="-0.8px" text-anchor="middle" fill="#111">adidas</text>
+          </svg>
+        </div>`;
+      }
+      return `<div style="text-align:center;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;font-weight:900;font-size:1.75rem;letter-spacing:-0.05em;color:#111;line-height:1;">adidas</div>`;
+    }
     if (b === 'NIKE' || b.startsWith('NIKE ') || b === 'NIKEI') {
       return `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:4px;"><svg viewBox="0 0 120 45" style="width:72px;max-height:32px;"><path d="M18.8 28.5C13.2 31.6 7.6 30.8 4.2 27.2C-0.2 22.4 1.2 14.8 7.4 9.2C13.8 3.4 23.4 1 34.6 2.4C44.6 3.6 77.8 14.2 115.8 42.4C82.4 28.2 49.2 17.8 32.2 17.6C21.8 17.4 15.6 20.8 18.8 28.5Z" fill="#111"/></svg>${b !== 'NIKE' ? `<span style="font-family:Impact,sans-serif;font-size:0.62rem;letter-spacing:0.06em;color:#111;margin-top:2px;">${b}</span>` : ''}</div>`;
+    }
+    if (b === 'PUMA' || b.includes('PUMA')) {
+      return `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;">
+        <svg viewBox="0 0 100 45" style="width:72px;max-height:34px;">
+          <path d="M78 8 C72 4 62 8 58 14 C54 18 46 22 38 20 C32 18 24 12 18 10 C12 8 8 12 6 18 C4 24 8 28 14 30 C22 32 32 30 38 28 C46 26 54 28 62 34 C68 38 76 38 82 32 C88 26 94 18 96 10 C92 8 84 10 78 8 Z" fill="#111"/>
+        </svg>
+        <span style="font-family:Impact,sans-serif;font-weight:900;font-size:0.85rem;letter-spacing:0.1em;color:#111;margin-top:2px;">PUMA</span>
+      </div>`;
+    }
+    if (b === 'APPLE' || b.includes('APPLE')) {
+      return `<div style="text-align:center;"><svg viewBox="0 0 40 48" style="width:36px;height:42px;"><path d="M26 0 C27 4 23 8 20 8 C19 4 23 1 26 0 Z M28 12 C24 12 21 14 18 14 C15 14 12 12 8 12 C2 12 0 18 0 26 C0 35 7 48 14 48 C17 48 19 46 22 46 C25 46 27 48 30 48 C37 48 40 38 40 33 C34 31 32 24 35 20 C33 16 30 13 28 12 Z" fill="#111"/></svg></div>`;
     }
     if (b === 'MEBISO' || b.includes('MEBISO')) {
       return `<div style="text-align:center;font-family:Georgia,serif;font-weight:900;font-size:1.15rem;letter-spacing:0.04em;color:#111;line-height:1.15;">MEBISO</div>`;
@@ -916,7 +1011,7 @@
     if (b === 'ZENOVA' || b.includes('ZENOVA')) {
       return `<div style="text-align:center;font-family:Georgia,serif;font-weight:700;color:#315B4C;font-size:0.88rem;">ZENOVA<br/><span style="font-size:0.55rem;letter-spacing:0.15em;">BOTANICA</span></div>`;
     }
-    return `<div style="font-family:Georgia,serif;font-weight:900;font-size:1.05rem;letter-spacing:0.04em;color:#111;text-align:center;line-height:1.25;word-break:break-word;">${b}</div>`;
+    return `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;padding:4px;box-sizing:border-box;"><div style="font-family:'Inter',-apple-system,sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:0.06em;color:#0F172A;text-align:center;line-height:1.2;text-transform:uppercase;word-break:break-word;">${b}</div></div>`;
   }
 
   async function fetchLivePdkiApi(rawQuery) {
@@ -2400,7 +2495,7 @@
                 Pastikan seberapa besar peluang merek Anda bisa terdaftar di sini
               </div>
             </div>
-            <button type="button" onclick="window.BCStore && window.BCStore.openHandoverModal('${res.query.toUpperCase()}')" style="background:#FFFFFF;color:#172B4D;border:none;border-radius:6px;padding:0.65rem 1.15rem;font-family:var(--font-heading);font-weight:800;font-size:0.84rem;cursor:pointer;display:inline-flex;align-items:center;gap:0.45rem;box-shadow:0 2px 6px rgba(0,0,0,0.15);">
+            <button type="button" onclick="if (window.runTrademarkCheck) { window.runTrademarkCheck('${res.query.toUpperCase()}'); } else if (window.BCStore && window.BCStore.openHandoverModal) { window.BCStore.openHandoverModal('${res.query.toUpperCase()}'); }" style="background:#FFFFFF;color:#172B4D;border:none;border-radius:6px;padding:0.65rem 1.15rem;font-family:var(--font-heading);font-weight:800;font-size:0.84rem;cursor:pointer;display:inline-flex;align-items:center;gap:0.45rem;box-shadow:0 2px 6px rgba(0,0,0,0.15);">
               <span style="display:inline-flex;width:18px;height:18px;border-radius:50%;background:#FACC15;color:#172B4D;align-items:center;justify-content:center;font-size:0.7rem;">★</span>
               <span>Cek Sekarang</span>
             </button>
