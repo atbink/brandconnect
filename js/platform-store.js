@@ -905,6 +905,63 @@
           etiquetteSvg: `<div style="text-align:center;font-family:'Inter',-apple-system,sans-serif;font-weight:900;font-size:1.5rem;letter-spacing:-0.05em;color:#111;">adidas</div>`
         }
       ]
+    },
+    // ONITSUKA (Exact match to PDKI DJKI & Mebiso reference screenshot: 83 Merek)
+    {
+      keywords: ['onitsuka', 'onitsuka tiger', 'the onitsuka'],
+      totalFound: 83,
+      items: [
+        {
+          brand: 'ONITSUKA',
+          niceClass: '25',
+          appNo: 'D002006002455',
+          owner: 'M. SAYUDI',
+          status: '(TM) DITOLAK',
+          statusKey: 'ditolak',
+          similarityPct: 100,
+          etiquetteSvg: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:82px;height:82px;border:3px solid #CBD5E1;border-radius:50%;position:relative;color:#94A3B8;font-family:sans-serif;font-size:0.62rem;font-weight:800;text-align:center;line-height:1.15;user-select:none;"><span style="position:absolute;width:100%;height:2px;background:#CBD5E1;transform:rotate(-45deg);"></span><span style="position:relative;z-index:1;">NO<br/>IMAGE<br/>AVAILABLE</span></div>`
+        },
+        {
+          brand: 'ONITSUKA',
+          niceClass: '7',
+          appNo: 'DID2022036135',
+          owner: 'FENCIE MARLINA',
+          status: '(TM) DIDAFTAR',
+          statusKey: 'didaftar',
+          similarityPct: 100,
+          etiquetteSvg: `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;"><div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.35rem;color:#0D9488;letter-spacing:0.04em;text-transform:uppercase;">ONITSUKA</div></div>`
+        },
+        {
+          brand: 'ONITSUKA',
+          niceClass: '30',
+          appNo: 'DID2024083086',
+          owner: 'MEGAWATI PRIYANINGRUM',
+          status: '(TM) DIDAFTAR',
+          statusKey: 'didaftar',
+          similarityPct: 100,
+          etiquetteSvg: `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;"><div style="font-family:'Caveat','Brush Script MT',cursive,sans-serif;font-weight:700;font-size:1.85rem;color:#111;position:relative;display:inline-block;">on<span style="position:relative;display:inline-block;">i<span style="position:absolute;top:-8px;left:0;color:#E11D48;font-size:0.95rem;">♥</span></span>tsuka</div></div>`
+        },
+        {
+          brand: 'ONITSUKA TIGER',
+          niceClass: '25',
+          appNo: 'D002008036674',
+          owner: 'Asics Corporation',
+          status: '(TM) DIDAFTAR',
+          statusKey: 'didaftar',
+          similarityPct: 92,
+          etiquetteSvg: `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;"><div style="font-family:Impact,sans-serif;font-style:italic;font-weight:900;font-size:1.05rem;letter-spacing:0.04em;color:#111;">ONITSUKA TIGER</div><svg viewBox="0 0 80 20" style="width:64px;height:16px;margin-top:2px;"><path d="M5 10 C 20 2, 40 18, 75 8 C 55 12, 30 5, 5 10 Z" fill="#B91C1C"/></svg></div>`
+        },
+        {
+          brand: 'ONITSUKA',
+          niceClass: '7',
+          appNo: 'DID2021030371',
+          owner: 'FENCIE MARLINA',
+          status: '(TM) DIDAFTAR',
+          statusKey: 'didaftar',
+          similarityPct: 100,
+          etiquetteSvg: `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;"><div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.35rem;color:#0D9488;letter-spacing:0.04em;text-transform:uppercase;">ONITSUKA</div></div>`
+        }
+      ]
     }
   ];
 
@@ -1011,7 +1068,30 @@
     if (b === 'ZENOVA' || b.includes('ZENOVA')) {
       return `<div style="text-align:center;font-family:Georgia,serif;font-weight:700;color:#315B4C;font-size:0.88rem;">ZENOVA<br/><span style="font-size:0.55rem;letter-spacing:0.15em;">BOTANICA</span></div>`;
     }
-    return `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;padding:4px;box-sizing:border-box;"><div style="font-family:'Inter',-apple-system,sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:0.06em;color:#0F172A;text-align:center;line-height:1.2;text-transform:uppercase;word-break:break-word;">${b}</div></div>`;
+    if (b.includes('ONITSUKA')) {
+      if (appNo === 'DID2022036135' || appNo?.includes('36135') || (b === 'ONITSUKA' && appNo === 'DID2021030371')) {
+        return `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;"><div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.35rem;color:#0D9488;letter-spacing:0.04em;text-transform:uppercase;">ONITSUKA</div></div>`;
+      }
+      if (appNo === 'DID2024083086' || appNo?.includes('83086')) {
+        return `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;"><div style="font-family:'Caveat','Brush Script MT',cursive,sans-serif;font-weight:700;font-size:1.85rem;color:#111;position:relative;display:inline-block;">on<span style="position:relative;display:inline-block;">i<span style="position:absolute;top:-8px;left:0;color:#E11D48;font-size:0.95rem;">♥</span></span>tsuka</div></div>`;
+      }
+      if (appNo === 'D002006002455' || appNo?.includes('2455')) {
+        return `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:82px;height:82px;border:3px solid #CBD5E1;border-radius:50%;position:relative;color:#94A3B8;font-family:sans-serif;font-size:0.62rem;font-weight:800;text-align:center;line-height:1.15;user-select:none;"><span style="position:absolute;width:100%;height:2px;background:#CBD5E1;transform:rotate(-45deg);"></span><span style="position:relative;z-index:1;">NO<br/>IMAGE<br/>AVAILABLE</span></div>`;
+      }
+      if (b.includes('TIGER') || appNo?.includes('36674') || appNo?.includes('36672')) {
+        return `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;"><div style="font-family:Impact,sans-serif;font-style:italic;font-weight:900;font-size:1.05rem;letter-spacing:0.04em;color:#111;">ONITSUKA TIGER</div><svg viewBox="0 0 80 20" style="width:64px;height:16px;margin-top:2px;"><path d="M5 10 C 20 2, 40 18, 75 8 C 55 12, 30 5, 5 10 Z" fill="#B91C1C"/></svg></div>`;
+      }
+      return `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;padding:4px;"><div style="font-family:'Inter',-apple-system,sans-serif;font-weight:900;font-size:0.96rem;letter-spacing:0.04em;color:#0F172A;text-align:center;white-space:nowrap;">ONITSUKA</div></div>`;
+    }
+
+    const len = b.length;
+    let fSize = '1.35rem';
+    if (len > 15) fSize = '0.72rem';
+    else if (len > 11) fSize = '0.82rem';
+    else if (len > 7) fSize = '0.94rem';
+    else if (len > 4) fSize = '1.15rem';
+
+    return `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;padding:6px;box-sizing:border-box;"><div style="font-family:'Inter',-apple-system,sans-serif;font-weight:900;font-size:${fSize};letter-spacing:0.04em;color:#0F172A;text-align:center;line-height:1.2;text-transform:uppercase;word-break:keep-all;overflow-wrap:normal;max-width:100%;">${b}</div></div>`;
   }
 
   async function fetchLivePdkiApi(rawQuery) {
