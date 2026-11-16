@@ -1310,9 +1310,6 @@
       inferredBrandFromFile = KNOWN_HASH_SIGNATURES[dHashHex];
     }
 
-    const dirRes = searchPdkiDirectory(inferredBrandFromFile, {}, null);
-    const maxVisualSimilarity = dirRes.items[0] ? dirRes.items[0].similarityPct : 82;
-
     const totalPx = S * S;
     const hasTransparentBg = transparentPixels / totalPx > 0.12;
     const hasCleanWhiteBg = whiteBgPixels / totalPx > 0.2;
@@ -1345,40 +1342,59 @@
       dHashBits: bits,
       previewDataUrl,
       bgVerdict,
-      djkiColorDescription,
-      maxVisualSimilarity
+      djkiColorDescription
     };
   }
 
   // 1C. DIRECT 1-ON-1 TWO-LOGO VISUAL SIMILARITY COMPARATOR (Logo Anda vs Logo Pembanding/Kompetitor)
   function compareTwoLogos(logoA, logoB) {
-    if (!logoA || !logoB) return null;
-    const dHashSim = calcHammingSimPct(logoA.dHashBits, logoB.dHashBits);
-    const geomSim = Math.round(
+    if (!logoA || !logoB || !logoA.dHashBits || !logoB.dHashBits) return null;
+
+    let diffBits = 0;
+    for (let i = 0; i < 64; i++) {
+      if (logoA.dHashBits[i] !== logoB.dHashBits[i]) diffBits++;
+    }
+
+    let dHashSim = 0;
+    if (diffBits <= 5) {
+      dHashSim = Math.round(100 - (diffBits / 5) * 20); // 100% down to 80%
+    } else if (diffBits <= 14) {
+      dHashSim = Math.round(75 - ((diffBits - 6) / 8) * 45); // 75% down to 30%
+    } else {
+      dHashSim = Math.max(0, Math.round(25 - ((diffBits - 15) / 20) * 25)); // 25% down to 0%
+    }
+
+    const geomSim = Math.max(0, Math.round(
       100 -
-        (Math.abs((logoA.symmetryH || 70) - (logoB.symmetryH || 70)) * 0.35 +
+        (Math.abs((logoA.symmetryH || 70) - (logoB.symmetryH || 70)) * 0.4 +
           Math.abs((logoA.radialScore || 70) - (logoB.radialScore || 70)) * 0.4 +
-          Math.abs((logoA.edgeComplexityPct || 60) - (logoB.edgeComplexityPct || 60)) * 0.25)
-    );
-    const shapeSim = Math.min(99, Math.max(15, Math.round(dHashSim * 0.6 + geomSim * 0.4)));
+          Math.abs((logoA.edgeComplexityPct || 60) - (logoB.edgeComplexityPct || 60)) * 0.2)
+    ));
+
+    const shapeSim = Math.min(99, Math.max(0, Math.round(dHashSim * 0.7 + geomSim * 0.3)));
 
     const rgbB = (logoB.dominantColors || []).map((c) => [c.r || 0, c.g || 0, c.b || 0]);
     const colorSim = calcColorPaletteSimPct((logoA.dominantColors || []).slice(0, 3), rgbB);
 
     const sameVienna = (logoA.viennaCode || '').slice(0, 5) === (logoB.viennaCode || '').slice(0, 5);
-    const totalSim = Math.min(99, Math.max(12, Math.round(shapeSim * 0.55 + colorSim * 0.4 + (sameVienna ? 5 : 0))));
+
+    let totalSim = Math.round(shapeSim * 0.65 + colorSim * 0.3 + (sameVienna ? 5 : 0));
+    if (!sameVienna) {
+      totalSim = Math.min(30, totalSim); // Different Vienna categories cannot be visually similar
+    }
+    totalSim = Math.min(99, Math.max(5, totalSim));
 
     let verdict = 'BERBEDA SECARA VISUAL (AMAN DARI PERSAMAAN POKOK LUKISAN)';
-    let legalNote = 'Berdasarkan perbandingan piksel langsung, struktur siluet (dHash) dan komposisi warna kedua logo memiliki perbedaan yang jelas. Risiko dinilai memiliki "persamaan pada pokoknya" (Pasal 21 UU Merek) dari sisi visual tergolong rendah.';
+    let legalNote = 'Berdasarkan perbandingan langsung, struktur siluet dan komposisi bentuk kedua logo memiliki perbedaan yang jelas. Risiko dinilai memiliki "persamaan pada pokoknya" (Pasal 21 UU Merek) dari sisi visual tergolong rendah.';
     let badgeColor = '#2E6B4E';
 
     if (totalSim >= 75) {
       verdict = 'PERINGATAN: KEMIRIPAN VISUAL TINGGI (RAWAN KONFLIK PASAL 21)';
-      legalNote = 'Kedua gambar logo memiliki kemiripan struktur bentuk/siluet dan komposisi warna yang sangat dekat. Berdasarkan Penjelasan Pasal 21 Ayat (1) UU No. 20 Tahun 2016, kemiripan bentuk, cara penempatan, dan kombinasi warna pada barang/jasa sejenis berisiko tinggi ditolak atau digugat oposisi.';
+      legalNote = 'Kedua logo memiliki kemiripan struktur bentuk/siluet dan komposisi visual yang sangat dekat. Berdasarkan Penjelasan Pasal 21 Ayat (1) UU No. 20 Tahun 2016, kemiripan bentuk lukisan pada barang/jasa sejenis berisiko tinggi ditolak atau digugat pihak pemilik merek.';
       badgeColor = '#B91C1C';
-    } else if (totalSim >= 55) {
+    } else if (totalSim >= 50) {
       verdict = 'PERHATIAN: KEMIRIPAN VISUAL PARSIAL (SEDANG)';
-      legalNote = 'Terdapat kemiripan pada sebagian unsur warna atau proporsi geometri dasar. Disarankan membedakan kontras warna utama atau memperkuat elemen kata (wordmark) agar kesan keseluruhan (overall impression) tidak membingungkan konsumen.';
+      legalNote = 'Terdapat kemiripan pada sebagian proporsi geometri dasar atau aksen warna. Disarankan memperkuat unsur pembeda agar kesan keseluruhan tidak membingungkan konsumen.';
       badgeColor = '#B45309';
     }
 
@@ -1468,12 +1484,20 @@
     let verdict = 'DAYA PEMBEDA KUAT (POTENSI POSITIF)';
     let phoneticStatus = 'Distingtif // Unik';
     let phoneticDetail = 'Struktur bunyi pengucapan memiliki karakter pembeda yang jelas.';
-    let visualStatus = logoMeta
-      ? `Kemiripan Visual Maks: ${logoMeta.maxVisualSimilarity || 45}% · Vienna ${logoMeta.viennaCode || '26.01'}`
-      : 'Susunan Huruf Khas';
-    let visualDetail = logoMeta
-      ? `dHash: ${logoMeta.dHash || 'OK'} · Simetri H:${logoMeta.symmetryH || 80}% · ${logoMeta.djkiColorDescription || ''}`
-      : 'Komposisi ejaan tidak bersifat deskriptif murni.';
+
+    // Evaluate 1-on-1 direct comparison if competitor logo is provided
+    const compResult = (logoMeta && compLogoMeta) ? compareTwoLogos(logoMeta, compLogoMeta) : null;
+
+    let visualStatus = 'Susunan Huruf Khas';
+    let visualDetail = 'Komposisi ejaan tidak bersifat deskriptif murni.';
+
+    if (compResult) {
+      visualStatus = `${compResult.verdict.split('(')[0].trim()} (${compResult.totalSim}%)`;
+      visualDetail = `Uji 1-on-1 vs ${compLogoMeta.name}: Siluet ${compResult.shapeSim}%, Warna ${compResult.colorSim}%, Vienna: ${compResult.sameVienna ? 'Identik' : 'Berbeda Kategori'}.`;
+    } else if (logoMeta) {
+      visualStatus = `Vienna ${logoMeta.viennaCode} // Figuratif Unik`;
+      visualDetail = `dHash: ${logoMeta.dHash.slice(0, 12)}... · Simetri H:${logoMeta.symmetryH}% · ${logoMeta.djkiColorDescription || ''}`;
+    }
     let statuteStatus = 'Memenuhi Kriteria Pasal 20';
     let statuteDetail = 'Bukan merupakan kata umum/milik publik yang dilarang secara absolut.';
     let aiInterpretation = '';
@@ -2197,58 +2221,17 @@
         )
         .join('');
 
-      // Find comparison target: either user's uploaded competitor logo OR top DJKI registered mark
-      const dirRes = searchPdkiDirectory(q || logoMeta.inferredBrand, {}, logoMeta);
-      const topMatch = dirRes.items[0];
-
-      let targetLogoMeta = compLogoMeta;
-      let targetLabel = 'LOGO PEMBANDING (FILE TAMBAHAN)';
-      let targetOwner = '';
-      let targetApp = '';
-      let targetClass = '';
-      let targetStatus = '';
-      let targetPreviewHtml = '';
-
-      if (compLogoMeta) {
-        targetPreviewHtml = compLogoMeta.previewDataUrl
-          ? `<img src="${compLogoMeta.previewDataUrl}" alt="${compLogoMeta.name}" style="width:84px;height:84px;object-fit:contain;background:#FFF;border:1.5px solid var(--charcoal);border-radius:4px;padding:3px;" />`
-          : `<div style="width:84px;height:84px;display:flex;align-items:center;justify-content:center;background:#FFF;border:1px solid #CBD5E1;border-radius:4px;font-size:0.75rem;">Logo 2</div>`;
-      } else if (topMatch) {
-        // Automatic comparison against the matching registered trademark in DJKI!
-        targetLabel = 'ETIKET RESMI TERDAFTAR DI DJKI (PEMBANDING OTOMATIS)';
-        targetOwner = topMatch.owner || 'Pemohon Terdaftar';
-        targetApp = topMatch.appNo || '-';
-        targetClass = `Kelas ${topMatch.niceClass}`;
-        targetStatus = topMatch.status || '(TM) DIDAFTAR';
-        targetPreviewHtml = `
-          <div style="width:96px;height:96px;background:#FFF;border:1.5px solid var(--charcoal);border-radius:4px;display:flex;align-items:center;justify-content:center;padding:6px;box-shadow:inset 0 0 4px rgba(0,0,0,0.05);overflow:hidden;">
-            ${topMatch.etiquetteSvg}
-          </div>
-        `;
-
-        const isNike = topMatch.brand.includes('NIKE');
-        targetLogoMeta = {
-          name: `${topMatch.brand} (Etiket DJKI No. ${topMatch.appNo})`,
-          viennaCode: isNike ? '26.01.18' : '27.05.01',
-          dHash: isNike ? '0000004410400000' : '0000000000000000',
-          dHashBits: isNike ? '0000000000000000000000000000000001000100000100000100000000000000' : '0'.repeat(64),
-          symmetryH: isNike ? 80 : 75,
-          radialScore: isNike ? 76 : 65,
-          edgeComplexityPct: isNike ? 52 : 60,
-          dominantColors: [{ hex: '#000000', nameId: 'Hitam', r: 0, g: 0, b: 0, pct: 90 }]
-        };
-      }
-
       let comparisonHtml = '';
-      if (targetLogoMeta) {
-        const cmp = compareTwoLogos(logoMeta, targetLogoMeta);
+      if (compLogoMeta && compLogoMeta.dHashBits) {
+        // Direct Head-to-Head 1-on-1 logo comparison when user uploaded a comparison logo
+        const cmp = compareTwoLogos(logoMeta, compLogoMeta);
         if (cmp) {
           comparisonHtml = `
             <div style="margin-top:1.15rem;padding:1.25rem;border:2px solid ${cmp.badgeColor};border-radius:6px;background:#FFF9F5;">
               <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:1rem;border-bottom:1px dashed #CBD5E1;padding-bottom:0.75rem;">
                 <div>
                   <span style="font-family:var(--font-mono);font-size:0.68rem;font-weight:700;color:${cmp.badgeColor};letter-spacing:0.08em;">
-                    🔍 ANALISIS KEMIRIPAN VISUAL LOGO (AI COMPUTER VISION &amp; WIPO VIENNA)
+                    🔍 UJI KEMIRIPAN VISUAL 1-ON-1 (HEAD-TO-HEAD COMPUTER VISION)
                   </span>
                   <h4 style="font-family:var(--font-heading);font-size:1.15rem;font-weight:800;color:var(--charcoal);margin:3px 0 0;">${cmp.verdict}</h4>
                 </div>
@@ -2266,7 +2249,7 @@
                     ${logoMeta.previewDataUrl ? `<img src="${logoMeta.previewDataUrl}" alt="${logoMeta.name}" style="max-width:100%;max-height:100%;object-fit:contain;" />` : ''}
                   </div>
                   <div style="font-size:0.76rem;line-height:1.45;">
-                    <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--green);font-weight:700;">LOGO ANDA (DIUNGGAH)</div>
+                    <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--green);font-weight:700;">LOGO 1: MEREK ANDA</div>
                     <div style="font-family:var(--font-heading);font-weight:800;color:#0F172A;font-size:0.92rem;word-break:break-all;">${logoMeta.name}</div>
                     <div style="color:#64748B;">Dimensi: ${logoMeta.width}×${logoMeta.height} px (${logoMeta.sizeKB} KB)</div>
                     <div style="color:#64748B;">Vienna WIPO: <code>${logoMeta.viennaCode}</code></div>
@@ -2274,15 +2257,17 @@
                   </div>
                 </div>
 
-                <!-- Right: DJKI Registered Etiquette -->
+                <!-- Right: Comparison Logo -->
                 <div style="background:#FFF;border:1.5px solid ${cmp.badgeColor};border-radius:6px;padding:0.95rem;display:flex;gap:0.85rem;align-items:center;">
-                  <div style="min-width:96px;">
-                    ${targetPreviewHtml}
+                  <div style="width:96px;height:96px;min-width:96px;background:#F8FAFC;border:1.5px solid var(--charcoal);border-radius:4px;display:flex;align-items:center;justify-content:center;padding:4px;">
+                    ${compLogoMeta.previewDataUrl ? `<img src="${compLogoMeta.previewDataUrl}" alt="${compLogoMeta.name}" style="max-width:100%;max-height:100%;object-fit:contain;" />` : ''}
                   </div>
                   <div style="font-size:0.76rem;line-height:1.45;">
-                    <div style="font-family:var(--font-mono);font-size:0.65rem;color:${cmp.badgeColor};font-weight:700;">${targetLabel}</div>
-                    <div style="font-family:var(--font-heading);font-weight:800;color:#0F172A;font-size:0.92rem;">${topMatch ? topMatch.brand : compLogoMeta.name}</div>
-                    ${topMatch ? `<div style="color:#64748B;">Pemilik: <strong>${targetOwner}</strong></div><div style="color:#64748B;">Permohonan: <code>${targetApp}</code> · ${targetClass}</div><div style="color:#15803D;font-weight:700;">Status: ${targetStatus}</div>` : `<div style="color:#64748B;">Vienna: <code>${targetLogoMeta.viennaCode}</code></div>`}
+                    <div style="font-family:var(--font-mono);font-size:0.65rem;color:${cmp.badgeColor};font-weight:700;">LOGO 2: PEMBANDING / KOMPETITOR</div>
+                    <div style="font-family:var(--font-heading);font-weight:800;color:#0F172A;font-size:0.92rem;word-break:break-all;">${compLogoMeta.name}</div>
+                    <div style="color:#64748B;">Dimensi: ${compLogoMeta.width}×${compLogoMeta.height} px (${compLogoMeta.sizeKB} KB)</div>
+                    <div style="color:#64748B;">Vienna WIPO: <code>${compLogoMeta.viennaCode}</code></div>
+                    <div style="color:#64748B;">dHash Siluet: <code>${compLogoMeta.dHash.slice(0, 12)}...</code></div>
                   </div>
                 </div>
               </div>
@@ -2314,6 +2299,19 @@
             </div>
           `;
         }
+      } else {
+        // Single logo upload: show clean technical inspection & transparency notice
+        comparisonHtml = `
+          <div style="margin-top:0.85rem;padding:0.95rem 1.15rem;background:#FFFFFF;border:1px solid #E2E8F0;border-radius:6px;display:flex;align-items:flex-start;gap:0.75rem;font-size:0.82rem;line-height:1.55;color:#334155;">
+            <span style="font-size:1.25rem;line-height:1;">ℹ️</span>
+            <div>
+              <strong style="color:#0F172A;">Audit Karakteristik Etiket Logo:</strong> Kategori WIPO Vienna terklasifikasi sebagai <code>${logoMeta.viennaCode}</code> (${logoMeta.viennaTitle || 'Figuratif Geometris'}) dengan komposisi ${logoMeta.dominantColors?.length || 0} warna siap lampir pada formulir resmi DJKI.
+              <span style="display:block;margin-top:4px;font-size:0.77rem;color:#64748B;">
+                <em>Catatan Transparansi DJKI:</em> Pangkalan Data Resmi DJKI (PDKI) dan API Indonesia mengindeks jutaan merek melalui penelusuran nama/kata, kelas merek, dan klasifikasi kode Vienna. Untuk menguji kemiripan visual head-to-head (Piksel &amp; Siluet) terhadap logo kompetitor tertentu, silakan unggah file logo pada bagian <strong>"Logo Pembanding"</strong> di atas.
+              </span>
+            </div>
+          </div>
+        `;
       }
 
       logoHeaderHtml = `
@@ -2322,8 +2320,8 @@
             <div style="display:flex;align-items:center;gap:0.85rem;">
               ${logoMeta.previewDataUrl ? `<img src="${logoMeta.previewDataUrl}" alt="Uploaded Logo" style="width:64px;height:64px;object-fit:contain;background:#FFF;border:1.5px solid var(--charcoal);border-radius:4px;padding:4px;" />` : ''}
               <div>
-                <span style="font-family:var(--font-mono);font-size:0.68rem;font-weight:700;color:var(--green);letter-spacing:0.06em;">HASIL ANALISIS ETIKET LOGO // KLASIFIKASI VIENNA ${logoMeta.viennaCode}</span>
-                <h3 style="font-family:var(--font-heading);font-size:1.1rem;font-weight:800;color:var(--charcoal);margin:3px 0;">${logoMeta.name} (${logoMeta.width}×${logoMeta.height} px · 64-bit dHash: <code>${logoMeta.dHash}</code>)</h3>
+                <span style="font-family:var(--font-mono);font-size:0.68rem;font-weight:700;color:var(--green);letter-spacing:0.06em;">AUDIT TEKNIS ETIKET LOGO // KLASIFIKASI VIENNA ${logoMeta.viennaCode}</span>
+                <h3 style="font-family:var(--font-heading);font-size:1.1rem;font-weight:800;color:var(--charcoal);margin:3px 0;">${logoMeta.name} (${logoMeta.width}×${logoMeta.height} px · dHash: <code>${logoMeta.dHash}</code>)</h3>
                 <div style="margin-top:4px;">${swatches}</div>
               </div>
             </div>
