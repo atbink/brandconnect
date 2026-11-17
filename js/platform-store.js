@@ -2482,26 +2482,26 @@
               </div>
 
               <!-- 3 METRIC PILL BARS -->
-              <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));gap:0.65rem;margin-bottom:0.85rem;">
-                <div style="background:#FFF;padding:0.6rem 0.75rem;border-radius:4px;border:1px solid #E2E8F0;">
-                  <div style="font-size:0.66rem;font-family:var(--font-mono);color:#64748B;">KESAMAAN BENTUK &amp; SILUET</div>
-                  <div style="font-size:1.15rem;font-family:var(--font-heading);font-weight:900;color:${cmp.badgeColor};">${cmp.shapeSim}%</div>
-                  <div style="font-size:0.65rem;color:#64748B;">dHash 64-bit Bitwise match</div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));gap:0.75rem;margin-bottom:0.85rem;">
+                <div style="background:#FFF;padding:0.75rem 0.85rem;border-radius:10px;border:1px solid var(--bc-card-border);">
+                  <div style="font-size:0.68rem;font-family:var(--font-mono);color:#6B7280;font-weight:700;">KESAMAAN BENTUK &amp; SILUET</div>
+                  <div style="font-size:1.25rem;font-family:var(--font-heading);font-weight:800;color:${cmp.badgeColor};">${cmp.shapeSim}%</div>
+                  <div style="font-size:0.68rem;color:#6B7280;">dHash 64-bit Bitwise match</div>
                 </div>
-                <div style="background:#FFF;padding:0.6rem 0.75rem;border-radius:4px;border:1px solid #E2E8F0;">
-                  <div style="font-size:0.66rem;font-family:var(--font-mono);color:#64748B;">SPEKTRUM &amp; PALET WARNA</div>
-                  <div style="font-size:1.15rem;font-family:var(--font-heading);font-weight:900;color:${cmp.badgeColor};">${cmp.colorSim}%</div>
-                  <div style="font-size:0.65rem;color:#64748B;">Euclidean RGB distance</div>
+                <div style="background:#FFF;padding:0.75rem 0.85rem;border-radius:10px;border:1px solid var(--bc-card-border);">
+                  <div style="font-size:0.68rem;font-family:var(--font-mono);color:#6B7280;font-weight:700;">SPEKTRUM &amp; PALET WARNA</div>
+                  <div style="font-size:1.25rem;font-family:var(--font-heading);font-weight:800;color:${cmp.badgeColor};">${cmp.colorSim}%</div>
+                  <div style="font-size:0.68rem;color:#6B7280;">Euclidean RGB distance</div>
                 </div>
-                <div style="background:#FFF;padding:0.6rem 0.75rem;border-radius:4px;border:1px solid #E2E8F0;">
-                  <div style="font-size:0.66rem;font-family:var(--font-mono);color:#64748B;">KLASIFIKASI VIENNA WIPO</div>
-                  <div style="font-size:0.95rem;font-family:var(--font-heading);font-weight:900;color:${cmp.badgeColor};padding-top:4px;">${cmp.sameVienna ? 'IDENTIK (100%)' : 'BERBEDA KATEGORI'}</div>
-                  <div style="font-size:0.65rem;color:#64748B;">Unsur figuratif lukisan</div>
+                <div style="background:#FFF;padding:0.75rem 0.85rem;border-radius:10px;border:1px solid var(--bc-card-border);">
+                  <div style="font-size:0.68rem;font-family:var(--font-mono);color:#6B7280;font-weight:700;">KLASIFIKASI VIENNA WIPO</div>
+                  <div style="font-size:1.05rem;font-family:var(--font-heading);font-weight:800;color:${cmp.badgeColor};padding-top:2px;">${cmp.sameVienna ? 'IDENTIK (100%)' : 'BERBEDA KATEGORI'}</div>
+                  <div style="font-size:0.68rem;color:#6B7280;">Unsur figuratif lukisan</div>
                 </div>
               </div>
 
               <!-- LEGAL ASSESSMENT UNDER PASAL 21 -->
-              <div style="background:#FFF;padding:0.85rem 1.1rem;border-radius:4px;border-left:4px solid ${cmp.badgeColor};font-size:0.82rem;line-height:1.6;color:#1E293B;">
+              <div style="background:#FFF;padding:0.95rem 1.2rem;border-radius:10px;border-left:4px solid ${cmp.badgeColor};border-top:1px solid var(--bc-card-border);border-right:1px solid var(--bc-card-border);border-bottom:1px solid var(--bc-card-border);font-size:0.84rem;line-height:1.6;color:var(--bc-text-dark);">
                 <strong>⚖️ Kajian Yuridis Kemiripan Lukisan (Pasal 21 Ayat 1 UU No. 20/2016):</strong><br/>
                 ${cmp.legalNote}
               </div>
@@ -2511,11 +2511,11 @@
       } else {
         // Single logo upload: show clean technical inspection & transparency notice
         comparisonHtml = `
-          <div style="margin-top:0.85rem;padding:0.95rem 1.15rem;background:#FFFFFF;border:1px solid #E2E8F0;border-radius:6px;display:flex;align-items:flex-start;gap:0.75rem;font-size:0.82rem;line-height:1.55;color:#334155;">
+          <div style="margin-top:0.85rem;padding:1rem 1.25rem;background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:10px;display:flex;align-items:flex-start;gap:0.75rem;font-size:0.84rem;line-height:1.6;color:#374151;">
             <span style="font-size:1.25rem;line-height:1;">ℹ️</span>
             <div>
-              <strong style="color:#0F172A;">Audit Karakteristik Etiket Logo:</strong> Kategori WIPO Vienna terklasifikasi sebagai <code>${logoMeta.viennaCode}</code> (${logoMeta.viennaTitle || 'Figuratif Geometris'}) dengan komposisi ${logoMeta.dominantColors?.length || 0} warna siap lampir pada formulir resmi DJKI.
-              <span style="display:block;margin-top:4px;font-size:0.77rem;color:#64748B;">
+              <strong style="color:var(--bc-text-dark);">Audit Karakteristik Etiket Logo:</strong> Kategori WIPO Vienna terklasifikasi sebagai <code>${logoMeta.viennaCode}</code> (${logoMeta.viennaTitle || 'Figuratif Geometris'}) dengan komposisi ${logoMeta.dominantColors?.length || 0} warna siap lampir pada formulir resmi DJKI.
+              <span style="display:block;margin-top:4px;font-size:0.78rem;color:#6B7280;">
                 <em>Catatan Transparansi DJKI:</em> Pangkalan Data Resmi DJKI (PDKI) dan API Indonesia mengindeks jutaan merek melalui penelusuran nama/kata, kelas merek, dan klasifikasi kode Vienna. Untuk menguji kemiripan visual head-to-head (Piksel &amp; Siluet) terhadap logo kompetitor tertentu, silakan unggah file logo pada bagian <strong>"Logo Pembanding"</strong> di atas.
               </span>
             </div>
@@ -2524,13 +2524,13 @@
       }
 
       logoHeaderHtml = `
-        <div style="margin-bottom:1.15rem;padding:1.15rem;border:1.5px solid var(--charcoal);border-radius:6px;background:#FAF8F3;text-align:left;">
+        <div style="margin-bottom:1.5rem;padding:1.35rem;border:1px solid var(--bc-card-border);border-radius:14px;background:#FAF8F5;text-align:left;box-shadow:0 2px 12px rgba(13,59,46,0.04);">
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">
-            <div style="display:flex;align-items:center;gap:0.85rem;">
-              ${logoMeta.previewDataUrl ? `<img src="${logoMeta.previewDataUrl}" alt="Uploaded Logo" style="width:64px;height:64px;object-fit:contain;background:#FFF;border:1.5px solid var(--charcoal);border-radius:4px;padding:4px;" />` : ''}
+            <div style="display:flex;align-items:center;gap:1rem;">
+              ${logoMeta.previewDataUrl ? `<img src="${logoMeta.previewDataUrl}" alt="Uploaded Logo" style="width:68px;height:68px;object-fit:contain;background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:10px;padding:4px;" />` : ''}
               <div>
-                <span style="font-family:var(--font-mono);font-size:0.68rem;font-weight:700;color:var(--green);letter-spacing:0.06em;">AUDIT TEKNIS ETIKET LOGO // KLASIFIKASI VIENNA ${logoMeta.viennaCode}</span>
-                <h3 style="font-family:var(--font-heading);font-size:1.1rem;font-weight:800;color:var(--charcoal);margin:3px 0;">${logoMeta.name} (${logoMeta.width}×${logoMeta.height} px · dHash: <code>${logoMeta.dHash}</code>)</h3>
+                <span style="font-family:var(--font-mono);font-size:0.7rem;font-weight:700;color:var(--bc-green);letter-spacing:0.08em;">AUDIT TEKNIS ETIKET LOGO // KLASIFIKASI VIENNA ${logoMeta.viennaCode}</span>
+                <h3 style="font-family:var(--font-heading);font-size:1.15rem;font-weight:800;color:var(--bc-text-dark);margin:3px 0;">${logoMeta.name} (${logoMeta.width}×${logoMeta.height} px · dHash: <code>${logoMeta.dHash}</code>)</h3>
                 <div style="margin-top:4px;">${swatches}</div>
               </div>
             </div>
@@ -2544,40 +2544,41 @@
   }
 
   function renderPdkiCardItem(item) {
-    let badgeBg = '#D1FAE5';
-    let badgeColor = '#047857';
+    let badgeBg = '#DCFCE7';
+    let badgeColor = '#166534';
     if (item.statusKey === 'dalam_proses') {
       badgeBg = '#FEF3C7';
-      badgeColor = '#B45309';
+      badgeColor = '#92400E';
     } else if (item.statusKey === 'ditolak' || item.statusKey === 'berakhir') {
       badgeBg = '#FEE2E2';
-      badgeColor = '#B91C1C';
+      badgeColor = '#991B1B';
     }
 
     return `
-      <div style="display:flex;gap:1.35rem;padding:1.25rem;background:#FFFFFF;border-bottom:1px solid #E5E7EB;align-items:center;flex-wrap:wrap;">
-        <div style="width:128px;height:128px;flex-shrink:0;border:1px solid #E5E7EB;border-radius:4px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;padding:0.65rem;overflow:hidden;">
+      <div class="bc-pdki-card-item" style="display:flex;gap:1.5rem;padding:1.35rem;background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:14px;align-items:center;flex-wrap:wrap;margin-bottom:1rem;box-shadow:0 2px 10px rgba(13,59,46,0.03);transition:all 0.2s ease;">
+        <div style="width:120px;height:120px;flex-shrink:0;border:1px solid var(--bc-card-border);border-radius:12px;background:#FAF8F5;display:flex;align-items:center;justify-content:center;padding:0.65rem;overflow:hidden;">
           ${item.etiquetteSvg}
         </div>
         <div style="flex:1;min-width:220px;text-align:left;">
-          <h4 style="font-family:var(--font-heading);font-size:1.18rem;font-weight:800;color:#0F172A;margin:0 0 0.65rem 0;letter-spacing:0.01em;">${item.brand}</h4>
-          <div style="display:grid;grid-template-columns:140px 1fr;gap:0.75rem;margin-bottom:0.6rem;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.45rem;">
+            <h4 style="font-family:var(--font-heading);font-size:1.25rem;font-weight:800;color:var(--bc-text-dark);margin:0;letter-spacing:-0.01em;">${item.brand}</h4>
+            <span style="display:inline-block;background:${badgeBg};color:${badgeColor};font-family:var(--font-mono);font-weight:700;font-size:0.74rem;padding:3px 10px;border-radius:9999px;letter-spacing:0.02em;">${item.status}</span>
+          </div>
+          
+          <div style="display:grid;grid-template-columns:130px 1fr;gap:0.75rem;margin-bottom:0.5rem;font-size:0.84rem;">
             <div>
-              <span style="font-size:0.74rem;color:#64748B;display:block;margin-bottom:3px;">Kelas Merek:</span>
-              <span style="display:inline-block;background:#DBEAFE;color:#1D4ED8;font-weight:700;font-size:0.78rem;padding:2px 8px;border-radius:4px;">${item.niceClass}</span>
+              <span style="font-size:0.74rem;color:#6B7280;display:block;margin-bottom:2px;">Kelas Merek:</span>
+              <span style="display:inline-block;background:var(--bc-green-mint);color:var(--bc-green);font-family:var(--font-mono);font-weight:700;font-size:0.76rem;padding:2px 10px;border-radius:9999px;border:1px solid rgba(13,59,46,0.1);">Kelas ${item.niceClass}</span>
             </div>
             <div>
-              <span style="font-size:0.74rem;color:#64748B;display:block;margin-bottom:3px;">No. Permohonan:</span>
-              <strong style="font-size:0.88rem;color:#0F172A;font-weight:800;">${item.appNo}</strong>
+              <span style="font-size:0.74rem;color:#6B7280;display:block;margin-bottom:2px;">No. Permohonan:</span>
+              <strong style="font-family:var(--font-mono);font-size:0.86rem;color:var(--bc-text-dark);font-weight:700;">${item.appNo}</strong>
             </div>
           </div>
-          <div style="margin-bottom:0.6rem;">
-            <span style="font-size:0.74rem;color:#64748B;display:block;margin-bottom:2px;">Nama Pemilik:</span>
-            <strong style="font-size:0.86rem;color:#0F172A;font-weight:800;">${item.owner}</strong>
-          </div>
-          <div>
-            <span style="font-size:0.74rem;color:#64748B;display:block;margin-bottom:3px;">Status Merek:</span>
-            <span style="display:inline-block;background:${badgeBg};color:${badgeColor};font-weight:800;font-size:0.75rem;padding:4px 10px;border-radius:4px;letter-spacing:0.02em;">${item.status}</span>
+          
+          <div style="font-size:0.84rem;">
+            <span style="font-size:0.74rem;color:#6B7280;display:block;margin-bottom:2px;">Nama Pemilik:</span>
+            <strong style="font-family:var(--font-heading);font-size:0.88rem;color:var(--bc-text-dark);font-weight:700;">${item.owner}</strong>
           </div>
         </div>
       </div>
@@ -2597,21 +2598,26 @@
     let rightCardsHtml = '';
     visibleItems.forEach((item, idx) => {
       rightCardsHtml += renderPdkiCardItem(item);
-      // Insert the dark CTA banner after the 2nd item (matching the reference screenshot!)
+      // Insert the BrandConnect signature CTA banner after the 2nd item
       if (idx === 1) {
         rightCardsHtml += `
-          <div style="my:1rem;margin:1rem 0;background:#172B4D;color:#FFFFFF;border-radius:8px;padding:1.35rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
-            <div style="text-align:left;">
-              <div style="font-family:var(--font-heading);font-size:1.05rem;font-weight:800;color:#FFFFFF;margin-bottom:4px;">
+          <div class="bc-pdki-cta-banner" style="margin:1.25rem 0;background:linear-gradient(135deg, #0D3B2E 0%, #164E3D 100%);color:#FFFFFF;border-radius:16px;padding:1.6rem 1.85rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.25rem;box-shadow:0 8px 24px rgba(13,59,46,0.18);border:1px solid rgba(255,255,255,0.1);">
+            <div style="text-align:left;max-width:540px;">
+              <div style="display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--font-mono);font-size:0.72rem;font-weight:700;color:#A7F3D0;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.35rem;">
+                <span>✦</span>
+                <span>BrandConnect AI Legal Screening</span>
+              </div>
+              <div style="font-family:var(--font-heading);font-size:1.15rem;font-weight:800;color:#FFFFFF;margin-bottom:4px;line-height:1.3;">
                 Khawatir pendaftaran merek "${qDisplay}" ditolak DJKI?
               </div>
-              <div style="font-size:0.84rem;color:#CBD5E1;">
-                Pastikan seberapa besar peluang merek Anda bisa terdaftar di sini
+              <div style="font-size:0.86rem;color:#D1FAE5;line-height:1.45;">
+                Pastikan seberapa besar peluang lolos kriteria substantif Pasal 20 &amp; 21 dengan audit AI lengkap.
               </div>
             </div>
-            <button type="button" onclick="if (window.runTrademarkCheck) { window.runTrademarkCheck('${res.query.toUpperCase()}'); } else if (window.BCStore && window.BCStore.openHandoverModal) { window.BCStore.openHandoverModal('${res.query.toUpperCase()}'); }" style="background:#FFFFFF;color:#172B4D;border:none;border-radius:6px;padding:0.65rem 1.15rem;font-family:var(--font-heading);font-weight:800;font-size:0.84rem;cursor:pointer;display:inline-flex;align-items:center;gap:0.45rem;box-shadow:0 2px 6px rgba(0,0,0,0.15);">
-              <span style="display:inline-flex;width:18px;height:18px;border-radius:50%;background:#FACC15;color:#172B4D;align-items:center;justify-content:center;font-size:0.7rem;">★</span>
+            <button type="button" onclick="if (window.runTrademarkCheck) { window.runTrademarkCheck('${res.query.toUpperCase()}'); } else if (window.BCStore && window.BCStore.openHandoverModal) { window.BCStore.openHandoverModal('${res.query.toUpperCase()}'); }" style="background:#FFFFFF;color:var(--bc-green);border:none;border-radius:9999px;padding:0.75rem 1.45rem;font-family:var(--font-heading);font-weight:800;font-size:0.88rem;cursor:pointer;display:inline-flex;align-items:center;gap:0.5rem;box-shadow:0 4px 14px rgba(0,0,0,0.15);transition:all 0.2s ease;">
+              <span style="display:inline-flex;width:18px;height:18px;border-radius:50%;background:var(--bc-green-mint);color:var(--bc-green);align-items:center;justify-content:center;font-size:0.72rem;font-weight:900;">✦</span>
               <span>Cek Sekarang</span>
+              <span>→</span>
             </button>
           </div>
         `;
@@ -2622,23 +2628,24 @@
     if (!isUnlocked && res.totalFound > visibleItems.length) {
       const dummyBlurCard = hiddenItems[0] || res.items[0];
       blurredGateHtml = `
-        <div style="position:relative;margin-top:0.5rem;border-radius:8px;overflow:hidden;border:1px solid #E5E7EB;">
+        <div style="position:relative;margin-top:0.75rem;border-radius:14px;overflow:hidden;border:1px solid var(--bc-card-border);">
           <div style="filter:blur(6px);opacity:0.55;pointer-events:none;user-select:none;">
             ${dummyBlurCard ? renderPdkiCardItem(dummyBlurCard) : ''}
             ${res.items[1] ? renderPdkiCardItem(res.items[1]) : ''}
           </div>
-          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,0.72);padding:1.5rem;text-align:center;">
-            <p style="font-size:0.9rem;color:#334155;margin:0 0 0.35rem 0;">
-              Anda menemukan <strong>${res.totalFound} merek</strong> dalam pencarian ini.
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,0.78);padding:1.5rem;text-align:center;">
+            <p style="font-size:0.92rem;color:#334155;margin:0 0 0.35rem 0;">
+              Ditemukan <strong style="color:var(--bc-green);">${res.totalFound} merek</strong> dalam penelusuran ini.
             </p>
-            <p style="font-family:var(--font-heading);font-size:0.96rem;font-weight:800;color:#172B4D;margin:0 0 1rem 0;max-width:400px;">
-              Silakan Daftar atau Masuk untuk Melihat Selengkapnya. GRATIS!
+            <p style="font-family:var(--font-heading);font-size:1.05rem;font-weight:800;color:var(--bc-text-dark);margin:0 0 1rem 0;max-width:440px;">
+              Daftar akun gratis untuk melihat seluruh hasil dan dokumen publikasi DJKI.
             </p>
-            <button type="button" class="bc-pdki-unlock-btn" style="background:#FACC15;color:#0F172A;border:none;border-radius:6px;padding:0.75rem 1.5rem;font-family:var(--font-heading);font-weight:800;font-size:0.88rem;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.1);">
-              Daftar Sekarang (Buka Semua Hasil)
+            <button type="button" class="bc-pdki-unlock-btn" style="background:var(--bc-green);color:#FFFFFF;border:none;border-radius:9999px;padding:0.85rem 1.85rem;font-family:var(--font-heading);font-weight:800;font-size:0.9rem;cursor:pointer;box-shadow:0 4px 14px rgba(13,59,46,0.2);display:inline-flex;align-items:center;gap:0.5rem;transition:all 0.2s ease;">
+              <span>Daftar Gratis (Buka Semua Hasil)</span>
+              <span>→</span>
             </button>
-            <p style="font-size:0.8rem;color:#475569;margin-top:0.75rem;">
-              Sudah punya akun BRANDCONNECT? <a href="dashboard.html" style="color:#172B4D;font-weight:700;text-decoration:underline;">Masuk</a>
+            <p style="font-size:0.82rem;color:#6B7280;margin-top:0.75rem;">
+              Sudah punya akun BRANDCONNECT? <a href="dashboard.html" style="color:var(--bc-green);font-weight:700;text-decoration:underline;">Masuk</a>
             </p>
           </div>
         </div>
@@ -2648,59 +2655,66 @@
     const st = filters?.statuses || [];
 
     return `
-      <div class="bc-pdki-explorer-root" data-query="${res.query}" style="margin-top:1.25rem;background:#FFFFFF;border:1.5px solid #CBD5E1;border-radius:8px;padding:1.5rem;text-align:left;">
-        <div style="display:grid;grid-template-columns:250px 1fr;gap:1.75rem;align-items:start;" class="bc-pdki-grid">
+      <div class="bc-pdki-explorer-root" data-query="${res.query}" style="margin-top:1.25rem;background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:18px;padding:1.75rem;box-shadow:0 4px 24px rgba(13,59,46,0.04);text-align:left;">
+        <div style="display:grid;grid-template-columns:260px 1fr;gap:2rem;align-items:start;" class="bc-pdki-grid">
           <!-- LEFT SIDEBAR: PENELUSURAN LANJUTAN -->
           <div>
-            <div style="border:1px solid #E2E8F0;border-radius:6px;padding:1.15rem;background:#FFFFFF;margin-bottom:1rem;">
-              <h4 style="font-family:var(--font-heading);font-size:0.88rem;font-weight:800;color:#1E293B;margin:0 0 0.85rem 0;padding-bottom:0.55rem;border-bottom:1px solid #F1F5F9;">
-                Penelusuran Lanjutan
-              </h4>
+            <div style="border:1px solid var(--bc-card-border);border-radius:14px;padding:1.25rem;background:#FAF8F5;margin-bottom:1.25rem;">
+              <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--bc-card-border);">
+                <div style="width:24px;height:24px;border-radius:6px;background:var(--bc-green-mint);color:var(--bc-green);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:800;">⚙</div>
+                <h4 style="font-family:var(--font-heading);font-size:0.92rem;font-weight:800;color:var(--bc-text-dark);margin:0;">
+                  Penelusuran Lanjutan
+                </h4>
+              </div>
 
-              <div style="margin-bottom:1rem;">
-                <div style="font-size:0.8rem;font-weight:700;color:#334155;margin-bottom:0.5rem;display:flex;justify-content:space-between;">
-                  <span>Status Merek</span><span>⌃</span>
+              <div style="margin-bottom:1.15rem;">
+                <div style="font-size:0.8rem;font-family:var(--font-heading);font-weight:700;color:var(--bc-text-dark);margin-bottom:0.55rem;display:flex;justify-content:space-between;align-items:center;">
+                  <span>Status Merek</span>
+                  <span style="font-size:0.7rem;color:#9CA3AF;">▾</span>
                 </div>
-                <div style="display:flex;flex-direction:column;gap:0.45rem;font-size:0.82rem;color:#475569;">
-                  <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;"><input type="checkbox" class="bc-pf-status" value="dalam_proses" ${st.includes('dalam_proses') ? 'checked' : ''} /> Dalam Proses</label>
-                  <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;"><input type="checkbox" class="bc-pf-status" value="didaftar" ${st.includes('didaftar') ? 'checked' : ''} /> Didaftar</label>
-                  <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;"><input type="checkbox" class="bc-pf-status" value="ditolak" ${st.includes('ditolak') ? 'checked' : ''} /> Ditolak</label>
-                  <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;"><input type="checkbox" class="bc-pf-status" value="berakhir" ${st.includes('berakhir') ? 'checked' : ''} /> Berakhir</label>
-                  <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;"><input type="checkbox" class="bc-pf-status" value="lainnya" ${st.includes('lainnya') ? 'checked' : ''} /> Lainnya</label>
+                <div style="display:flex;flex-direction:column;gap:0.5rem;font-size:0.84rem;color:#4B5563;">
+                  <label style="display:flex;align-items:center;gap:0.55rem;cursor:pointer;"><input type="checkbox" class="bc-pf-status" value="dalam_proses" ${st.includes('dalam_proses') ? 'checked' : ''} style="accent-color:var(--bc-green);" /> Dalam Proses</label>
+                  <label style="display:flex;align-items:center;gap:0.55rem;cursor:pointer;"><input type="checkbox" class="bc-pf-status" value="didaftar" ${st.includes('didaftar') ? 'checked' : ''} style="accent-color:var(--bc-green);" /> Didaftar</label>
+                  <label style="display:flex;align-items:center;gap:0.55rem;cursor:pointer;"><input type="checkbox" class="bc-pf-status" value="ditolak" ${st.includes('ditolak') ? 'checked' : ''} style="accent-color:var(--bc-green);" /> Ditolak</label>
+                  <label style="display:flex;align-items:center;gap:0.55rem;cursor:pointer;"><input type="checkbox" class="bc-pf-status" value="berakhir" ${st.includes('berakhir') ? 'checked' : ''} style="accent-color:var(--bc-green);" /> Berakhir</label>
+                  <label style="display:flex;align-items:center;gap:0.55rem;cursor:pointer;"><input type="checkbox" class="bc-pf-status" value="lainnya" ${st.includes('lainnya') ? 'checked' : ''} style="accent-color:var(--bc-green);" /> Lainnya</label>
                 </div>
               </div>
 
-              <div style="margin-bottom:1rem;">
-                <div style="font-size:0.8rem;font-weight:700;color:#334155;margin-bottom:0.45rem;display:flex;justify-content:space-between;">
-                  <span>Kelas Merek</span><span>⌃</span>
+              <div style="margin-bottom:1.15rem;">
+                <div style="font-size:0.8rem;font-family:var(--font-heading);font-weight:700;color:var(--bc-text-dark);margin-bottom:0.45rem;display:flex;justify-content:space-between;align-items:center;">
+                  <span>Kelas Merek</span>
+                  <span style="font-size:0.7rem;color:#9CA3AF;">▾</span>
                 </div>
-                <select class="bc-pf-class" style="width:100%;padding:0.5rem 0.65rem;border:1px solid #CBD5E1;border-radius:4px;font-size:0.8rem;color:#334155;background:#FFF;">
+                <select class="bc-pf-class" style="width:100%;padding:0.6rem 0.75rem;border:1px solid #D5D3CA;border-radius:8px;font-size:0.82rem;color:var(--bc-text-dark);background:#FFFFFF;outline:none;">
                   <option value="all">Semua Kelas</option>
                   ${classOptionsHtml}
                 </select>
               </div>
 
-              <div style="margin-bottom:1rem;">
-                <div style="font-size:0.8rem;font-weight:700;color:#334155;margin-bottom:0.45rem;display:flex;justify-content:space-between;">
-                  <span>Nama Pemohon</span><span>⌃</span>
+              <div style="margin-bottom:1.25rem;">
+                <div style="font-size:0.8rem;font-family:var(--font-heading);font-weight:700;color:var(--bc-text-dark);margin-bottom:0.45rem;display:flex;justify-content:space-between;align-items:center;">
+                  <span>Nama Pemohon</span>
+                  <span style="font-size:0.7rem;color:#9CA3AF;">▾</span>
                 </div>
-                <input type="text" class="bc-pf-owner" value="${filters?.owner || ''}" placeholder="Nama Pemohon" style="width:100%;padding:0.5rem 0.65rem;border:1px solid #CBD5E1;border-radius:4px;font-size:0.8rem;color:#334155;" />
+                <input type="text" class="bc-pf-owner" value="${filters?.owner || ''}" placeholder="Ketik nama pemilik / PT" style="width:100%;padding:0.6rem 0.75rem;border:1px solid #D5D3CA;border-radius:8px;font-size:0.82rem;color:var(--bc-text-dark);background:#FFFFFF;outline:none;" />
               </div>
 
-              <button type="button" class="bc-pf-apply-btn" style="width:100%;background:#FACC15;color:#0F172A;border:none;border-radius:5px;padding:0.65rem;font-family:var(--font-heading);font-weight:800;font-size:0.84rem;cursor:pointer;">
-                Terapkan
+              <button type="button" class="bc-pf-apply-btn" style="width:100%;background:var(--bc-green);color:#FFFFFF;border:none;border-radius:9999px;padding:0.7rem;font-family:var(--font-heading);font-weight:700;font-size:0.86rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:0.45rem;box-shadow:0 2px 8px rgba(13,59,46,0.18);transition:all 0.2s ease;">
+                <span>Terapkan Filter</span>
+                <span>→</span>
               </button>
             </div>
 
-            <div style="border:1px solid #E2E8F0;border-radius:6px;padding:1rem;background:#FFFFFF;text-align:center;">
-              <div style="font-size:0.78rem;font-weight:700;color:#1E293B;margin-bottom:0.65rem;">Bagikan Penelusuran Merek</div>
-              <div style="display:flex;justify-content:center;gap:1.25rem;">
-                <a href="https://wa.me/?text=${encodeURIComponent('Cek hasil penelusuran merek ' + res.query.toUpperCase() + ' di BrandConnect')}" target="_blank" rel="noopener" style="text-decoration:none;color:#475569;font-size:0.72rem;display:flex;flex-direction:column;align-items:center;gap:4px;">
-                  <span style="width:34px;height:34px;border-radius:50%;border:1px solid #E2E8F0;display:flex;align-items:center;justify-content:center;background:#F8FAFC;color:#16A34A;font-weight:800;">WA</span>
+            <div style="border:1px solid var(--bc-card-border);border-radius:14px;padding:1.15rem;background:#FAF8F5;text-align:center;">
+              <div style="font-family:var(--font-heading);font-size:0.82rem;font-weight:700;color:var(--bc-text-dark);margin-bottom:0.85rem;">Bagikan Penelusuran Merek</div>
+              <div style="display:flex;justify-content:center;gap:1.5rem;">
+                <a href="https://wa.me/?text=${encodeURIComponent('Cek hasil penelusuran merek ' + res.query.toUpperCase() + ' di BrandConnect')}" target="_blank" rel="noopener" style="text-decoration:none;color:#4B5563;font-size:0.75rem;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:5px;">
+                  <span style="width:38px;height:38px;border-radius:50%;border:1px solid rgba(13,59,46,0.15);display:flex;align-items:center;justify-content:center;background:var(--bc-green-mint);color:var(--bc-green);font-weight:800;font-size:0.85rem;">WA</span>
                   <span>WhatsApp</span>
                 </a>
-                <button type="button" onclick="navigator.clipboard && navigator.clipboard.writeText(window.location.href); alert('Tautan penelusuran berhasil disalin!');" style="background:none;border:none;cursor:pointer;color:#475569;font-size:0.72rem;display:flex;flex-direction:column;align-items:center;gap:4px;">
-                  <span style="width:34px;height:34px;border-radius:50%;border:1px solid #E2E8F0;display:flex;align-items:center;justify-content:center;background:#F8FAFC;color:#0F172A;">🔗</span>
+                <button type="button" onclick="navigator.clipboard && navigator.clipboard.writeText(window.location.href); alert('Tautan penelusuran berhasil disalin!');" style="background:none;border:none;cursor:pointer;color:#4B5563;font-size:0.75rem;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:5px;">
+                  <span style="width:38px;height:38px;border-radius:50%;border:1px solid rgba(13,59,46,0.15);display:flex;align-items:center;justify-content:center;background:var(--bc-green-mint);color:var(--bc-green);font-size:0.95rem;">🔗</span>
                   <span>Salin Link</span>
                 </button>
               </div>
@@ -2709,16 +2723,16 @@
 
           <!-- RIGHT COLUMN: PDKI SEARCH RESULTS LIST -->
           <div>
-            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.85rem;padding-bottom:0.6rem;border-bottom:1px solid #E2E8F0;">
-              <div style="font-size:0.88rem;color:#334155;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.15rem;padding-bottom:0.85rem;border-bottom:1px solid var(--bc-card-border);">
+              <div style="font-family:var(--font-heading);font-size:0.95rem;color:var(--bc-text-dark);">
                 ${
                   res.totalFound === 0 || res.isUnindexedQuery
-                    ? `Hasil Penelusuran untuk <strong>"${qDisplay}"</strong>`
-                    : `Menampilkan <strong>1-${visibleItems.length}</strong> dari <strong>${res.totalFound} Merek</strong> untuk <strong>"${qDisplay}"</strong>`
+                    ? `Hasil Penelusuran untuk <strong style="color:var(--bc-green);">"${qDisplay}"</strong>`
+                    : `Menampilkan <strong>1-${visibleItems.length}</strong> dari <strong style="color:var(--bc-green);">${res.totalFound} Merek</strong> untuk <strong>"${qDisplay}"</strong>`
                 }
               </div>
-              <span style="font-family:var(--font-mono);font-size:0.68rem;padding:3px 8px;border-radius:4px;background:#DCFCE7;color:#166534;font-weight:700;">
-                ✓ Terkoneksi Database Resmi DJKI
+              <span style="font-family:var(--font-mono);font-size:0.72rem;padding:4px 12px;border-radius:9999px;background:var(--bc-green-mint);color:var(--bc-green);font-weight:700;border:1px solid rgba(13,59,46,0.12);">
+                ✓ Pangkalan Data Resmi DJKI RI
               </span>
             </div>
 
@@ -2726,20 +2740,20 @@
               ${
                 res.totalFound === 0 || res.isUnindexedQuery
                   ? `
-                <div style="padding:2rem 1.5rem;background:#F8FAFC;border:1.5px dashed #CBD5E1;border-radius:8px;margin-top:0.85rem;text-align:center;">
-                  <div style="font-size:2rem;margin-bottom:0.5rem;">🎉</div>
-                  <h4 style="font-family:var(--font-heading);font-size:1.05rem;font-weight:800;color:#0F172A;margin:0 0 0.35rem 0;">
+                <div style="padding:2.5rem 1.5rem;background:#FAF8F5;border:1.5px dashed var(--bc-card-border);border-radius:14px;margin-top:0.85rem;text-align:center;">
+                  <div style="font-size:2.2rem;margin-bottom:0.6rem;">🎉</div>
+                  <h4 style="font-family:var(--font-heading);font-size:1.15rem;font-weight:800;color:var(--bc-text-dark);margin:0 0 0.45rem 0;">
                     Belum Ditemukan Pendaftaran Merek Identik untuk "${qDisplay}"
                   </h4>
-                  <p style="font-size:0.84rem;color:#475569;line-height:1.6;max-width:540px;margin:0 auto 1.25rem auto;">
+                  <p style="font-size:0.88rem;color:#4B5563;line-height:1.6;max-width:540px;margin:0 auto 1.5rem auto;">
                     Nama merek <strong>"${res.query.toUpperCase()}"</strong> saat ini belum terdaftar pada basis data DJKI untuk varian yang dicari. Ini merupakan peluang emas untuk mendaftarkan dan mengamankan hak monopoli merek Anda sebelum digunakan pihak lain.
                   </p>
                   <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:0.75rem;">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-REG-01', '${res.query.toUpperCase()}', '35')">
+                    <button type="button" class="bc-hero-search-btn" style="padding:0.75rem 1.6rem;font-size:0.88rem;" onclick="window.BCStore && window.BCStore.openOrderModal('SRV-REG-01', '${res.query.toUpperCase()}', '35')">
                       <span>🚀 Daftarkan Merek "${res.query.toUpperCase()}" Sekarang</span>
                     </button>
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="window.BCStore && window.BCStore.openHandoverModal('${res.query.toUpperCase()}')">
-                      <span>👨‍⚖️ Konsultasi Gratis dengan Tim Legal Kami</span>
+                    <button type="button" class="btn btn-secondary btn-sm" style="padding:0.75rem 1.4rem;border-radius:9999px;font-weight:700;" onclick="window.BCStore && window.BCStore.openHandoverModal('${res.query.toUpperCase()}')">
+                      <span>👨‍⚖️ Konsultasi Gratis dengan Tim Legal</span>
                     </button>
                   </div>
                 </div>
