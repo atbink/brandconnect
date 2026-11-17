@@ -2242,7 +2242,7 @@
     }
 
     if (chatForm && chatInput && chatMessages) {
-      chatForm.addEventListener('submit', (e) => {
+      chatForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const text = chatInput.value.trim();
         if (!text) return;
@@ -2255,7 +2255,34 @@
         chatMessages.appendChild(uDiv);
 
         const latestBrand = state.searchLogs[0]?.trademarkName || '';
-        const aiReply = generateAiAssistantReply(text, latestBrand);
+
+        // Typing indicator
+        const aDiv = document.createElement('div');
+        aDiv.style.cssText = 'background:#FFF;border:1px solid var(--border-sketch-strong);padding:0.75rem 0.9rem;border-radius:4px;align-self:flex-start;max-width:92%;';
+        aDiv.innerHTML = `<strong style="color:var(--green);display:block;font-size:0.7rem;font-family:var(--font-mono);margin-bottom:0.25rem;">AI TRADEMARK ASSISTANT</strong><span style="color:#6B7280;font-size:0.85rem;display:inline-flex;align-items:center;gap:4px;"><span>BrandConnect AI sedang menganalisis UU Merek</span><span style="animation:pulse 1.2s infinite;">...</span></span>`;
+        chatMessages.appendChild(aDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        let aiReply = '';
+        try {
+          const resp = await fetch('/api/ai-chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: text, brand: latestBrand })
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            if (data && data.reply) {
+              aiReply = data.reply;
+            }
+          }
+        } catch (err) {
+          console.warn('AI chat api offline/fallback:', err);
+        }
+
+        if (!aiReply) {
+          aiReply = generateAiAssistantReply(text, latestBrand);
+        }
 
         // Save to AI Conversations store
         if (!state.aiConversations[0]) {
@@ -2275,12 +2302,9 @@
         state.aiConversations[0].summary = `Pertanyaan terakhir: "${text}"`;
         saveState();
 
-        // Append AI bubble
-        const aDiv = document.createElement('div');
-        aDiv.style.cssText = 'background:#FFF;border:1px solid var(--border-sketch-strong);padding:0.75rem 0.9rem;border-radius:4px;align-self:flex-start;max-width:92%;';
+        // Update AI bubble
         aDiv.innerHTML = `<strong style="color:var(--green);display:block;font-size:0.7rem;font-family:var(--font-mono);margin-bottom:0.25rem;">AI TRADEMARK ASSISTANT</strong>` +
           aiReply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br/>');
-        chatMessages.appendChild(aDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
       });
     }

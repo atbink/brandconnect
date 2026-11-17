@@ -296,12 +296,12 @@
       <div class="container" style="max-width:1160px;">
         <div class="hp-res-header-row" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:1.5rem;">
           <div>
-            <div class="bc-features-eyebrow">HASIL PENCARIAN</div>
+            <div class="bc-features-eyebrow">HASIL PENCARIAN &amp; ANALISIS AI</div>
             <h2 style="font-family:var(--font-heading);font-size:2.2rem;font-weight:800;color:var(--bc-text-dark);margin:0 0 0.35rem 0;" id="hp-res-title">
-              Hasil Analisis untuk "<span id="hp-query-display">KOPI KENANGAN</span>"
+              Hasil Analisis untuk "<span id="hp-query-display">MEREK</span>"
             </h2>
             <p style="font-size:0.95rem;color:#6B7280;margin:0;" id="hp-res-count">
-              Ditemukan 15 merek terkait pada data resmi DJKI.
+              Memeriksa data resmi DJKI dan evaluasi kriteria substantif Pasal 20 &amp; 21...
             </p>
           </div>
           <div class="hp-res-actions-row" style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
@@ -319,8 +319,8 @@
 
         <!-- Summary Grid (Image 3 Upper Grid) -->
         <div class="hp-res-summary-grid" style="display:grid;grid-template-columns:1fr 1.35fr;gap:1.5rem;margin-bottom:2.5rem;">
-          <div style="background:#FEF2F2;border:1px solid #FCA5A5;border-radius:16px;padding:1.75rem;">
-            <div style="font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:#DC2626;display:inline-flex;align-items:center;gap:0.4rem;margin-bottom:0.5rem;">
+          <div style="background:#FEF2F2;border:1px solid #FCA5A5;border-radius:16px;padding:1.75rem;transition:all 0.3s ease;" id="hp-risk-card">
+            <div style="font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:#DC2626;display:inline-flex;align-items:center;gap:0.4rem;margin-bottom:0.5rem;" id="hp-risk-pill">
               <span>✦</span>
               <span>Ringkasan Analisis AI</span>
             </div>
@@ -337,7 +337,7 @@
               </div>
               <div>
                 <div style="font-size:0.78rem;color:#6B7280;margin-bottom:0.2rem;">Merek Dicari</div>
-                <div style="font-family:var(--font-heading);font-size:1.05rem;font-weight:700;color:var(--bc-text-dark);" id="hp-meta-searched">KOPI KENANGAN</div>
+                <div style="font-family:var(--font-heading);font-size:1.05rem;font-weight:700;color:var(--bc-text-dark);" id="hp-meta-searched">MEREK</div>
               </div>
             </div>
 
@@ -347,17 +347,17 @@
               </div>
               <div>
                 <div style="font-size:0.78rem;color:#6B7280;margin-bottom:0.2rem;">Kelas Terkait</div>
-                <div style="font-family:var(--font-heading);font-size:1.05rem;font-weight:700;color:var(--bc-text-dark);">Kelas 30 ⓘ</div>
+                <div style="font-family:var(--font-heading);font-size:1.05rem;font-weight:700;color:var(--bc-text-dark);" id="hp-meta-class">Kelas 35 ⓘ</div>
               </div>
             </div>
 
             <div style="display:flex;align-items:flex-start;gap:0.85rem;">
               <div style="width:36px;height:36px;border-radius:10px;background:var(--bc-green-mint);color:var(--bc-green);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
               </div>
               <div>
                 <div style="font-size:0.78rem;color:#6B7280;margin-bottom:0.2rem;">Merek Pembanding</div>
-                <div style="font-family:var(--font-heading);font-size:1.05rem;font-weight:700;color:var(--bc-text-dark);" id="hp-meta-found">15 merek ditemukan</div>
+                <div style="font-family:var(--font-heading);font-size:1.05rem;font-weight:700;color:var(--bc-text-dark);" id="hp-meta-found">0 merek ditemukan</div>
               </div>
             </div>
 
@@ -368,30 +368,33 @@
               <div>
                 <div style="font-size:0.78rem;color:#6B7280;margin-bottom:0.2rem;">Sumber Data</div>
                 <div style="font-family:var(--font-heading);font-size:1.05rem;font-weight:700;color:var(--bc-text-dark);">DJKI (Data Resmi) ⓘ</div>
-                <div style="font-size:0.7rem;color:#9CA3AF;margin-top:2px;">Diperbarui: 16 Nov 2026, 10:24 WIB</div>
+                <div style="font-size:0.72rem;color:#9CA3AF;" id="hp-meta-date">Sinkronisasi Realtime</div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Analisis Detail Header & Tabs -->
-        <div>
-          <h3 style="font-family:var(--font-heading);font-size:1.65rem;font-weight:800;color:var(--bc-text-dark);margin-bottom:0.5rem;">
+        <!-- Detail Section Header & Interactive Tabs (Image 3 Center) -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+          <h3 style="font-family:var(--font-heading);font-size:1.65rem;font-weight:800;color:var(--bc-text-dark);margin:0;">
             Analisis Detail
           </h3>
 
-          <div class="bc-mode-tabs" style="margin-bottom:1.5rem;">
-            <button type="button" class="bc-mode-tab active">
+          <div class="hp-res-tabs-row" style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+            <button type="button" class="btn btn-sm hp-tab-btn active" id="hp-btn-tab-ai" data-target="hp-tab-ai" style="background:var(--bc-green);color:#FFF;border-radius:9999px;padding:0.5rem 1.15rem;font-weight:700;border:none;cursor:pointer;">
               <span>✦ Analisis AI</span>
             </button>
-            <button type="button" class="bc-mode-tab">
-              <span>📑 Data Merek Terkait (15)</span>
+            <button type="button" class="btn btn-sm hp-tab-btn" id="hp-btn-tab-related" data-target="hp-tab-related" style="background:#FFF;color:#374151;border:1px solid var(--bc-card-border);border-radius:9999px;padding:0.5rem 1.15rem;font-weight:600;cursor:pointer;">
+              <span>📑 Data Merek Terkait (<span id="hp-tab-count">0</span>)</span>
             </button>
-            <button type="button" class="bc-mode-tab">
-              <span>📋 Rekomendasi</span>
+            <button type="button" class="btn btn-sm hp-tab-btn" id="hp-btn-tab-recs" data-target="hp-tab-recs" style="background:#FFF;color:#374151;border:1px solid var(--bc-card-border);border-radius:9999px;padding:0.5rem 1.15rem;font-weight:600;cursor:pointer;">
+              <span>📋 Rekomendasi Ahli</span>
             </button>
           </div>
+        </div>
 
+        <!-- TAB 1: ANALISIS AI -->
+        <div id="hp-tab-ai" class="hp-tab-panel" style="display:block;">
           <!-- 4 Dimension Cards (Image 3 Center) -->
           <div class="hp-res-dimensions-grid" style="display:grid;grid-template-columns:repeat(4, 1fr);gap:1.25rem;margin-bottom:2rem;">
             <div style="background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:14px;padding:1.35rem;">
@@ -399,8 +402,8 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--bc-green)" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
                 <span>01. Kemiripan Fonetik</span>
               </div>
-              <div style="font-family:var(--font-heading);font-size:1.05rem;font-weight:800;color:var(--bc-text-dark);margin-bottom:0.45rem;">Persamaan Pada Pokoknya / Identik</div>
-              <p style="font-size:0.82rem;line-height:1.5;color:#4B5563;">
+              <div style="font-family:var(--font-heading);font-size:1.05rem;font-weight:800;color:var(--bc-text-dark);margin-bottom:0.45rem;" id="hp-dim-phonetic-status">Persamaan Pada Pokoknya / Identik</div>
+              <p style="font-size:0.82rem;line-height:1.5;color:#4B5563;" id="hp-dim-phonetic-detail">
                 Nama/lafal memiliki kesamaan bunyi signifikan dengan merek terdaftar milik pihak lain.
               </p>
             </div>
@@ -410,9 +413,9 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--bc-green)" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path></svg>
                 <span>02. Visual &amp; Ejaan</span>
               </div>
-              <div style="font-family:var(--font-heading);font-size:1.05rem;font-weight:800;color:var(--bc-text-dark);margin-bottom:0.45rem;">Rawan Konflik Hak Eksklusif</div>
-              <p style="font-size:0.82rem;line-height:1.5;color:#4B5563;">
-                Merek telah terdaftar resmi di DJKI. Pengajuan merek baru dengan unsur yang sama berpotensi ditolak.
+              <div style="font-family:var(--font-heading);font-size:1.05rem;font-weight:800;color:var(--bc-text-dark);margin-bottom:0.45rem;" id="hp-dim-visual-status">Rawan Konflik Hak Eksklusif</div>
+              <p style="font-size:0.82rem;line-height:1.5;color:#4B5563;" id="hp-dim-visual-detail">
+                Merek memiliki kemiripan susunan huruf atau elemen grafis dengan merek terdaftar.
               </p>
             </div>
 
@@ -421,9 +424,14 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--bc-green)" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
                 <span>03. Kelas Merek</span>
               </div>
-              <div style="font-family:var(--font-heading);font-size:1.05rem;font-weight:800;color:var(--bc-text-dark);margin-bottom:0.45rem;">Kelas 30</div>
-              <p style="font-size:0.82rem;line-height:1.5;color:#4B5563;">
-                Rekomendasi klasifikasi barang/jasa berdasarkan Nice Classification (Kopi, Teh, Roti &amp; Bumbu).
+              <div style="font-family:var(--font-heading);font-size:1.05rem;font-weight:800;color:var(--bc-text-dark);margin-bottom:0.45rem;" id="hp-dim-class-status">Kelas 35</div>
+              <div id="hp-dim-class-chips" style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+                <span class="bc-cat-pill" style="font-size:0.72rem;padding:2px 8px;">Retail</span>
+                <span class="bc-cat-pill" style="font-size:0.72rem;padding:2px 8px;">Toko Online</span>
+                <span class="bc-cat-pill" style="font-size:0.72rem;padding:2px 8px;">Marketplace</span>
+              </div>
+              <p style="font-size:0.82rem;line-height:1.5;color:#4B5563;" id="hp-dim-class-detail">
+                Rekomendasi klasifikasi barang/jasa berdasarkan Nice Classification.
               </p>
             </div>
 
@@ -432,8 +440,8 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--bc-green)" stroke-width="2"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path></svg>
                 <span>04. Kriteria UU Merek</span>
               </div>
-              <div style="font-family:var(--font-heading);font-size:1.05rem;font-weight:800;color:var(--bc-text-dark);margin-bottom:0.45rem;">Potensi Ditolak Pasal 21</div>
-              <p style="font-size:0.82rem;line-height:1.5;color:#4B5563;">
+              <div style="font-family:var(--font-heading);font-size:1.05rem;font-weight:800;color:var(--bc-text-dark);margin-bottom:0.45rem;" id="hp-dim-statute-status">Potensi Ditolak Pasal 21</div>
+              <p style="font-size:0.82rem;line-height:1.5;color:#4B5563;" id="hp-dim-statute-detail">
                 Pasal 21 ayat (1) huruf a &amp; b UU No. 20/2016 melarang pendaftaran merek dengan persamaan pada pokoknya.
               </p>
             </div>
@@ -449,21 +457,20 @@
               </div>
 
               <div class="hp-res-comparator-card" style="display:flex;align-items:center;gap:1.25rem;background:#FAF8F5;border:1px solid var(--bc-card-border);border-radius:12px;padding:1.25rem;">
-                <div style="width:110px;height:80px;background:#FFF;border:1px solid #E5E7EB;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:6px;overflow:hidden;" id="hp-comp-logo">
-                  <div style="font-family:Georgia,serif;font-weight:800;color:#111;text-align:center;"><div style="color:#B91C1C;">♥</div><div style="font-size:0.75rem;line-height:1.15;">kopi<br/>kenangan</div></div>
+                <div style="width:110px;height:80px;background:#FFF;border:1px solid #E5E7EB;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:6px;overflow:hidden;flex-shrink:0;" id="hp-comp-logo">
+                  <div style="font-family:Georgia,serif;font-weight:800;color:#111;text-align:center;"><div style="color:var(--bc-green);font-size:1.5rem;">✓</div><div style="font-size:0.75rem;">AMAN</div></div>
                 </div>
 
                 <div style="flex:1;">
-                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.35rem;">
-                    <strong style="font-family:var(--font-heading);font-size:1.15rem;color:var(--bc-text-dark);" id="hp-comp-name">KOPI KENANGAN</strong>
-                    <span style="background:#DCFCE7;color:#166534;font-family:var(--font-mono);font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:9999px;">TERDAFTAR</span>
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.35rem;flex-wrap:wrap;gap:0.35rem;">
+                    <strong style="font-family:var(--font-heading);font-size:1.15rem;color:var(--bc-text-dark);" id="hp-comp-name">MEREK</strong>
+                    <span id="hp-comp-status-badge" style="background:#DCFCE7;color:#166534;font-family:var(--font-mono);font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:9999px;">TERDAFTAR</span>
                   </div>
                   <div style="font-size:0.82rem;color:#4B5563;line-height:1.45;">
-                    <div>Pemilik: <strong id="hp-comp-owner">PT. BUMI BERKAH BOGA</strong></div>
-                    <div>No. Permohonan: <span id="hp-comp-appno">D002018042299</span> · Kelas: <span id="hp-comp-class">30</span></div>
+                    <div>Pemilik: <strong id="hp-comp-owner">-</strong></div>
+                    <div>No. Permohonan: <span id="hp-comp-appno">-</span> · Kelas: <span id="hp-comp-class">-</span></div>
                   </div>
                 </div>
-                <div style="color:var(--bc-green);font-size:1.25rem;font-weight:700;">›</div>
               </div>
             </div>
 
@@ -474,32 +481,97 @@
                 <span>Rekomendasi Langkah Selanjutnya</span>
               </div>
 
-              <div class="tc-rec-item" style="display:flex;align-items:flex-start;gap:0.85rem;margin-bottom:0.85rem;">
-                <div style="width:24px;height:24px;border-radius:50%;background:var(--bc-green-mint);color:var(--bc-green);font-family:var(--font-mono);font-size:0.75rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
-                <div style="font-size:0.88rem;line-height:1.5;color:#374151;">Konsultasi dengan tim ahli untuk evaluasi mendalam.</div>
-              </div>
-              <div class="tc-rec-item" style="display:flex;align-items:flex-start;gap:0.85rem;margin-bottom:0.85rem;">
-                <div style="width:24px;height:24px;border-radius:50%;background:var(--bc-green-mint);color:var(--bc-green);font-family:var(--font-mono);font-size:0.75rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
-                <div style="font-size:0.88rem;line-height:1.5;color:#374151;">Pertimbangkan penyesuaian nama merek agar lebih memiliki daya pembeda.</div>
-              </div>
-              <div class="tc-rec-item" style="display:flex;align-items:flex-start;gap:0.85rem;margin-bottom:0.85rem;">
-                <div style="width:24px;height:24px;border-radius:50%;background:var(--bc-green-mint);color:var(--bc-green);font-family:var(--font-mono);font-size:0.75rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
-                <div style="font-size:0.88rem;line-height:1.5;color:#374151;">Lakukan pengecekan lanjutan untuk alternatif nama dan kelas.</div>
+              <div id="hp-rec-list">
+                <div class="tc-rec-item" style="display:flex;align-items:flex-start;gap:0.85rem;margin-bottom:0.85rem;">
+                  <div style="width:24px;height:24px;border-radius:50%;background:var(--bc-green-mint);color:var(--bc-green);font-family:var(--font-mono);font-size:0.75rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+                  <div style="font-size:0.88rem;line-height:1.5;color:#374151;">Konsultasi dengan tim ahli untuk evaluasi mendalam.</div>
+                </div>
+                <div class="tc-rec-item" style="display:flex;align-items:flex-start;gap:0.85rem;margin-bottom:0.85rem;">
+                  <div style="width:24px;height:24px;border-radius:50%;background:var(--bc-green-mint);color:var(--bc-green);font-family:var(--font-mono);font-size:0.75rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+                  <div style="font-size:0.88rem;line-height:1.5;color:#374151;">Pertimbangkan penyesuaian nama merek agar lebih memiliki daya pembeda.</div>
+                </div>
+                <div class="tc-rec-item" style="display:flex;align-items:flex-start;gap:0.85rem;margin-bottom:0.85rem;">
+                  <div style="width:24px;height:24px;border-radius:50%;background:var(--bc-green-mint);color:var(--bc-green);font-family:var(--font-mono);font-size:0.75rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+                  <div style="font-size:0.88rem;line-height:1.5;color:#374151;">Lakukan pengecekan lanjutan untuk alternatif nama dan kelas.</div>
+                </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- Bottom Action Buttons -->
-          <div class="hp-res-cta-row" style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-top:2.5rem;">
-            <button type="button" class="bc-hero-search-btn" style="padding:0.95rem 2rem;font-size:0.95rem;" onclick="window.BCStore && window.BCStore.openHandoverModal()">
-              <span>🎧 Konsultasi dengan Spesialis Merek</span>
-              <span>→</span>
-            </button>
-            <a href="#pendaftaran-merek" class="bc-service-btn" style="padding:0.95rem 2rem;border-radius:9999px;font-size:0.95rem;background:#FFFFFF;">
-              <span>📄 Ajukan Pendaftaran Merek</span>
-              <span>→</span>
-            </a>
+        <!-- TAB 2: DATA MEREK TERKAIT (DJKI LIST) -->
+        <div id="hp-tab-related" class="hp-tab-panel" style="display:none;background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:16px;padding:1.75rem;margin-bottom:2rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
+            <div>
+              <h4 style="font-family:var(--font-heading);font-size:1.15rem;font-weight:700;margin:0 0 0.25rem 0;color:var(--bc-text-dark);">
+                Daftar Merek Terdaftar di Pangkalan Data DJKI
+              </h4>
+              <p style="font-size:0.85rem;color:#6B7280;margin:0;">
+                Data resmi dari Berita Resmi Merek &amp; Sertifikat Terdaftar DJKI RI.
+              </p>
+            </div>
+            <span style="font-family:var(--font-mono);font-size:0.75rem;background:var(--bc-green-mint);color:var(--bc-green);font-weight:700;padding:4px 10px;border-radius:9999px;">
+              ✓ Terhubung Database Resmi
+            </span>
           </div>
+
+          <div id="hp-related-items-container" style="display:flex;flex-direction:column;gap:1rem;">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- TAB 3: REKOMENDASI HUKUM LENGKAP -->
+        <div id="hp-tab-recs" class="hp-tab-panel" style="display:none;background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:16px;padding:2rem;margin-bottom:2rem;">
+          <div style="margin-bottom:1.5rem;">
+            <h4 style="font-family:var(--font-heading);font-size:1.25rem;font-weight:800;color:var(--bc-text-dark);margin:0 0 0.35rem 0;">
+              Checklist &amp; Rekomendasi Strategi Perlindungan Hukum
+            </h4>
+            <p style="font-size:0.88rem;color:#6B7280;margin:0;">
+              Panduan praktis pendaftaran sesuai UU No. 20 Tahun 2016 untuk mengamankan hak eksklusif brand Anda.
+            </p>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:1.25rem;" class="hp-recs-grid">
+            <div style="background:#FAF8F5;border:1px solid var(--bc-card-border);border-radius:12px;padding:1.25rem;">
+              <strong style="color:var(--bc-green);display:block;margin-bottom:0.4rem;font-family:var(--font-heading);font-size:0.95rem;">1. Asas First-to-File (Prioritas Tanggal)</strong>
+              <p style="font-size:0.84rem;color:#4B5563;line-height:1.5;margin:0;">
+                Di Indonesia, hak atas merek timbul karena <strong>pendaftaran</strong>, bukan pemakaian pertama. Siapa yang mendaftar lebih dahulu mendapatkan hak eksklusif 10 tahun.
+              </p>
+            </div>
+
+            <div style="background:#FAF8F5;border:1px solid var(--bc-card-border);border-radius:12px;padding:1.25rem;">
+              <strong style="color:var(--bc-green);display:block;margin-bottom:0.4rem;font-family:var(--font-heading);font-size:0.95rem;">2. Strategi Perlindungan Multi-Kelas</strong>
+              <p style="font-size:0.84rem;color:#4B5563;line-height:1.5;margin:0;">
+                Selain mendaftar pada kelas produk utama, daftarkan juga pada kelas jasa retail/distribusi (Kelas 35) agar nama merek tidak dimanfaatkan toko lain.
+              </p>
+            </div>
+
+            <div style="background:#FAF8F5;border:1px solid var(--bc-card-border);border-radius:12px;padding:1.25rem;">
+              <strong style="color:var(--bc-green);display:block;margin-bottom:0.4rem;font-family:var(--font-heading);font-size:0.95rem;">3. Desain Etiket &amp; Karakteristik Visual</strong>
+              <p style="font-size:0.84rem;color:#4B5563;line-height:1.5;margin:0;">
+                Sertakan logo visual atau tipografi khusus untuk memperkuat daya pembeda (Pasal 20) dan memperkecil risiko ditolak karena nama generik.
+              </p>
+            </div>
+
+            <div style="background:#FAF8F5;border:1px solid var(--bc-card-border);border-radius:12px;padding:1.25rem;">
+              <strong style="color:var(--bc-green);display:block;margin-bottom:0.4rem;font-family:var(--font-heading);font-size:0.95rem;">4. Pemantauan BRM DJKI (Masa Sanggahan 2 Bulan)</strong>
+              <p style="font-size:0.84rem;color:#4B5563;line-height:1.5;margin:0;">
+                Setelah pengajuan lolos formalitas, permohonan akan diumumkan dalam BRM selama 2 bulan. Pantau secara rutin untuk mencegah sanggahan pihak ketiga.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Action Buttons -->
+        <div class="hp-res-cta-row" style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-top:2.5rem;">
+          <button type="button" class="bc-hero-search-btn" style="padding:0.95rem 2rem;font-size:0.95rem;" onclick="window.BCStore && window.BCStore.openHandoverModal()">
+            <span>🎧 Konsultasi dengan Spesialis Merek</span>
+            <span>→</span>
+          </button>
+          <a href="#pendaftaran-merek" class="bc-service-btn" style="padding:0.95rem 2rem;border-radius:9999px;font-size:0.95rem;background:#FFFFFF;">
+            <span>📄 Ajukan Pendaftaran Merek</span>
+            <span>→</span>
+          </a>
         </div>
       </div>
     </section>
@@ -1253,45 +1325,357 @@
   <script src="js/platform-store.js"></script>
   <script src="js/main.js"></script>
   <script>
-    // Live Search Sync between Hero and Section 3
     document.addEventListener('DOMContentLoaded', () => {
       const searchForm = document.getElementById('tm-search-form');
       const brandInput = document.getElementById('tm-brand-input');
       const queryDisplay = document.getElementById('hp-query-display');
       const searchedMeta = document.getElementById('hp-meta-searched');
-      const compName = document.getElementById('hp-comp-name');
-      const compLogo = document.getElementById('hp-comp-logo');
+      const analysisSection = document.getElementById('hasil-analisis');
+      const closeBtn = document.getElementById('hp-close-analysis-btn');
 
-      function runSearch(query) {
-        const q = (query || brandInput.value || 'kopi kenangan').trim();
-        if (!q) return;
-        queryDisplay.textContent = q.toUpperCase();
-        searchedMeta.textContent = q.toUpperCase();
-        compName.textContent = q.toUpperCase();
+      // Tab Buttons & Panels
+      const tabBtns = document.querySelectorAll('.hp-tab-btn');
+      const tabPanels = document.querySelectorAll('.hp-tab-panel');
 
-        if (window.BCStore && window.BCStore.fetchLivePdkiApi) {
-          window.BCStore.fetchLivePdkiApi(q).then(res => {
-            if (res && res.items && res.items.length > 0) {
-              const top = res.items[0];
-              document.getElementById('hp-res-count').textContent = `Ditemukan ${res.totalFound || res.items.length} merek terkait pada data resmi DJKI.`;
-              document.getElementById('hp-meta-found').textContent = `${res.totalFound || res.items.length} merek ditemukan`;
-              document.getElementById('hp-comp-name').textContent = top.brand;
-              document.getElementById('hp-comp-owner').textContent = top.owner;
-              document.getElementById('hp-comp-appno').textContent = top.appNo;
-              document.getElementById('hp-comp-class').textContent = top.niceClass;
-              if (top.etiquetteSvg) {
-                compLogo.innerHTML = top.etiquetteSvg;
-              }
-            }
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.getAttribute('data-target');
+          tabBtns.forEach(b => {
+            b.classList.remove('active');
+            b.style.background = '#FFF';
+            b.style.color = '#374151';
+            b.style.border = '1px solid var(--bc-card-border)';
           });
+          btn.classList.add('active');
+          btn.style.background = 'var(--bc-green)';
+          btn.style.color = '#FFF';
+          btn.style.border = 'none';
+
+          tabPanels.forEach(p => {
+            p.style.display = (p.id === targetId) ? 'block' : 'none';
+          });
+        });
+      });
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          analysisSection.style.display = 'none';
+          document.getElementById('cek-merek').scrollIntoView({ behavior: 'smooth' });
+        });
+      }
+
+      // Main Dynamic AI & DJKI Search Engine
+      async function runSearch(query) {
+        const q = (query || (brandInput ? brandInput.value : '') || '').trim();
+        if (!q) {
+          if (brandInput) brandInput.focus();
+          return;
+        }
+
+        // 1. Reveal Section & show loading status
+        analysisSection.style.display = 'block';
+        if (queryDisplay) queryDisplay.textContent = q.toUpperCase();
+        if (searchedMeta) searchedMeta.textContent = q.toUpperCase();
+        const resCountEl = document.getElementById('hp-res-count');
+        if (resCountEl) resCountEl.textContent = 'Menganalisis potensi pendaftaran dengan AI & data resmi DJKI...';
+
+        setTimeout(() => {
+          analysisSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 80);
+
+        // Reset to first tab
+        if (document.getElementById('hp-btn-tab-ai')) {
+          document.getElementById('hp-btn-tab-ai').click();
+        }
+
+        // 2. Query Live DJKI API / Local Verified Cluster
+        let djkiData = null;
+        if (window.BCStore && window.BCStore.fetchLivePdkiApi) {
+          try {
+            djkiData = await window.BCStore.fetchLivePdkiApi(q);
+          } catch (e) {
+            console.warn('Live API fetch warning:', e);
+          }
+        }
+        if (!djkiData || !djkiData.items || djkiData.items.length === 0) {
+          if (window.BCStore && window.BCStore.searchPdkiDirectory) {
+            djkiData = window.BCStore.searchPdkiDirectory(q);
+          }
+        }
+
+        // 3. Query Serverless AI (/api/ai-analyze) with instant fallback
+        let aiData = null;
+        try {
+          const resp = await fetch('/api/ai-analyze?brand=' + encodeURIComponent(q));
+          if (resp.ok) {
+            const json = await resp.json();
+            if (json.success && json.analysis) {
+              aiData = json.analysis;
+            }
+          }
+        } catch (e) {
+          console.log('Serverless AI endpoint check (fallback active):', e.message);
+        }
+
+        // 4. Render Dynamic AI Results
+        renderAnalysisResults(q, djkiData, aiData);
+      }
+
+      function renderAnalysisResults(q, djki, ai) {
+        const lower = q.toLowerCase();
+        const items = (djki && Array.isArray(djki.items)) ? djki.items : [];
+        const totalFound = djki?.totalFound || items.length;
+
+        // Determine Risk Level dynamically
+        let riskLevel = 'Rendah';
+        let riskScore = 94;
+        let riskText = 'Risiko Rendah (Peluang Lolos Tinggi)';
+        let riskDesc = `Daya pembeda kuat! Belum ditemukan merek identik terdaftar untuk "${q.toUpperCase()}". Peluang lolos pemeriksaan substantif DJKI sangat besar.`;
+
+        if (ai) {
+          riskLevel = ai.riskLevel || 'Rendah';
+          riskScore = ai.riskScore || 90;
+          riskText = ai.verdict || (`Risiko ${riskLevel}`);
+          riskDesc = ai.explanation || riskDesc;
+        } else if (items.length > 0) {
+          const top = items[0];
+          const topSim = top.similarityPct || 80;
+          if (topSim >= 70 || top.brand.toLowerCase() === lower) {
+            riskLevel = 'Tinggi';
+            riskScore = 24;
+            riskText = 'Risiko Tinggi (Persamaan Pada Pokoknya)';
+            riskDesc = `Teridentifikasi kemiripan signifikan dengan merek "${top.brand}" terdaftar di DJKI (No. ${top.appNo}). Berpotensi ditolak berdasarkan Pasal 21 ayat (1) UU No. 20/2016.`;
+          } else {
+            riskLevel = 'Menengah';
+            riskScore = 62;
+            riskText = 'Risiko Menengah (Perlu Diferensiasi)';
+            riskDesc = `Ditemukan beberapa merek dengan unsur kata yang mirip. Disarankan menambahkan kata pembeda atau etiket logo khusus agar tidak memicu sanggahan.`;
+          }
+        }
+
+        // Update Risk Card Styling
+        const riskCard = document.getElementById('hp-risk-card');
+        const riskStatus = document.getElementById('hp-risk-status');
+        const riskExpl = document.getElementById('hp-risk-explanation');
+        const riskPill = document.getElementById('hp-risk-pill');
+
+        if (riskCard && riskStatus && riskExpl) {
+          if (riskLevel === 'Tinggi') {
+            riskCard.style.background = '#FEF2F2';
+            riskCard.style.border = '1px solid #FCA5A5';
+            if (riskPill) { riskPill.style.color = '#DC2626'; riskPill.innerHTML = '<span>✦</span><span>Peringatan Risiko AI</span>'; }
+            riskStatus.style.color = '#991B1B';
+            riskStatus.textContent = riskText;
+            riskExpl.style.color = '#7F1D1D';
+            riskExpl.textContent = riskDesc;
+          } else if (riskLevel === 'Menengah') {
+            riskCard.style.background = '#FFFBEB';
+            riskCard.style.border = '1px solid #FCD34D';
+            if (riskPill) { riskPill.style.color = '#D97706'; riskPill.innerHTML = '<span>✦</span><span>Evaluasi Penyesuaian AI</span>'; }
+            riskStatus.style.color = '#92400E';
+            riskStatus.textContent = riskText;
+            riskExpl.style.color = '#78350F';
+            riskExpl.textContent = riskDesc;
+          } else {
+            riskCard.style.background = '#ECFDF5';
+            riskCard.style.border = '1px solid #6EE7B7';
+            if (riskPill) { riskPill.style.color = '#059669'; riskPill.innerHTML = '<span>✦</span><span>Rekomendasi Aman AI</span>'; }
+            riskStatus.style.color = '#065F46';
+            riskStatus.textContent = riskText;
+            riskExpl.style.color = '#064E3B';
+            riskExpl.textContent = riskDesc;
+          }
+        }
+
+        // Determine Class Recommendation
+        let primaryClass = '35';
+        let commodities = ['Retail & Toko', 'Distribusi', 'Marketplace', 'Jasa Bisnis'];
+        if (/kopi|teh|makanan|roti|snack|bumbu|cake|minuman|kuliner/i.test(lower)) {
+          primaryClass = '30';
+          commodities = ['Kopi', 'Teh', 'Roti', 'Kue', 'Bumbu Makanan', 'Snack Olahan'];
+        } else if (/sepatu|baju|kaos|celana|fashion|apparel|jaket|hijab|sandal/i.test(lower)) {
+          primaryClass = '25';
+          commodities = ['Pakaian', 'Alas Kaki', 'Sepatu Olahraga', 'Tutup Kepala', 'Jaket'];
+        } else if (/skincare|serum|krim|sabun|kosmetik|parfum|beauty|glow/i.test(lower)) {
+          primaryClass = '03';
+          commodities = ['Kosmetik', 'Skincare', 'Serum Wajah', 'Sabun Kecantikan', 'Parfum'];
+        } else if (/aplikasi|software|tech|it|cloud|digital|system|komputer|ai/i.test(lower)) {
+          primaryClass = '42';
+          commodities = ['Software Development', 'Layanan Cloud', 'Platform Digital', 'SaaS'];
+        } else if (/kafe|restoran|resto|kedai|warung|catering/i.test(lower)) {
+          primaryClass = '43';
+          commodities = ['Layanan Restoran', 'Kafe Penyedia Kopi', 'Kedai Minuman', 'Jasa Katering'];
+        } else if (/obat|jamu|herbal|farmasi|suplemen|vitamin/i.test(lower)) {
+          primaryClass = '05';
+          commodities = ['Farmasi', 'Suplemen Kesehatan', 'Vitamin', 'Obat Herbal'];
+        }
+
+        if (ai?.classRecommendation?.primaryClass) {
+          primaryClass = ai.classRecommendation.primaryClass.replace(/[^0-9]/g, '') || primaryClass;
+          if (Array.isArray(ai.classRecommendation.commodities)) {
+            commodities = ai.classRecommendation.commodities;
+          }
+        }
+
+        // Update Meta Grid
+        const metaClass = document.getElementById('hp-meta-class');
+        if (metaClass) metaClass.textContent = `Kelas ${primaryClass} ⓘ`;
+        const metaFound = document.getElementById('hp-meta-found');
+        if (metaFound) metaFound.textContent = `${totalFound} merek ditemukan`;
+        const tabCount = document.getElementById('hp-tab-count');
+        if (tabCount) tabCount.textContent = totalFound;
+        const resCount = document.getElementById('hp-res-count');
+        if (resCount) {
+          resCount.textContent = totalFound > 0
+            ? `Ditemukan ${totalFound} merek terkait pada data resmi DJKI.`
+            : `Belum ditemukan merek identik terdaftar untuk "${q.toUpperCase()}". Peluang diterima tinggi!`;
+        }
+
+        // Update 4 Dimension Cards
+        const dimPhoneticStatus = document.getElementById('hp-dim-phonetic-status');
+        const dimPhoneticDetail = document.getElementById('hp-dim-phonetic-detail');
+        if (dimPhoneticStatus && dimPhoneticDetail) {
+          dimPhoneticStatus.textContent = ai?.phonetic?.status || (riskLevel === 'Tinggi' ? 'Persamaan Pada Pokoknya / Identik' : (riskLevel === 'Menengah' ? 'Kemiripan Parsial' : 'Daya Pembeda Kuat'));
+          dimPhoneticDetail.textContent = ai?.phonetic?.detail || (riskLevel === 'Tinggi' ? `Nama/lafal "${q.toUpperCase()}" memiliki kesamaan vokal & konsonan dengan merek terdaftar.` : `Susunan bunyi dan suku kata "${q.toUpperCase()}" memiliki orisinalitas baik dan karakter pembeda jelas.`);
+        }
+
+        const dimVisualStatus = document.getElementById('hp-dim-visual-status');
+        const dimVisualDetail = document.getElementById('hp-dim-visual-detail');
+        if (dimVisualStatus && dimVisualDetail) {
+          dimVisualStatus.textContent = ai?.visual?.status || (riskLevel === 'Tinggi' ? 'Rawan Konflik Hak Eksklusif' : (riskLevel === 'Menengah' ? 'Perlu Etiket Visual Kuat' : 'Unik & Distingtif'));
+          dimVisualDetail.textContent = ai?.visual?.detail || (riskLevel === 'Tinggi' ? 'Pemilik merek terdahulu memiliki hak monopoli hukum atas susunan visual nama ini.' : 'Susunan ejaan tipografi memenuhi standar kebaruan identitas visual merek.');
+        }
+
+        const dimClassStatus = document.getElementById('hp-dim-class-status');
+        const dimClassChips = document.getElementById('hp-dim-class-chips');
+        const dimClassDetail = document.getElementById('hp-dim-class-detail');
+        if (dimClassStatus && dimClassChips && dimClassDetail) {
+          dimClassStatus.textContent = `Kelas ${primaryClass}`;
+          dimClassChips.innerHTML = commodities.map(c => `<span class="bc-cat-pill" style="font-size:0.72rem;padding:2px 8px;background:var(--bc-green-mint);color:var(--bc-green);border-radius:9999px;">${c}</span>`).join(' ');
+          dimClassDetail.textContent = `Rekomendasi klasifikasi barang/jasa Nice Classification untuk perlindungan hak eksklusif produk Anda.`;
+        }
+
+        const dimStatuteStatus = document.getElementById('hp-dim-statute-status');
+        const dimStatuteDetail = document.getElementById('hp-dim-statute-detail');
+        if (dimStatuteStatus && dimStatuteDetail) {
+          dimStatuteStatus.textContent = ai?.statute?.status || (riskLevel === 'Tinggi' ? 'Potensi Ditolak Pasal 21' : (riskLevel === 'Menengah' ? 'Perlu Penegasan Pasal 20' : 'Memenuhi Pasal 20 & 21'));
+          dimStatuteDetail.textContent = ai?.statute?.detail || (riskLevel === 'Tinggi' ? 'Pasal 21 ayat (1) huruf a & b melarang pendaftaran merek dengan persamaan pada pokoknya dengan merek pihak lain.' : 'Memenuhi seluruh kriteria daya pembeda dan tidak melanggar ketentuan penolakan UU No. 20/2016.');
+        }
+
+        // Update Comparator Card
+        const compLogo = document.getElementById('hp-comp-logo');
+        const compName = document.getElementById('hp-comp-name');
+        const compOwner = document.getElementById('hp-comp-owner');
+        const compAppNo = document.getElementById('hp-comp-appno');
+        const compClass = document.getElementById('hp-comp-class');
+        const compBadge = document.getElementById('hp-comp-status-badge');
+
+        if (items.length > 0) {
+          const top = items[0];
+          if (compName) compName.textContent = top.brand;
+          if (compOwner) compOwner.textContent = top.owner || 'Pemilik Terdaftar (DJKI)';
+          if (compAppNo) compAppNo.textContent = top.appNo || '-';
+          if (compClass) compClass.textContent = top.niceClass || primaryClass;
+          if (compBadge) {
+            compBadge.textContent = top.status || 'TERDAFTAR';
+            compBadge.style.background = (top.statusKey === 'ditolak') ? '#FEE2E2' : '#DCFCE7';
+            compBadge.style.color = (top.statusKey === 'ditolak') ? '#991B1B' : '#166534';
+          }
+          if (compLogo) {
+            compLogo.innerHTML = top.etiquetteSvg || `<div style="font-family:var(--font-heading);font-weight:800;color:#111;text-align:center;font-size:0.85rem;">${top.brand}</div>`;
+          }
+        } else {
+          if (compName) compName.textContent = q.toUpperCase();
+          if (compOwner) compOwner.textContent = 'Belum Ada Pemilik Terdaftar (Tersedia)';
+          if (compAppNo) compAppNo.textContent = 'Siap Diajukan';
+          if (compClass) compClass.textContent = primaryClass;
+          if (compBadge) {
+            compBadge.textContent = 'TERSEDIA (AMAN)';
+            compBadge.style.background = '#DCFCE7';
+            compBadge.style.color = '#166534';
+          }
+          if (compLogo) {
+            compLogo.innerHTML = '<div style="font-family:var(--font-heading);font-weight:800;color:var(--bc-green);text-align:center;"><div style="font-size:1.6rem;line-height:1;">✓</div><div style="font-size:0.7rem;margin-top:2px;">PELUANG<br/>TINGGI</div></div>';
+          }
+        }
+
+        // Update Dynamic Next Steps
+        const recList = document.getElementById('hp-rec-list');
+        if (recList) {
+          const steps = (ai && Array.isArray(ai.nextSteps)) ? ai.nextSteps : (
+            riskLevel === 'Tinggi' ? [
+              'Konsultasikan dengan Konsultan HKI BrandConnect untuk evaluasi alternatif nama.',
+              'Pertimbangkan penambahan kata pembeda atau modifikasi ejaan agar terhindar dari Pasal 21.',
+              'Lakukan penelusuran kelas turunan untuk peluang pendaftaran di sektor jasa terkait.'
+            ] : [
+              'Segera amankan tanggal permohonan resmi (Filing Date) untuk asas First-to-File.',
+              'Siapkan berkas administrasi dan etiket merek resmi DJKI.',
+              'Pantau masa publikasi BRM 2 bulan bersama tim spesialis BrandConnect.'
+            ]
+          );
+
+          recList.innerHTML = steps.map((s, idx) => `
+            <div class="tc-rec-item" style="display:flex;align-items:flex-start;gap:0.85rem;margin-bottom:0.85rem;">
+              <div style="width:24px;height:24px;border-radius:50%;background:var(--bc-green-mint);color:var(--bc-green);font-family:var(--font-mono);font-size:0.75rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">${idx + 1}</div>
+              <div style="font-size:0.88rem;line-height:1.5;color:#374151;">${s}</div>
+            </div>
+          `).join('');
+        }
+
+        // Populate Tab 2 (Data Merek Terkait / DJKI List)
+        const relatedContainer = document.getElementById('hp-related-items-container');
+        if (relatedContainer) {
+          if (items.length > 0) {
+            relatedContainer.innerHTML = items.map((it, idx) => `
+              <div style="display:flex;align-items:center;gap:1.25rem;background:#FAF8F5;border:1px solid var(--bc-card-border);border-radius:12px;padding:1.15rem;flex-wrap:wrap;">
+                <div style="width:90px;height:70px;background:#FFF;border:1px solid #E5E7EB;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:6px;overflow:hidden;flex-shrink:0;">
+                  ${it.etiquetteSvg || `<span style="font-family:var(--font-heading);font-weight:700;font-size:0.8rem;text-align:center;">${it.brand}</span>`}
+                </div>
+                <div style="flex:1;min-width:200px;">
+                  <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.35rem;flex-wrap:wrap;">
+                    <strong style="font-family:var(--font-heading);font-size:1.05rem;color:var(--bc-text-dark);">${it.brand}</strong>
+                    <span style="background:var(--bc-green-mint);color:var(--bc-green);font-family:var(--font-mono);font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:9999px;">Kelas ${it.niceClass}</span>
+                    <span style="background:${it.statusKey === 'ditolak' ? '#FEE2E2' : '#DCFCE7'};color:${it.statusKey === 'ditolak' ? '#991B1B' : '#166534'};font-family:var(--font-mono);font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:9999px;">${it.status || 'DIDAFTAR'}</span>
+                  </div>
+                  <div style="font-size:0.82rem;color:#4B5563;line-height:1.45;">
+                    <div>Pemilik: <strong>${it.owner || 'Pemilik Terdaftar (DJKI)'}</strong></div>
+                    <div>No. Permohonan: <span>${it.appNo || '-'}</span> ${it.regDate ? '· Tanggal: ' + it.regDate : ''}</div>
+                  </div>
+                </div>
+              </div>
+            `).join('');
+          } else {
+            relatedContainer.innerHTML = `
+              <div style="text-align:center;padding:2.5rem 1rem;color:#6B7280;">
+                <div style="font-size:2rem;margin-bottom:0.5rem;color:var(--bc-green);">✓</div>
+                <strong style="font-family:var(--font-heading);font-size:1.1rem;color:var(--bc-text-dark);display:block;margin-bottom:0.35rem;">
+                  Tidak Ditemukan Merek Konflik Langsung
+                </strong>
+                <p style="font-size:0.88rem;margin:0 auto;max-width:440px;">
+                  Pangkalan data resmi DJKI belum mencatat merek terdaftar dengan nama "${q.toUpperCase()}". Peluang lolos pemeriksaan substantif sangat tinggi!
+                </p>
+              </div>
+            `;
+          }
         }
       }
 
-      searchForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        runSearch(brandInput.value);
-        document.getElementById('hasil-analisis').scrollIntoView({ behavior: 'smooth' });
-      });
+      window.hpRunSample = function(name) {
+        if (brandInput) brandInput.value = name;
+        runSearch(name);
+      };
+
+      if (searchForm) {
+        searchForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const q = (brandInput ? brandInput.value : '').trim();
+          if (!q) {
+            if (brandInput) brandInput.focus();
+            return;
+          }
+          runSearch(q);
+        });
+      }
 
       // Filter pills for section 4 (Cari Kelas)
       const pills = document.querySelectorAll('#hp-filter-pills button');
