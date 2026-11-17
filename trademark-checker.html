@@ -3,197 +3,225 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cek Merek AI (Pemeriksaan Kemiripan Merek DJKI) - BRANDCONNECT</title>
+  <title>Mulai Penelusuran Merek — BRANDCONNECT | Pangkalan Data Resmi DJKI &amp; Analisis AI</title>
+  <meta name="description" content="Penelusuran merek resmi DJKI dan audit analisis AI BrandConnect: data merek terdaftar, status pendaftaran, klasifikasi Nice, etiket logo, dan estimasi risiko penolakan." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Crect width='36' height='36' rx='3' fill='%230D3B2E'/%3E%3Cpath d='M8 26V10h6.5c3.2 0 5.5 1.8 5.5 4.5 0 1.8-1 3.2-2.6 3.9 2.1.7 3.4 2.2 3.4 4.3 0 3-2.4 4.8-6.1 4.8H8zm3.5-9.3h2.6c1.6 0 2.6-.8 2.6-2.1s-1-2.1-2.6-2.1h-2.6v4.2zm0 6.8h2.9c1.8 0 3-.9 3-2.3 0-1.5-1.2-2.3-3-2.3h-2.9v4.6z' fill='%23FAF8F5'/%3E%3Ccircle cx='28' cy='23' r='2.5' fill='%235CD4A5'/%3E%3C/svg%3E" />
   <style>
-    .tc-result-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 2rem;
-      gap: 1.5rem;
-      flex-wrap: wrap;
+    :root {
+      --bc-green: #0D472B;
+      --bc-green-mint: #E8F5E9;
+      --bc-green-light: #EBF7EE;
+      --bc-card-border: #E5E7EB;
+      --bc-text-dark: #1F2937;
     }
-    .tc-risk-card {
+    body {
+      background-color: #FAF8F5;
+      font-family: 'Inter', sans-serif;
+      color: #374151;
+      margin: 0;
+      padding: 0;
+    }
+    .site-header {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--bc-card-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+    .brand-logo .logo-img {
+      height: 28px;
+      width: auto;
+      display: block;
+    }
+    .main-nav .nav-list {
+      display: flex;
+      gap: 1.75rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .main-nav .nav-link {
+      color: #4B5563;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.15s;
+    }
+    .main-nav .nav-link:hover, .main-nav .nav-link.active {
+      color: var(--bc-green);
+      font-weight: 700;
+    }
+    .nav-login-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--bc-green);
+      color: #FFFFFF !important;
+      padding: 0.5rem 1.15rem;
+      border-radius: 9999px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .nav-login-pill svg {
+      width: 15px;
+      height: 15px;
+    }
+    /* Search Form Styling */
+    .mebiso-search-bar {
+      display: flex;
+      gap: 0.5rem;
+      background: #FFFFFF;
+      border: 2px solid #CBD5E1;
+      border-radius: 10px;
+      padding: 6px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .mebiso-search-bar:focus-within {
+      border-color: #FACC15;
+      box-shadow: 0 6px 20px rgba(250, 204, 21, 0.25);
+    }
+    .mebiso-search-input {
+      border: none;
+      box-shadow: none;
+      font-size: 1.1rem;
+      padding: 0.75rem 2.5rem 0.75rem 1.15rem;
+      width: 100%;
+      background: transparent;
+      outline: none;
+      font-family: inherit;
+      color: #0F172A;
+      font-weight: 600;
+    }
+    .mebiso-submit-btn {
+      background: #FACC15;
+      color: #0F172A;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Manrope', sans-serif;
+      font-weight: 800;
+      padding: 0.75rem 2.2rem;
+      font-size: 1rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      box-shadow: 0 2px 6px rgba(250,204,21,0.3);
+      transition: all 0.15s ease;
+    }
+    .mebiso-submit-btn:hover {
+      background: #EAB308;
+      transform: translateY(-1px);
+    }
+    .quick-chip {
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 0 3px;
+      font-weight: 600;
+      color: #334155;
+      font-size: 0.8rem;
+      transition: all 0.15s ease;
+    }
+    .quick-chip:hover {
+      background: var(--bc-green-mint);
+      border-color: var(--bc-green);
+      color: var(--bc-green);
+    }
+    /* AI Result Box Styling */
+    .ai-deep-box {
+      margin-top: 2.5rem;
+      background: #FFFFFF;
+      border: 2px solid var(--bc-green);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: left;
+      box-shadow: 0 12px 36px rgba(13, 71, 43, 0.08);
+      position: relative;
+    }
+    .tm-score-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+    .score-high {
+      background: #ECFDF5;
+      border: 1px solid #6EE7B7;
+      color: #065F46;
+    }
+    .score-medium {
+      background: #FFFBEB;
+      border: 1px solid #FCD34D;
+      color: #92400E;
+    }
+    .score-low {
       background: #FEF2F2;
       border: 1px solid #FCA5A5;
-      border-radius: 16px;
-      padding: 1.75rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .tc-risk-card.safe {
-      background: #F0FDF4;
-      border-color: #86EFAC;
-    }
-    .tc-risk-badge-label {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #DC2626;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      margin-bottom: 0.5rem;
-    }
-    .tc-risk-title {
-      font-family: var(--font-heading);
-      font-size: 2.1rem;
-      font-weight: 800;
       color: #991B1B;
-      margin-bottom: 0.5rem;
-      line-height: 1.1;
     }
-    .tc-risk-desc {
-      font-size: 0.88rem;
-      color: #7F1D1D;
-      line-height: 1.5;
-      max-width: 320px;
-    }
-    .tc-meta-list {
+    .tm-breakdown-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      background: #FFFFFF;
-      border: 1px solid var(--bc-card-border);
-      border-radius: 16px;
-      padding: 1.75rem;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
     }
-    .tc-meta-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.85rem;
-    }
-    .tc-meta-icon {
-      width: 36px;
-      height: 36px;
+    .tm-pill-card {
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
       border-radius: 10px;
-      background: var(--bc-green-mint);
-      color: var(--bc-green);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
+      padding: 1rem;
     }
-    .tc-meta-label {
-      font-size: 0.78rem;
-      color: #6B7280;
-      margin-bottom: 0.2rem;
-    }
-    .tc-meta-val {
-      font-family: var(--font-heading);
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--bc-text-dark);
-    }
-    .tc-subtabs {
-      display: inline-flex;
-      background: #ECE9E1;
-      padding: 0.3rem;
-      border-radius: 9999px;
-      gap: 0.4rem;
-      margin: 2rem 0 1.5rem;
-    }
-    .tc-subtab {
-      padding: 0.55rem 1.25rem;
-      border-radius: 9999px;
-      font-family: var(--font-heading);
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #374151;
-      background: #FFFFFF;
-      border: 1px solid #DFDBD1;
-      cursor: pointer;
-    }
-    .tc-subtab.active {
-      background: var(--bc-green);
-      color: #FFFFFF;
-      border-color: var(--bc-green);
-    }
-    .tc-dim-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.25rem;
-      margin-bottom: 2rem;
-    }
-    .tc-dim-card {
-      background: #FFFFFF;
-      border: 1px solid var(--bc-card-border);
-      border-radius: 14px;
-      padding: 1.35rem;
-    }
-    .tc-dim-head {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      margin-bottom: 0.85rem;
-      font-family: var(--font-mono);
+    .tm-pill-title {
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.72rem;
       font-weight: 700;
-      color: #4B5563;
-    }
-    .tc-dim-title {
-      font-family: var(--font-heading);
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: var(--bc-text-dark);
-      margin-bottom: 0.45rem;
-    }
-    .tc-dim-desc {
-      font-size: 0.82rem;
-      line-height: 1.5;
-      color: #4B5563;
-    }
-    .tc-bottom-split {
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-    .tc-comp-box {
-      background: #FFFFFF;
-      border: 1px solid var(--bc-card-border);
-      border-radius: 16px;
-      padding: 1.5rem;
-    }
-    .tc-rec-box {
-      background: #FFFFFF;
-      border: 1px solid var(--bc-card-border);
-      border-radius: 16px;
-      padding: 1.5rem;
-    }
-    .tc-rec-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.85rem;
-      margin-bottom: 0.85rem;
-    }
-    .tc-rec-num {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: var(--bc-green-mint);
       color: var(--bc-green);
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
+      margin-bottom: 0.35rem;
     }
-    .tc-rec-text {
-      font-size: 0.88rem;
-      line-height: 1.5;
-      color: #374151;
+    .tm-pill-status {
+      font-weight: 800;
+      font-size: 0.92rem;
+      color: #111827;
+      margin-bottom: 0.3rem;
+    }
+    .tm-pill-detail {
+      font-size: 0.8rem;
+      color: #4B5563;
+      line-height: 1.4;
+    }
+    @media (max-width: 768px) {
+      .nav-container {
+        padding: 0 1rem;
+      }
+      .main-nav {
+        display: none;
+      }
+      .bc-pdki-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .mebiso-submit-btn {
+        padding: 0.75rem 1.25rem;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- HEADER -->
   <header class="site-header">
     <div class="container nav-container">
       <a href="index.html" class="brand-logo" aria-label="BrandConnect Beranda">
@@ -217,362 +245,179 @@
     </div>
   </header>
 
-  <main style="padding: 2.5rem 0 5rem;">
-    <div class="container" style="max-width:1160px;">
-      <!-- IMAGE 2/3 TOP: AI SEARCH CARD -->
-      <div class="bc-ai-search-card" style="margin-top:0;">
-        <div class="bc-hero-eyebrow" style="margin-bottom:0.75rem;">PENCARIAN MEREK</div>
-        <h1 class="bc-ai-search-title">
-          Pencarian Merek dengan <strong>Teknologi AI</strong>
+  <!-- MAIN CONTENT -->
+  <main style="padding: 2rem 0 5rem;">
+    <div class="container" style="max-width:1160px;margin:0 auto;padding:0 1rem;">
+      
+      <!-- TITLE (Mebiso Style) -->
+      <div style="text-align:center;max-width:760px;margin:1rem auto 1.5rem auto;">
+        <h1 style="font-family:'Manrope',sans-serif;font-size:2.35rem;font-weight:900;color:#0F172A;letter-spacing:-0.02em;margin:0 0 0.45rem 0;">
+          Mulai Penelusuran Merek
         </h1>
-        <p class="bc-ai-search-subtitle">
-          Ketahui potensi kemiripan merek, evaluasi daya pembeda, dan rekomendasi langkah perlindungan secara cepat dan akurat.
-        </p>
-
-        <div class="bc-mode-tabs" role="tablist">
-          <button type="button" class="bc-mode-tab active" data-search-mode="name">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <span>Nama Merek</span>
-          </button>
-          <button type="button" class="bc-mode-tab" data-search-mode="number">
-            <span># Nomor Permohonan</span>
-          </button>
-          <button type="button" class="bc-mode-tab" data-search-mode="logo">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            <span>Upload Logo (Visual)</span>
-          </button>
-        </div>
-
-        <form id="tc-live-search-form">
-          <div class="bc-input-group">
-            <input
-              type="text"
-              id="tc-search-input"
-              value="kopi kenangan"
-              placeholder="Masukkan nama merek (contoh: kopi kenangan, adidas, nike)..."
-              required
-            />
-            <button type="submit" class="bc-btn-search-action">
-              <span>Cek Merek Gratis</span>
-              <span>→</span>
-            </button>
-          </div>
-        </form>
-
-        <p class="bc-footnote" style="margin-top:1.25rem;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-          <span>Mengacu pada Kriteria Pemeriksaan Substantif Pasal 20 &amp; 21 UU Merek No. 20 Tahun 2016 (DJKI)</span>
+        <p style="font-size:0.95rem;color:#64748B;margin:0;">
+          Pangkalan Data Resmi DJKI (PDKI) &amp; Live Penelusuran Merek Terdaftar di Indonesia
         </p>
       </div>
 
-      <!-- IMAGE 3: HASIL PENCARIAN & ANALISIS DETAIL -->
-      <section id="tc-result-section" style="margin-top:3.5rem;">
-        <div class="tc-result-header">
+      <!-- SEARCH BAR (Mebiso Direct Style) -->
+      <div style="max-width:880px;margin:0 auto 1.5rem auto;">
+        <form id="mebiso-search-form" class="mebiso-search-bar">
+          <div style="display:flex;align-items:center;flex:1;position:relative;">
+            <input
+              type="text"
+              id="dc-brand"
+              class="mebiso-search-input"
+              placeholder="Ketik nama merek (contoh: onitsuka, adidas, nike, converse)..."
+              value="onitsuka"
+              required
+            />
+            <button type="button" id="clear-search-btn" style="position:absolute;right:10px;background:none;border:none;color:#94A3B8;font-size:1.15rem;cursor:pointer;" title="Hapus">✕</button>
+          </div>
+          <button type="submit" class="mebiso-submit-btn">
+            <span>🔍 Cari</span>
+          </button>
+        </form>
+
+        <!-- Quick Chips & Advanced AI Toggle -->
+        <div style="margin-top:0.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.6rem;font-size:0.82rem;">
+          <div style="color:#64748B;">
+            <strong style="color:#334155;">Pencarian Populer:</strong>
+            <button type="button" class="quick-chip" data-q="onitsuka">onitsuka</button>
+            <button type="button" class="quick-chip" data-q="adidas">adidas</button>
+            <button type="button" class="quick-chip" data-q="converse">converse</button>
+            <button type="button" class="quick-chip" data-q="nike">nike</button>
+            <button type="button" class="quick-chip" data-q="kopi kenangan">kopi kenangan</button>
+            <button type="button" class="quick-chip" data-q="wardah">wardah</button>
+          </div>
+          <button type="button" id="toggle-advanced-ai" style="background:transparent;border:none;color:var(--bc-green);font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;cursor:pointer;text-decoration:underline;display:inline-flex;align-items:center;gap:4px;">
+            <span>⚙️ Opsi Tambahan: Upload Logo &amp; Audit AI</span>
+            <span id="adv-arrow">▾</span>
+          </button>
+        </div>
+
+        <!-- Collapsible Advanced Upload Box -->
+        <div id="advanced-ai-panel" hidden style="margin-top:1rem;background:#FFFFFF;border:1.5px dashed #CBD5E1;padding:1.25rem;border-radius:10px;text-align:left;">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:1.25rem;">
+            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:1rem;">
+              <strong style="font-family:'Manrope',sans-serif;font-size:0.88rem;display:block;margin-bottom:0.25rem;color:#0F172A;">1. Upload Logo Merek Anda (Audit Etiket &amp; Vienna)</strong>
+              <span style="font-size:0.78rem;color:#64748B;display:block;margin-bottom:0.75rem;" id="dc-file-status">Unggah gambar PNG/JPG untuk mendeteksi kemiripan visual etiket dan Klasifikasi Vienna.</span>
+              <label class="btn btn-secondary btn-sm" style="cursor:pointer;width:100%;justify-content:center;display:flex;align-items:center;padding:0.5rem;background:#FFF;border:1px solid #CBD5E1;border-radius:6px;font-size:0.82rem;font-weight:600;">
+                <span>📎 Pilih File Logo Anda</span>
+                <input type="file" id="dc-file-input" accept="image/*" hidden />
+              </label>
+            </div>
+            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:1rem;">
+              <strong style="font-family:'Manrope',sans-serif;font-size:0.88rem;display:block;margin-bottom:0.25rem;color:#0F172A;">2. Upload Logo Pembanding (Head-to-Head 1-on-1)</strong>
+              <span style="font-size:0.78rem;color:#64748B;display:block;margin-bottom:0.75rem;" id="dc-comp-file-status">Unggah logo kompetitor untuk menghitung persentase kemiripan bentuk siluet &amp; warna secara langsung.</span>
+              <label class="btn btn-secondary btn-sm" style="cursor:pointer;width:100%;justify-content:center;display:flex;align-items:center;padding:0.5rem;background:#FFF;border:1px solid #CBD5E1;border-radius:6px;font-size:0.82rem;font-weight:600;">
+                <span>⚖️ Pilih Logo Pembanding</span>
+                <input type="file" id="dc-comp-file-input" accept="image/*" hidden />
+              </label>
+            </div>
+          </div>
+          <div style="margin-top:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">
+            <span style="font-size:0.75rem;color:#64748B;">* Format etiket diverifikasi sesuai standar Permohonan Merek DJKI RI.</span>
+            <button type="button" id="btn-run-advanced" style="background:var(--bc-green);color:#FFF;border:none;padding:0.55rem 1.25rem;border-radius:6px;font-weight:700;font-size:0.82rem;cursor:pointer;">
+              <span>Perbarui Penelusuran dengan Logo →</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIRECT LIVE RESULTS CONTAINER (Mebiso Style Left Filter + Right Cards) -->
+      <div id="dc-visual-similarity-container" style="max-width:1160px;margin:1.5rem auto 2.5rem auto;"></div>
+
+      <!-- 3-TIER DEEP AI ANALYSIS BOX (Revealed via 'Cek Sekarang' CTA Banner) -->
+      <div id="dc-result-box" hidden class="ai-deep-box">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1.5px solid #E5E7EB;padding-bottom:1.25rem;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
           <div>
-            <div class="bc-features-eyebrow">HASIL PENCARIAN</div>
-            <h2 style="font-family:var(--font-heading);font-size:2.2rem;font-weight:800;color:var(--bc-text-dark);margin:0 0 0.35rem 0;" id="tc-res-title">
-              Hasil Analisis untuk "<span id="tc-query-display">KOPI KENANGAN</span>"
-            </h2>
-            <p style="font-size:0.95rem;color:#6B7280;margin:0;" id="tc-res-count">
-              Ditemukan 15 merek terkait pada data resmi DJKI.
-            </p>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:var(--bc-green);font-weight:700;" id="dc-res-ref">REF: BC-SRCH</span>
+            <h2 style="font-family:'Manrope',sans-serif;font-size:1.95rem;font-weight:900;color:#0F172A;margin:4px 0;" id="dc-res-brand">MEREK</h2>
+            <p style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;color:#6B7280;margin:0;" id="dc-res-classes">Rekomendasi Kelas: -</p>
           </div>
-          <div style="display:flex;align-items:center;gap:0.75rem;">
-            <button type="button" class="btn btn-secondary btn-sm" onclick="window.print()" style="padding:0.6rem 1.15rem;border-radius:9999px;">
-              <span>📥 Unduh Laporan PDF</span>
-            </button>
-            <button type="button" class="btn btn-secondary btn-sm" onclick="navigator.clipboard && navigator.clipboard.writeText(location.href); alert('Tautan hasil telah disalin!');" style="padding:0.6rem 1.15rem;border-radius:9999px;">
-              <span>🔗 Bagikan Hasil</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Summary Grid (Image 3 Upper Grid) -->
-        <div style="display:grid;grid-template-columns:1fr 1.35fr;gap:1.5rem;margin-bottom:2.5rem;">
-          <!-- Left: Red Alert Box -->
-          <div class="tc-risk-card" id="tc-risk-card">
-            <div class="tc-risk-badge-label">
-              <span>✦</span>
-              <span>Ringkasan Analisis AI</span>
-            </div>
-            <div class="tc-risk-title" id="tc-risk-status">Risiko Tinggi</div>
-            <p class="tc-risk-desc" id="tc-risk-explanation">
-              Potensi penolakan tinggi karena memiliki persamaan pada pokoknya dengan merek terdaftar.
-            </p>
-          </div>
-
-          <!-- Right: Meta Parameters -->
-          <div class="tc-meta-list">
-            <div class="tc-meta-item">
-              <div class="tc-meta-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m20.59 13.41-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
-              </div>
-              <div>
-                <div class="tc-meta-label">Merek Dicari</div>
-                <div class="tc-meta-val" id="tc-meta-searched">KOPI KENANGAN</div>
-              </div>
-            </div>
-
-            <div class="tc-meta-item">
-              <div class="tc-meta-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-              </div>
-              <div>
-                <div class="tc-meta-label">Kelas Terkait</div>
-                <div class="tc-meta-val" id="tc-meta-class">Kelas 30 ⓘ</div>
-              </div>
-            </div>
-
-            <div class="tc-meta-item">
-              <div class="tc-meta-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path><path d="M9 21V9"></path></svg>
-              </div>
-              <div>
-                <div class="tc-meta-label">Merek Pembanding</div>
-                <div class="tc-meta-val" id="tc-meta-found">15 merek ditemukan</div>
-              </div>
-            </div>
-
-            <div class="tc-meta-item">
-              <div class="tc-meta-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-              </div>
-              <div>
-                <div class="tc-meta-label">Sumber Data</div>
-                <div class="tc-meta-val">DJKI (Data Resmi) ⓘ</div>
-                <div style="font-size:0.7rem;color:#9CA3AF;margin-top:2px;">Diperbarui: 16 Nov 2026, 10:24 WIB</div>
-              </div>
+          <div class="tm-score-badge score-high" id="dc-res-badge">
+            <span style="font-size:1.85rem;font-weight:900;line-height:1;" id="dc-res-score">89%</span>
+            <div style="text-align:left;">
+              <span style="font-size:0.68rem;display:block;opacity:0.85;text-transform:uppercase;" class="tm-score-label">Indeks Daya Pembeda</span>
+              <span style="font-size:0.95rem;font-weight:800;" id="dc-res-verdict">POTENSI POSITIF</span>
             </div>
           </div>
         </div>
 
-        <!-- Analisis Detail Header & Tabs -->
-        <div>
-          <h3 style="font-family:var(--font-heading);font-size:1.65rem;font-weight:800;color:var(--bc-text-dark);margin-bottom:0.5rem;">
-            Analisis Detail
+        <!-- TIER 1: 4 DIMENSIONS GRID -->
+        <div style="margin-bottom:1.5rem;">
+          <h3 style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:0.1em;color:var(--bc-green);margin-bottom:0.75rem;">
+            LAPISAN 01 // PARAMETER PENCARIAN &amp; KEMIRIPAN (PASAL 20 &amp; 21 UU MEREK)
           </h3>
+          <div class="tm-breakdown-grid">
+            <div class="tm-pill-card">
+              <div class="tm-pill-title">01. FONETIK &amp; BUNYI</div>
+              <div class="tm-pill-status" id="dc-p1">-</div>
+              <div class="tm-pill-detail" id="dc-p1-d">-</div>
+            </div>
+            <div class="tm-pill-card">
+              <div class="tm-pill-title">02. VISUAL &amp; EJAAN</div>
+              <div class="tm-pill-status" id="dc-p2">-</div>
+              <div class="tm-pill-detail" id="dc-p2-d">-</div>
+            </div>
+            <div class="tm-pill-card">
+              <div class="tm-pill-title">03. REKOMENDASI KELAS</div>
+              <div class="tm-pill-status" id="dc-p3">-</div>
+              <div class="tm-pill-detail" id="dc-p3-d">Rekomendasi klasifikasi barang/jasa Nice Classification.</div>
+            </div>
+            <div class="tm-pill-card">
+              <div class="tm-pill-title">04. KEPATUHAN UU MEREK</div>
+              <div class="tm-pill-status" id="dc-p4">-</div>
+              <div class="tm-pill-detail" id="dc-p4-d">-</div>
+            </div>
+          </div>
+        </div>
 
-          
-          <!-- TABS -->
-          <div class="tc-subtabs" style="display:flex;gap:0.75rem;margin-bottom:2rem;flex-wrap:wrap;">
-            <button type="button" class="btn btn-primary tc-tab-btn active" id="tc-btn-tab-ai" data-target="tc-tab-ai" style="padding:0.65rem 1.4rem;border-radius:9999px;font-size:0.88rem;background:var(--bc-green);color:#FFF;border:none;cursor:pointer;">
-              <span>✦ Analisis AI</span>
+        <!-- TIER 2: AI INTERPRETATION -->
+        <div style="margin-bottom:1.5rem;padding:1.25rem 1.4rem;background:#F0FDF4;border-left:4px solid #16A34A;border-radius:8px;">
+          <h3 style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:0.1em;color:#166534;margin-bottom:0.45rem;">
+            LAPISAN 02 // INTERPRETASI PRA-SKRINING AI (DJKI SUBSTANTIVE AUDIT)
+          </h3>
+          <p id="dc-ai-interp" style="font-size:0.92rem;line-height:1.65;color:#1E293B;margin:0;"></p>
+        </div>
+
+        <!-- TIER 3: PROFESSIONAL LEGAL ASSESSMENT -->
+        <div style="margin-bottom:1.75rem;padding:1.25rem 1.4rem;background:#FAF8F5;border-left:4px solid var(--bc-green);border-radius:8px;">
+          <h3 style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:0.1em;color:var(--bc-green);margin-bottom:0.45rem;">
+            LAPISAN 03 // PENILAIAN HUKUM PROFESIONAL (KONSULTAN MEREK BRANDCONNECT)
+          </h3>
+          <p id="dc-prof-assess" style="font-size:0.92rem;line-height:1.65;color:#1E293B;margin:0;"></p>
+        </div>
+
+        <!-- ACTIONS ROW -->
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;padding-top:1.25rem;border-top:1px dashed #E5E7EB;">
+          <button type="button" class="btn btn-secondary btn-sm" id="dc-btn-report" style="padding:0.65rem 1.25rem;border-radius:8px;font-weight:600;background:#FFF;border:1px solid #CBD5E1;cursor:pointer;">
+            <span>📄 Cetak Laporan AI Resmi</span>
+          </button>
+          <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+            <button type="button" class="btn btn-secondary btn-sm" id="dc-btn-handover" style="padding:0.65rem 1.25rem;border-radius:8px;font-weight:600;background:#FFF;border:1px solid #CBD5E1;cursor:pointer;">
+              <span>👨‍⚖️ Handover ke Spesialis Merek</span>
             </button>
-            <button type="button" class="btn btn-secondary tc-tab-btn" id="tc-btn-tab-related" data-target="tc-tab-related" style="padding:0.65rem 1.4rem;border-radius:9999px;font-size:0.88rem;background:#FFF;color:#374151;border:1px solid var(--bc-card-border);cursor:pointer;">
-              <span>📑 Data Merek Terkait (<span id="tc-badge-tab-count">0</span>)</span>
-            </button>
-            <button type="button" class="btn btn-secondary tc-tab-btn" id="tc-btn-tab-recs" data-target="tc-tab-recs" style="padding:0.65rem 1.4rem;border-radius:9999px;font-size:0.88rem;background:#FFF;color:#374151;border:1px solid var(--bc-card-border);cursor:pointer;">
-              <span>📋 Rekomendasi Ahli</span>
+            <button type="button" class="btn btn-primary btn-sm" id="dc-btn-order" style="padding:0.65rem 1.45rem;border-radius:8px;font-weight:700;background:var(--bc-green);color:#FFF;border:none;cursor:pointer;">
+              <span>® Pesan Pendaftaran Merek →</span>
             </button>
           </div>
+        </div>
+      </div>
 
-          <!-- TAB 1: ANALISIS AI -->
-          <div id="tc-tab-ai" class="tc-tab-panel" style="display:block;">
-            <!-- 4 Dimension Cards (Image 3 Center) -->
-            <div class="tc-dim-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:2.5rem;">
-              <div class="tc-dim-card" style="background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:14px;padding:1.4rem;display:flex;flex-direction:column;justify-content:space-between;">
-                <div>
-                  <div class="tc-dim-head" style="display:flex;align-items:center;gap:0.5rem;font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:var(--bc-green);margin-bottom:0.75rem;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--bc-green)" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-                    <span>01. Kemiripan Fonetik</span>
-                  </div>
-                  <div class="tc-dim-title" id="tc-d1-title" style="font-family:var(--font-heading);font-size:1.05rem;font-weight:700;color:var(--bc-text-dark);margin-bottom:0.5rem;">Persamaan Pada Pokoknya / Identik</div>
-                  <p class="tc-dim-desc" id="tc-d1-desc" style="font-size:0.84rem;color:#4B5563;line-height:1.45;margin:0;">
-                    Nama/lafal memiliki kesamaan signifikan dengan merek terdaftar milik pihak lain.
-                  </p>
-                </div>
-              </div>
-
-              <div class="tc-dim-card" style="background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:14px;padding:1.4rem;display:flex;flex-direction:column;justify-content:space-between;">
-                <div>
-                  <div class="tc-dim-head" style="display:flex;align-items:center;gap:0.5rem;font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:var(--bc-green);margin-bottom:0.75rem;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--bc-green)" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path></svg>
-                    <span>02. Visual &amp; Ejaan</span>
-                  </div>
-                  <div class="tc-dim-title" id="tc-d2-title" style="font-family:var(--font-heading);font-size:1.05rem;font-weight:700;color:var(--bc-text-dark);margin-bottom:0.5rem;">Rawan Konflik Hak Eksklusif</div>
-                  <p class="tc-dim-desc" id="tc-d2-desc" style="font-size:0.84rem;color:#4B5563;line-height:1.45;margin:0;">
-                    Merek telah terdaftar resmi di DJKI. Pengajuan merek baru dengan unsur yang sama berpotensi ditolak.
-                  </p>
-                </div>
-              </div>
-
-              <div class="tc-dim-card" style="background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:14px;padding:1.4rem;display:flex;flex-direction:column;justify-content:space-between;">
-                <div>
-                  <div class="tc-dim-head" style="display:flex;align-items:center;gap:0.5rem;font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:var(--bc-green);margin-bottom:0.75rem;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--bc-green)" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-                    <span>03. Kelas Merek</span>
-                  </div>
-                  <div class="tc-dim-title" id="tc-d3-title" style="font-family:var(--font-heading);font-size:1.05rem;font-weight:700;color:var(--bc-text-dark);margin-bottom:0.5rem;">Kelas 30</div>
-                  <div id="tc-d3-chips" style="display:flex;flex-wrap:wrap;gap:0.35rem;margin:0.4rem 0 0.5rem 0;">
-                    <span class="bc-cat-pill" style="font-size:0.72rem;padding:2px 8px;background:var(--bc-green-mint);color:var(--bc-green);border-radius:9999px;">Kopi</span>
-                    <span class="bc-cat-pill" style="font-size:0.72rem;padding:2px 8px;background:var(--bc-green-mint);color:var(--bc-green);border-radius:9999px;">Teh</span>
-                    <span class="bc-cat-pill" style="font-size:0.72rem;padding:2px 8px;background:var(--bc-green-mint);color:var(--bc-green);border-radius:9999px;">Roti</span>
-                  </div>
-                  <p class="tc-dim-desc" id="tc-d3-desc" style="font-size:0.84rem;color:#4B5563;line-height:1.45;margin:0;">
-                    Rekomendasi klasifikasi barang/jasa berdasarkan Nice Classification.
-                  </p>
-                </div>
-              </div>
-
-              <div class="tc-dim-card" style="background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:14px;padding:1.4rem;display:flex;flex-direction:column;justify-content:space-between;">
-                <div>
-                  <div class="tc-dim-head" style="display:flex;align-items:center;gap:0.5rem;font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:var(--bc-green);margin-bottom:0.75rem;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--bc-green)" stroke-width="2"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path></svg>
-                    <span>04. Kriteria UU Merek</span>
-                  </div>
-                  <div class="tc-dim-title" id="tc-d4-title" style="font-family:var(--font-heading);font-size:1.05rem;font-weight:700;color:var(--bc-text-dark);margin-bottom:0.5rem;">Potensi Ditolak Pasal 21</div>
-                  <p class="tc-dim-desc" id="tc-d4-desc" style="font-size:0.84rem;color:#4B5563;line-height:1.45;margin:0;">
-                    Pasal 21 ayat (1) huruf a &amp; b UU No. 20/2016 melarang pendaftaran merek yang memiliki persamaan pada pokoknya dengan merek terdaftar pihak lain.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Bottom Two Cards: Merek Pembanding Utama & Rekomendasi (Image 3 Bottom) -->
-            <div class="tc-bottom-split" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2.5rem;">
-              <!-- Left: Merek Pembanding Utama -->
-              <div class="tc-comp-box" style="background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:16px;padding:1.75rem;">
-                <div style="font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:var(--bc-green);letter-spacing:0.1em;display:flex;align-items:center;gap:0.45rem;margin-bottom:1rem;">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-                  <span>Merek Pembanding Utama</span>
-                </div>
-
-                <div style="display:flex;align-items:center;gap:1.25rem;background:#FAF8F5;border:1px solid var(--bc-card-border);border-radius:12px;padding:1.25rem;" id="tc-comp-card">
-                  <div style="width:110px;height:80px;background:#FFF;border:1px solid #E5E7EB;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:6px;overflow:hidden;flex-shrink:0;" id="tc-comp-logo">
-                    <div style="font-family:Georgia,serif;font-weight:800;color:#111;text-align:center;"><div style="color:#B91C1C;">♥</div><div style="font-size:0.75rem;line-height:1.15;">kopi<br/>kenangan</div></div>
-                  </div>
-
-                  <div style="flex:1;">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.35rem;flex-wrap:wrap;gap:0.4rem;">
-                      <strong style="font-family:var(--font-heading);font-size:1.15rem;color:var(--bc-text-dark);" id="tc-comp-name">KOPI KENANGAN</strong>
-                      <span style="background:#DCFCE7;color:#166534;font-family:var(--font-mono);font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:9999px;" id="tc-comp-status">TERDAFTAR</span>
-                    </div>
-                    <div style="font-size:0.82rem;color:#4B5563;line-height:1.45;">
-                      <div>Pemilik: <strong id="tc-comp-owner">PT. BUMI BERKAH BOGA</strong></div>
-                      <div>No. Permohonan: <span id="tc-comp-appno">D002018042299</span> · Kelas: <span id="tc-comp-class">30</span></div>
-                    </div>
-                  </div>
-                  <div style="color:var(--bc-green);font-size:1.25rem;font-weight:700;">›</div>
-                </div>
-              </div>
-
-              <!-- Right: Rekomendasi Langkah Selanjutnya -->
-              <div class="tc-rec-box" style="background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:16px;padding:1.75rem;">
-                <div style="font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:var(--bc-green);letter-spacing:0.1em;display:flex;align-items:center;gap:0.45rem;margin-bottom:1rem;">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
-                  <span>Rekomendasi Langkah Selanjutnya</span>
-                </div>
-
-                <div id="tc-rec-list">
-                  <div class="tc-rec-item" style="display:flex;align-items:flex-start;gap:0.85rem;margin-bottom:0.85rem;">
-                    <div style="width:24px;height:24px;border-radius:50%;background:var(--bc-green-mint);color:var(--bc-green);font-family:var(--font-mono);font-size:0.75rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
-                    <div style="font-size:0.88rem;line-height:1.5;color:#374151;">Konsultasi dengan tim ahli untuk evaluasi mendalam.</div>
-                  </div>
-                  <div class="tc-rec-item" style="display:flex;align-items:flex-start;gap:0.85rem;margin-bottom:0.85rem;">
-                    <div style="width:24px;height:24px;border-radius:50%;background:var(--bc-green-mint);color:var(--bc-green);font-family:var(--font-mono);font-size:0.75rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
-                    <div style="font-size:0.88rem;line-height:1.5;color:#374151;">Pertimbangkan penyesuaian nama merek agar lebih memiliki daya pembeda.</div>
-                  </div>
-                  <div class="tc-rec-item" style="display:flex;align-items:flex-start;gap:0.85rem;margin-bottom:0.85rem;">
-                    <div style="width:24px;height:24px;border-radius:50%;background:var(--bc-green-mint);color:var(--bc-green);font-family:var(--font-mono);font-size:0.75rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
-                    <div style="font-size:0.88rem;line-height:1.5;color:#374151;">Lakukan pengecekan lanjutan untuk alternatif nama dan kelas.</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- TAB 2: DATA MEREK TERKAIT (DJKI LIST) -->
-          <div id="tc-tab-related" class="tc-tab-panel" style="display:none;background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:16px;padding:1.75rem;margin-bottom:2.5rem;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem;">
-              <div>
-                <h4 style="font-family:var(--font-heading);font-size:1.15rem;font-weight:700;margin:0 0 0.25rem 0;color:var(--bc-text-dark);">
-                  Daftar Merek Terdaftar di Pangkalan Data DJKI
-                </h4>
-                <p style="font-size:0.85rem;color:#6B7280;margin:0;">
-                  Data resmi dari Berita Resmi Merek &amp; Sertifikat Terdaftar DJKI RI.
-                </p>
-              </div>
-              <span style="font-family:var(--font-mono);font-size:0.75rem;background:var(--bc-green-mint);color:var(--bc-green);font-weight:700;padding:4px 10px;border-radius:9999px;">
-                ✓ Terhubung Database Resmi
-              </span>
-            </div>
-
-            <div id="tc-related-items-container" style="display:flex;flex-direction:column;gap:1rem;">
-              <!-- Populated dynamically -->
-            </div>
-          </div>
-
-          <!-- TAB 3: REKOMENDASI AHLI -->
-          <div id="tc-tab-recs" class="tc-tab-panel" style="display:none;background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:16px;padding:1.75rem;margin-bottom:2.5rem;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem;">
-              <div>
-                <h4 style="font-family:var(--font-heading);font-size:1.15rem;font-weight:700;margin:0 0 0.25rem 0;color:var(--bc-text-dark);">
-                  Rekomendasi Hukum &amp; Strategi Perlindungan Merek
-                </h4>
-                <p style="font-size:0.85rem;color:#6B7280;margin:0;">
-                  Disusun berdasarkan yurisprudensi substantif Direktorat Jenderal Kekayaan Intelektual (DJKI).
-                </p>
-              </div>
-            </div>
-
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
-              <div style="background:#FAF8F5;border:1px solid var(--bc-card-border);border-radius:12px;padding:1.25rem;">
-                <strong style="color:var(--bc-green);display:block;margin-bottom:0.4rem;font-family:var(--font-heading);font-size:0.95rem;">1. Asas First-to-File (Siapa Cepat Mendaftar)</strong>
-                <p style="font-size:0.84rem;color:#4B5563;line-height:1.5;margin:0;">
-                  Sistem perlindungan merek di Indonesia memprioritaskan pemohon pertama yang mengajukan permohonan secara sah, bukan siapa yang pertama memakai secara de facto.
-                </p>
-              </div>
-
-              <div style="background:#FAF8F5;border:1px solid var(--bc-card-border);border-radius:12px;padding:1.25rem;">
-                <strong style="color:var(--bc-green);display:block;margin-bottom:0.4rem;font-family:var(--font-heading);font-size:0.95rem;">2. Pendaftaran Multi-Kelas Strategis</strong>
-                <p style="font-size:0.84rem;color:#4B5563;line-height:1.5;margin:0;">
-                  Daftarkan merek pada kelas produk utama (misal: Kelas 25/30) sekaligus kelas jasa penunjang (misal: Kelas 35 untuk retail/toko online) agar tidak diserobot kompetitor.
-                </p>
-              </div>
-
-              <div style="background:#FAF8F5;border:1px solid var(--bc-card-border);border-radius:12px;padding:1.25rem;">
-                <strong style="color:var(--bc-green);display:block;margin-bottom:0.4rem;font-family:var(--font-heading);font-size:0.95rem;">3. Pembeda Visual &amp; Logo Khusus</strong>
-                <p style="font-size:0.84rem;color:#4B5563;line-height:1.5;margin:0;">
-                  Sertakan logo visual atau tipografi khusus untuk memperkuat daya pembeda (Pasal 20) dan memperkecil risiko ditolak karena nama generik.
-                </p>
-              </div>
-
-              <div style="background:#FAF8F5;border:1px solid var(--bc-card-border);border-radius:12px;padding:1.25rem;">
-                <strong style="color:var(--bc-green);display:block;margin-bottom:0.4rem;font-family:var(--font-heading);font-size:0.95rem;">4. Pemantauan BRM DJKI (Masa Sanggahan 2 Bulan)</strong>
-                <p style="font-size:0.84rem;color:#4B5563;line-height:1.5;margin:0;">
-                  Setelah pengajuan lolos formalitas, permohonan akan diumumkan dalam BRM selama 2 bulan. Pantau secara rutin untuk mencegah sanggahan pihak ketiga.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Bottom Action Buttons (Image 3 Bottom CTAs) -->
-          <div style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-top:2.5rem;">
-            <button type="button" class="bc-hero-search-btn" style="padding:0.95rem 2rem;font-size:0.95rem;" onclick="window.BCStore && window.BCStore.openHandoverModal()">
-              <span>🎧 Konsultasi dengan Spesialis Merek</span>
-              <span>→</span>
-            </button>
-            <a href="pendaftaran-merek.html" class="bc-service-btn" style="padding:0.95rem 2rem;border-radius:9999px;font-size:0.95rem;background:#FFFFFF;">
-              <span>📄 Ajukan Pendaftaran Merek</span>
-              <span>→</span>
-            </a>
-          </div>
-        </div></section>
     </div>
   </main>
 
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-top-grid">
-        <div class="footer-brand-col">
-          <a href="index.html" class="footer-logo">
-            <img src="assets/images/brandconnect-logo-white.png" alt="BRANDCONNECT" class="footer-logo-img" />
-          </a>
-          <p class="footer-tagline">AI-POWERED TRADEMARK SEARCH &amp; BRAND PROTECTION</p>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p class="copyright">© 2026 BRANDCONNECT. All Rights Reserved. · <a href="index.html">Homepage</a></p>
+  <!-- FOOTER -->
+  <footer class="site-footer" style="background:#FFFFFF;border-top:1px solid #E5E7EB;padding:2.5rem 0;text-align:center;">
+    <div class="container" style="max-width:1160px;margin:0 auto;padding:0 1rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+        <p style="margin:0;font-size:0.88rem;color:#6B7280;">
+          © 2026 BRANDCONNECT. All Rights Reserved. · <a href="index.html" style="color:var(--bc-green);font-weight:600;text-decoration:none;">Kembali ke Beranda</a>
+        </p>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--bc-green);font-weight:700;">
+          Pangkalan Data Resmi DJKI // Kemenkumham RI
+        </span>
       </div>
     </div>
   </footer>
@@ -580,72 +425,65 @@
   <script src="js/platform-store.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const searchForm = document.getElementById('tc-live-search-form');
-      const searchInput = document.getElementById('tc-search-input');
-      const queryDisplay = document.getElementById('tc-query-display');
-      const searchedMeta = document.getElementById('tc-meta-searched');
-      const resultSection = document.getElementById('tc-result-section');
+      const searchForm = document.getElementById('mebiso-search-form');
+      const brandInput = document.getElementById('dc-brand');
+      const clearBtn = document.getElementById('clear-search-btn');
+      const toggleAdvBtn = document.getElementById('toggle-advanced-ai');
+      const advPanel = document.getElementById('advanced-ai-panel');
+      const advArrow = document.getElementById('adv-arrow');
+      const fileInput = document.getElementById('dc-file-input');
+      const fileStatus = document.getElementById('dc-file-status');
+      const compFileInput = document.getElementById('dc-comp-file-input');
+      const compFileStatus = document.getElementById('dc-comp-file-status');
+      const btnRunAdv = document.getElementById('btn-run-advanced');
+      const visualSimContainer = document.getElementById('dc-visual-similarity-container');
+      const resultBox = document.getElementById('dc-result-box');
 
-      // Tab Buttons & Panels
-      const tabBtns = document.querySelectorAll('.tc-tab-btn');
-      const tabPanels = document.querySelectorAll('.tc-tab-panel');
+      let uploadedMeta = null;
+      let uploadedCompMeta = null;
 
-      tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const targetId = btn.getAttribute('data-target');
-          tabBtns.forEach(b => {
-            b.classList.remove('active');
-            b.style.background = '#FFF';
-            b.style.color = '#374151';
-            b.style.border = '1px solid var(--bc-card-border)';
-          });
-          btn.classList.add('active');
-          btn.style.background = 'var(--bc-green)';
-          btn.style.color = '#FFF';
-          btn.style.border = 'none';
+      // 1. Core Simple Search Runner (Direct PDKI DJKI Results just like Mebiso)
+      const doSearch = (queryStr) => {
+        const q = (queryStr || (brandInput ? brandInput.value : '') || 'onitsuka').trim();
+        if (!q) return;
+        if (brandInput) brandInput.value = q;
+        if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
 
-          tabPanels.forEach(p => {
-            p.style.display = (p.id === targetId) ? 'block' : 'none';
-          });
-        });
-      });
-
-      // Main Dynamic Search Function
-      async function executeSearch(query) {
-        const q = (query || (searchInput ? searchInput.value : '') || '').trim();
-        if (!q) {
-          if (searchInput) searchInput.focus();
-          return;
-        }
-
-        if (queryDisplay) queryDisplay.textContent = q.toUpperCase();
-        if (searchedMeta) searchedMeta.textContent = q.toUpperCase();
-        const resCountEl = document.getElementById('tc-res-count');
-        if (resCountEl) resCountEl.textContent = 'Menganalisis potensi pendaftaran dengan AI & data resmi DJKI...';
-
-        // Reset to Tab 1
-        const btnTabAi = document.getElementById('tc-btn-tab-ai');
-        if (btnTabAi) btnTabAi.click();
-
-        // 1. Live DJKI API Query
-        let djkiData = null;
+        // Pre-fetch live API if key is available
         if (window.BCStore && window.BCStore.fetchLivePdkiApi) {
-          try {
-            djkiData = await window.BCStore.fetchLivePdkiApi(q);
-          } catch (e) {
-            console.warn('Live API fetch warning:', e);
-          }
-        }
-        if (!djkiData || !djkiData.items || djkiData.items.length === 0) {
-          if (window.BCStore && window.BCStore.searchPdkiDirectory) {
-            djkiData = window.BCStore.searchPdkiDirectory(q);
-          }
+          window.BCStore.fetchLivePdkiApi(q).catch((e) => console.log('Live API note:', e));
         }
 
-        // 2. Serverless AI API Query
+        // Mount PDKI Explorer immediately
+        if (visualSimContainer && window.BCStore && window.BCStore.mountPdkiExplorer) {
+          window.BCStore.mountPdkiExplorer(visualSimContainer, q, uploadedMeta, uploadedCompMeta);
+        }
+
+        // Hide AI deep result box when a new keyword search is initiated until user requests it
+        if (resultBox && !uploadedMeta) {
+          resultBox.hidden = true;
+        }
+      };
+
+      // 2. Global Deep AI Analysis Trigger (called by CTA banner "Cek Sekarang" inside search results)
+      window.runTrademarkCheck = async (brandName) => {
+        const targetQ = (brandName || (brandInput ? brandInput.value : '') || 'MEREK BARU').trim();
+        
+        // Show result box with loading state
+        if (resultBox) {
+          resultBox.hidden = false;
+          resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        document.getElementById('dc-res-ref').textContent = 'MENGANALISIS DENGAN AI & UU MEREK...';
+        document.getElementById('dc-res-brand').textContent = targetQ.toUpperCase();
+        document.getElementById('dc-ai-interp').textContent = 'Memeriksa kriteria substantif Pasal 20 & 21 UU No. 20/2016...';
+        document.getElementById('dc-prof-assess').textContent = 'Menyiapkan rekomendasi taktis pendaftaran merek...';
+
+        // 1. Try serverless AI (/api/ai-analyze)
         let aiData = null;
         try {
-          const resp = await fetch('/api/ai-analyze?brand=' + encodeURIComponent(q));
+          const resp = await fetch('/api/ai-analyze?brand=' + encodeURIComponent(targetQ));
           if (resp.ok) {
             const json = await resp.json();
             if (json.success && json.analysis) {
@@ -656,256 +494,135 @@
           console.log('AI analyze offline/fallback:', e.message);
         }
 
-        // 3. Render Results
-        renderTcResults(q, djkiData, aiData);
-      }
+        // 2. If no serverless response, fallback to BCStore local analyzer
+        const rec = window.BCStore.analyzeTrademark(targetQ, 'name', '', '', uploadedMeta, uploadedCompMeta);
 
-      function renderTcResults(q, djki, ai) {
-        const lower = q.toLowerCase();
-        const items = (djki && Array.isArray(djki.items)) ? djki.items : [];
-        const totalFound = djki?.totalFound || items.length;
+        const refCode = rec.referenceCode || ('BC-' + Date.now().toString().slice(-6));
+        const brand = targetQ.toUpperCase();
+        const primaryClass = aiData?.classRecommendation?.primaryClass || rec.recommendedClasses;
+        const score = aiData?.riskScore || rec.distinctivenessIndex || 85;
+        const riskLevel = aiData?.riskLevel ? (aiData.riskLevel === 'Tinggi' ? 'high' : aiData.riskLevel === 'Menengah' ? 'moderate' : 'low') : rec.riskLevel;
+        const verdict = aiData?.verdict || rec.verdict;
 
-        // Determine Risk
-        let riskLevel = 'Rendah';
-        let riskScore = 92;
-        let riskText = 'Risiko Rendah (Peluang Lolos Tinggi)';
-        let riskDesc = 'Daya pembeda kuat! Belum ditemukan merek identik terdaftar untuk "' + q.toUpperCase() + '". Peluang lolos pemeriksaan substantif DJKI sangat besar.';
+        document.getElementById('dc-res-ref').textContent = 'LAPORAN ANALISIS // REF: ' + refCode;
+        document.getElementById('dc-res-brand').textContent = brand;
+        document.getElementById('dc-res-classes').textContent = 'Rekomendasi Kelas: ' + primaryClass;
+        document.getElementById('dc-res-score').textContent = score + '%';
+        document.getElementById('dc-res-verdict').textContent = verdict;
 
-        if (ai) {
-          riskLevel = ai.riskLevel || 'Rendah';
-          riskScore = ai.riskScore || 90;
-          riskText = ai.verdict || ('Risiko ' + riskLevel);
-          riskDesc = ai.explanation || riskDesc;
-        } else if (items.length > 0) {
-          const top = items[0];
-          const topSim = top.similarityPct || 80;
-          if (topSim >= 70 || top.brand.toLowerCase() === lower) {
-            riskLevel = 'Tinggi';
-            riskScore = 24;
-            riskText = 'Risiko Tinggi (Persamaan Pada Pokoknya)';
-            riskDesc = 'Teridentifikasi kemiripan signifikan dengan merek "' + top.brand + '" terdaftar di DJKI (No. ' + top.appNo + '). Berpotensi ditolak berdasarkan Pasal 21 ayat (1) UU No. 20/2016.';
-          } else {
-            riskLevel = 'Menengah';
-            riskScore = 62;
-            riskText = 'Risiko Menengah (Perlu Diferensiasi)';
-            riskDesc = 'Ditemukan beberapa merek dengan unsur kata yang mirip. Disarankan menambahkan kata pembeda atau etiket logo khusus.';
-          }
+        const badge = document.getElementById('dc-res-badge');
+        badge.classList.remove('score-high', 'score-medium', 'score-low');
+        badge.classList.add(riskLevel === 'low' ? 'score-high' : riskLevel === 'moderate' ? 'score-medium' : 'score-low');
+
+        const scoreLabelEl = badge.querySelector('.tm-score-label');
+        if (scoreLabelEl) {
+          scoreLabelEl.textContent = riskLevel === 'high' ? 'POTENSI PENOLAKAN DJKI' : 'INDEKS DAYA PEMBEDA';
         }
 
-        // Risk Card
-        const riskCard = document.getElementById('tc-risk-card');
-        const riskStatus = document.getElementById('tc-risk-status');
-        const riskExpl = document.getElementById('tc-risk-explanation');
-        if (riskCard && riskStatus && riskExpl) {
-          if (riskLevel === 'Tinggi') {
-            riskCard.style.background = '#FEF2F2';
-            riskCard.style.border = '1px solid #FCA5A5';
-            riskStatus.style.color = '#991B1B';
-            riskStatus.textContent = riskText;
-            riskExpl.style.color = '#7F1D1D';
-            riskExpl.textContent = riskDesc;
-          } else if (riskLevel === 'Menengah') {
-            riskCard.style.background = '#FFFBEB';
-            riskCard.style.border = '1px solid #FCD34D';
-            riskStatus.style.color = '#92400E';
-            riskStatus.textContent = riskText;
-            riskExpl.style.color = '#78350F';
-            riskExpl.textContent = riskDesc;
-          } else {
-            riskCard.style.background = '#ECFDF5';
-            riskCard.style.border = '1px solid #6EE7B7';
-            riskStatus.style.color = '#065F46';
-            riskStatus.textContent = riskText;
-            riskExpl.style.color = '#064E3B';
-            riskExpl.textContent = riskDesc;
-          }
-        }
+        document.getElementById('dc-p1').textContent = aiData?.phonetic?.status || rec.phoneticStatus;
+        document.getElementById('dc-p1-d').textContent = aiData?.phonetic?.detail || rec.phoneticDetail;
+        document.getElementById('dc-p2').textContent = aiData?.visual?.status || rec.visualStatus;
+        document.getElementById('dc-p2-d').textContent = aiData?.visual?.detail || rec.visualDetail;
+        document.getElementById('dc-p3').textContent = primaryClass;
+        document.getElementById('dc-p3-d').textContent = aiData?.classRecommendation?.commodities ? aiData.classRecommendation.commodities.join(', ') : 'Berdasarkan klasifikasi barang/jasa Nice.';
+        document.getElementById('dc-p4').textContent = aiData?.statute?.status || rec.statuteStatus;
+        document.getElementById('dc-p4-d').textContent = aiData?.statute?.detail || rec.statuteDetail;
 
-        // Meta parameters
-        let primaryClass = '35';
-        let commodities = ['Retail & Toko', 'Distribusi', 'Marketplace', 'Jasa Bisnis'];
-        if (/kopi|teh|makanan|roti|snack|bumbu|cake|minuman|kuliner/i.test(lower)) {
-          primaryClass = '30';
-          commodities = ['Kopi', 'Teh', 'Roti', 'Kue', 'Bumbu Makanan', 'Snack Olahan'];
-        } else if (/sepatu|baju|kaos|celana|fashion|apparel|jaket|hijab|sandal/i.test(lower)) {
-          primaryClass = '25';
-          commodities = ['Pakaian', 'Alas Kaki', 'Sepatu Olahraga', 'Tutup Kepala', 'Jaket'];
-        } else if (/skincare|serum|krim|sabun|kosmetik|parfum|beauty|glow/i.test(lower)) {
-          primaryClass = '03';
-          commodities = ['Kosmetik', 'Skincare', 'Serum Wajah', 'Sabun Kecantikan', 'Parfum'];
-        } else if (/aplikasi|software|tech|it|cloud|digital|system|komputer|ai/i.test(lower)) {
-          primaryClass = '42';
-          commodities = ['Software Development', 'Layanan Cloud', 'Platform Digital', 'SaaS'];
-        } else if (/kafe|restoran|resto|kedai|warung|catering/i.test(lower)) {
-          primaryClass = '43';
-          commodities = ['Layanan Restoran', 'Kafe Penyedia Kopi', 'Kedai Minuman', 'Jasa Katering'];
-        } else if (/obat|jamu|herbal|farmasi|suplemen|vitamin/i.test(lower)) {
-          primaryClass = '05';
-          commodities = ['Farmasi', 'Suplemen Kesehatan', 'Vitamin', 'Obat Herbal'];
-        }
+        document.getElementById('dc-ai-interp').textContent = aiData?.explanation || rec.aiInterpretation;
+        document.getElementById('dc-prof-assess').textContent = (aiData?.nextSteps ? aiData.nextSteps.join(' · ') : '') || rec.professionalAssessment;
 
-        if (ai?.classRecommendation?.primaryClass) {
-          primaryClass = ai.classRecommendation.primaryClass.replace(/[^0-9]/g, '') || primaryClass;
-          if (Array.isArray(ai.classRecommendation.commodities)) {
-            commodities = ai.classRecommendation.commodities;
-          }
-        }
+        document.getElementById('dc-btn-report').onclick = () => window.BCStore && window.BCStore.openReportModal ? window.BCStore.openReportModal(rec.id) : window.print();
+        document.getElementById('dc-btn-handover').onclick = () => window.BCStore && window.BCStore.openHandoverModal ? window.BCStore.openHandoverModal(brand) : alert('Silakan hubungi tim spesialis kami.');
+        document.getElementById('dc-btn-order').onclick = () => window.BCStore && window.BCStore.openOrderModal ? window.BCStore.openOrderModal('SRV-REG-01', brand, primaryClass) : (location.href = 'pendaftaran-merek.html');
+      };
 
-        const metaClass = document.getElementById('tc-meta-class');
-        if (metaClass) metaClass.textContent = 'Kelas ' + primaryClass + ' ⓘ';
-        const metaFound = document.getElementById('tc-meta-found');
-        if (metaFound) metaFound.textContent = totalFound + ' merek ditemukan';
-        const badgeTab = document.getElementById('tc-badge-tab-count');
-        if (badgeTab) badgeTab.textContent = totalFound;
-        const resCount = document.getElementById('tc-res-count');
-        if (resCount) {
-          resCount.textContent = totalFound > 0
-            ? 'Ditemukan ' + totalFound + ' merek terkait pada data resmi DJKI.'
-            : 'Belum ditemukan merek identik terdaftar untuk "' + q.toUpperCase() + '". Peluang diterima tinggi!';
-        }
-
-        // 4 Dimensions
-        const d1Title = document.getElementById('tc-d1-title');
-        const d1Desc = document.getElementById('tc-d1-desc');
-        if (d1Title && d1Desc) {
-          d1Title.textContent = ai?.phonetic?.status || (riskLevel === 'Tinggi' ? 'Persamaan Pada Pokoknya / Identik' : (riskLevel === 'Menengah' ? 'Kemiripan Parsial' : 'Daya Pembeda Kuat'));
-          d1Desc.textContent = ai?.phonetic?.detail || (riskLevel === 'Tinggi' ? 'Nama/lafal "' + q.toUpperCase() + '" memiliki kesamaan vokal & konsonan dengan merek terdaftar.' : 'Susunan bunyi dan suku kata "' + q.toUpperCase() + '" memiliki orisinalitas baik.');
-        }
-
-        const d2Title = document.getElementById('tc-d2-title');
-        const d2Desc = document.getElementById('tc-d2-desc');
-        if (d2Title && d2Desc) {
-          d2Title.textContent = ai?.visual?.status || (riskLevel === 'Tinggi' ? 'Rawan Konflik Hak Eksklusif' : (riskLevel === 'Menengah' ? 'Perlu Etiket Visual Kuat' : 'Unik & Distingtif'));
-          d2Desc.textContent = ai?.visual?.detail || (riskLevel === 'Tinggi' ? 'Pemilik merek terdahulu memiliki hak monopoli hukum atas susunan visual nama ini.' : 'Susunan ejaan tipografi memenuhi standar kebaruan identitas visual merek.');
-        }
-
-        const d3Title = document.getElementById('tc-d3-title');
-        const d3Chips = document.getElementById('tc-d3-chips');
-        const d3Desc = document.getElementById('tc-d3-desc');
-        if (d3Title && d3Desc) {
-          d3Title.textContent = 'Kelas ' + primaryClass;
-          if (d3Chips) {
-            d3Chips.innerHTML = commodities.map(c => '<span class="bc-cat-pill" style="font-size:0.72rem;padding:2px 8px;background:var(--bc-green-mint);color:var(--bc-green);border-radius:9999px;">' + c + '</span>').join(' ');
-          }
-          d3Desc.textContent = 'Rekomendasi klasifikasi barang/jasa Nice Classification.';
-        }
-
-        const d4Title = document.getElementById('tc-d4-title');
-        const d4Desc = document.getElementById('tc-d4-desc');
-        if (d4Title && d4Desc) {
-          d4Title.textContent = ai?.statute?.status || (riskLevel === 'Tinggi' ? 'Potensi Ditolak Pasal 21' : (riskLevel === 'Menengah' ? 'Perlu Penegasan Pasal 20' : 'Memenuhi Pasal 20 & 21'));
-          d4Desc.textContent = ai?.statute?.detail || (riskLevel === 'Tinggi' ? 'Pasal 21 ayat (1) huruf a & b melarang pendaftaran merek dengan persamaan pada pokoknya.' : 'Memenuhi seluruh kriteria daya pembeda dan tidak melanggar ketentuan penolakan UU No. 20/2016.');
-        }
-
-        // Comparator
-        const compLogo = document.getElementById('tc-comp-logo');
-        const compName = document.getElementById('tc-comp-name');
-        const compOwner = document.getElementById('tc-comp-owner');
-        const compAppNo = document.getElementById('tc-comp-appno');
-        const compClass = document.getElementById('tc-comp-class');
-        const compStatus = document.getElementById('tc-comp-status');
-
-        if (items.length > 0) {
-          const top = items[0];
-          if (compName) compName.textContent = top.brand;
-          if (compOwner) compOwner.textContent = top.owner || 'Pemilik Terdaftar (DJKI)';
-          if (compAppNo) compAppNo.textContent = top.appNo || '-';
-          if (compClass) compClass.textContent = top.niceClass || primaryClass;
-          if (compStatus) {
-            compStatus.textContent = top.status || 'TERDAFTAR';
-            compStatus.style.background = (top.statusKey === 'ditolak') ? '#FEE2E2' : '#DCFCE7';
-            compStatus.style.color = (top.statusKey === 'ditolak') ? '#991B1B' : '#166534';
-          }
-          if (compLogo) {
-            compLogo.innerHTML = top.etiquetteSvg || '<div style="font-family:var(--font-heading);font-weight:800;color:#111;text-align:center;font-size:0.85rem;">' + top.brand + '</div>';
-          }
-        } else {
-          if (compName) compName.textContent = q.toUpperCase();
-          if (compOwner) compOwner.textContent = 'Belum Ada Pemilik Terdaftar (Tersedia)';
-          if (compAppNo) compAppNo.textContent = 'Siap Diajukan';
-          if (compClass) compClass.textContent = primaryClass;
-          if (compStatus) {
-            compStatus.textContent = 'TERSEDIA (AMAN)';
-            compStatus.style.background = '#DCFCE7';
-            compStatus.style.color = '#166534';
-          }
-          if (compLogo) {
-            compLogo.innerHTML = '<div style="font-family:var(--font-heading);font-weight:800;color:var(--bc-green);text-align:center;"><div style="font-size:1.6rem;line-height:1;">✓</div><div style="font-size:0.7rem;margin-top:2px;">PELUANG<br/>TINGGI</div></div>';
-          }
-        }
-
-        // Recommendations
-        const recList = document.getElementById('tc-rec-list');
-        if (recList) {
-          const steps = (ai && Array.isArray(ai.nextSteps)) ? ai.nextSteps : (
-            riskLevel === 'Tinggi' ? [
-              'Konsultasikan dengan Konsultan HKI BrandConnect untuk evaluasi alternatif nama.',
-              'Pertimbangkan penambahan kata pembeda atau modifikasi ejaan agar terhindar dari Pasal 21.',
-              'Lakukan penelusuran kelas turunan untuk peluang pendaftaran di sektor jasa terkait.'
-            ] : [
-              'Segera amankan tanggal permohonan resmi (Filing Date) untuk asas First-to-File.',
-              'Siapkan berkas administrasi dan etiket merek resmi DJKI.',
-              'Pantau masa publikasi BRM 2 bulan bersama tim spesialis BrandConnect.'
-            ]
-          );
-
-          recList.innerHTML = steps.map((s, idx) => 
-            '<div class="tc-rec-item" style="display:flex;align-items:flex-start;gap:0.85rem;margin-bottom:0.85rem;">' +
-              '<div style="width:24px;height:24px;border-radius:50%;background:var(--bc-green-mint);color:var(--bc-green);font-family:var(--font-mono);font-size:0.75rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">' + (idx + 1) + '</div>' +
-              '<div style="font-size:0.88rem;line-height:1.5;color:#374151;">' + s + '</div>' +
-            '</div>'
-          ).join('');
-        }
-
-        // Tab 2 DJKI List
-        const relatedContainer = document.getElementById('tc-related-items-container');
-        if (relatedContainer) {
-          if (items.length > 0) {
-            relatedContainer.innerHTML = items.map(it => 
-              '<div style="display:flex;align-items:center;gap:1.25rem;background:#FAF8F5;border:1px solid var(--bc-card-border);border-radius:12px;padding:1.15rem;flex-wrap:wrap;">' +
-                '<div style="width:90px;height:70px;background:#FFF;border:1px solid #E5E7EB;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:6px;overflow:hidden;flex-shrink:0;">' +
-                  (it.etiquetteSvg || ('<span style="font-family:var(--font-heading);font-weight:700;font-size:0.8rem;text-align:center;">' + it.brand + '</span>')) +
-                '</div>' +
-                '<div style="flex:1;min-width:200px;">' +
-                  '<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.35rem;flex-wrap:wrap;">' +
-                    '<strong style="font-family:var(--font-heading);font-size:1.05rem;color:var(--bc-text-dark);">' + it.brand + '</strong>' +
-                    '<span style="background:var(--bc-green-mint);color:var(--bc-green);font-family:var(--font-mono);font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:9999px;">Kelas ' + it.niceClass + '</span>' +
-                    '<span style="background:' + (it.statusKey === 'ditolak' ? '#FEE2E2' : '#DCFCE7') + ';color:' + (it.statusKey === 'ditolak' ? '#991B1B' : '#166534') + ';font-family:var(--font-mono);font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:9999px;">' + (it.status || 'DIDAFTAR') + '</span>' +
-                  '</div>' +
-                  '<div style="font-size:0.82rem;color:#4B5563;line-height:1.45;">' +
-                    '<div>Pemilik: <strong>' + (it.owner || 'Pemilik Terdaftar (DJKI)') + '</strong></div>' +
-                    '<div>No. Permohonan: <span>' + (it.appNo || '-') + '</span> ' + (it.regDate ? '· Tanggal: ' + it.regDate : '') + '</div>' +
-                  '</div>' +
-                '</div>' +
-              '</div>'
-            ).join('');
-          } else {
-            relatedContainer.innerHTML = 
-              '<div style="text-align:center;padding:2.5rem 1rem;color:#6B7280;">' +
-                '<div style="font-size:2rem;margin-bottom:0.5rem;color:var(--bc-green);">✓</div>' +
-                '<strong style="font-family:var(--font-heading);font-size:1.1rem;color:var(--bc-text-dark);display:block;margin-bottom:0.35rem;">Tidak Ditemukan Merek Konflik Langsung</strong>' +
-                '<p style="font-size:0.88rem;margin:0 auto;max-width:440px;">Pangkalan data resmi DJKI belum mencatat merek terdaftar dengan nama "' + q.toUpperCase() + '". Peluang lolos pemeriksaan substantif sangat tinggi!</p>' +
-              '</div>';
-          }
-        }
-      }
-
-      // Check URL parameters
-      const urlParams = new URLSearchParams(window.location.search);
-      const prefillQ = urlParams.get('q');
-      if (prefillQ) {
-        if (searchInput) searchInput.value = prefillQ;
-        executeSearch(prefillQ);
-      } else {
-        // Execute default search on load for sample
-        executeSearch('kopi kenangan');
-      }
-
+      // 3. Search Form Submit
       if (searchForm) {
         searchForm.addEventListener('submit', (e) => {
           e.preventDefault();
-          executeSearch(searchInput ? searchInput.value : '');
+          doSearch(brandInput.value);
         });
+      }
+
+      // 4. Input clear button behavior
+      if (brandInput && clearBtn) {
+        brandInput.addEventListener('input', () => {
+          clearBtn.style.display = brandInput.value ? 'block' : 'none';
+        });
+        clearBtn.addEventListener('click', () => {
+          brandInput.value = '';
+          clearBtn.style.display = 'none';
+          brandInput.focus();
+        });
+      }
+
+      // 5. Quick Brand Chips (onitsuka, adidas, converse, etc.)
+      document.querySelectorAll('.quick-chip').forEach((chip) => {
+        chip.addEventListener('click', () => {
+          const q = chip.getAttribute('data-q');
+          if (q) doSearch(q);
+        });
+      });
+
+      // 6. Toggle Advanced AI Panel
+      if (toggleAdvBtn && advPanel) {
+        toggleAdvBtn.addEventListener('click', () => {
+          const isOpen = !advPanel.hidden;
+          advPanel.hidden = isOpen;
+          if (advArrow) advArrow.textContent = isOpen ? '▾' : '▴';
+        });
+      }
+
+      // 7. Handle file uploads for logo audit
+      if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              uploadedMeta = {
+                dataUrl: ev.target.result,
+                name: file.name,
+                inferredBrand: file.name.replace(/\.[^/.]+$/, '').toUpperCase()
+              };
+              if (fileStatus) fileStatus.textContent = '✓ ' + file.name + ' siap diaudit.';
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+
+      if (compFileInput) {
+        compFileInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              uploadedCompMeta = {
+                dataUrl: ev.target.result,
+                name: file.name
+              };
+              if (compFileStatus) compFileStatus.textContent = '✓ ' + file.name + ' siap dibandingkan.';
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+
+      if (btnRunAdv) {
+        btnRunAdv.addEventListener('click', () => {
+          doSearch(brandInput.value);
+        });
+      }
+
+      // Check URL search query parameter (e.g. ?q=onitsuka)
+      const urlParams = new URLSearchParams(window.location.search);
+      const prefillQ = urlParams.get('q');
+      if (prefillQ) {
+        doSearch(prefillQ);
+      } else {
+        // Initial run with onitsuka so user sees the reference result immediately!
+        doSearch('onitsuka');
       }
     });
   </script>
