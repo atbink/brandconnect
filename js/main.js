@@ -982,7 +982,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const brandInput = document.getElementById('tm-brand-input');
     const modeInput = document.getElementById('tm-search-mode-input');
     const selectedClassHidden = document.getElementById('tm-selected-class-hidden');
-    const modeTabs = document.querySelectorAll('.tm-mode-tab');
+    const modeTabs = document.querySelectorAll('.bc-mode-tab, .tm-mode-tab');
     const modePrompt = document.getElementById('tm-mode-prompt');
     const logoUploadArea = document.getElementById('tm-logo-upload-area');
     const logoFileInput = document.getElementById('tm-logo-file-input');
@@ -1015,9 +1015,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let uploadedLogoInfo = null;
     let uploadedCompLogoInfo = null;
 
-    // Mode Tabs Switching
+    // Mode Tabs Switching (Supports both .bc-mode-tab and .tm-mode-tab)
     modeTabs.forEach((tab) => {
-      tab.addEventListener('click', () => {
+      tab.addEventListener('click', (ev) => {
+        ev.preventDefault();
         modeTabs.forEach((t) => {
           t.classList.remove('active');
           t.setAttribute('aria-selected', 'false');
@@ -1030,26 +1031,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (mode === 'name') {
           brandInput.placeholder = 'Masukkan nama merek (contoh: Kopi Nusantara, Zenova, GlowSkin)...';
+          brandInput.required = true;
           if (modePrompt) modePrompt.textContent = 'Cek Merek Anda Gratis, sekarang!';
           if (logoUploadArea) logoUploadArea.hidden = true;
         } else if (mode === 'number') {
-          brandInput.placeholder = 'Masukkan nomor permohonan / registrasi DJKI (contoh: DID2026012345 / IDM000...)...';
-          if (modePrompt) modePrompt.textContent = 'Cek Status Nomor Permohonan Merek DJKI';
+          brandInput.placeholder = 'Masukkan nomor permohonan / registrasi DJKI (contoh: DID2019079065, D002016040603, IDM000...)...';
+          brandInput.required = true;
+          if (modePrompt) modePrompt.textContent = 'Cek Status & Keterdaftaran Nomor Permohonan DJKI';
           if (logoUploadArea) logoUploadArea.hidden = true;
         } else if (mode === 'logo') {
-          brandInput.placeholder = 'Masukkan nama merek pada logo Anda (opsional, otomatis terisi dari nama file)...';
-          if (modePrompt) modePrompt.textContent = 'Unggah Logo untuk Cek Kemiripan Visual (dHash, Vienna Code & Komposisi Warna)';
+          brandInput.placeholder = 'Ketik nama merek pada logo (opsional, otomatis terbaca dari file)...';
+          brandInput.required = false;
+          if (modePrompt) modePrompt.textContent = 'Unggah Logo untuk Analisis Kemiripan Visual AI (dHash, Vienna Code & Komposisi Warna)';
           if (logoUploadArea) logoUploadArea.hidden = false;
         }
         brandInput.focus();
       });
     });
 
-    // Logo Upload Handling
+    // Logo Upload Handling (Click + Drag & Drop)
     if (logoUploadArea && logoFileInput) {
-      logoUploadArea.addEventListener('click', (ev) => {
-        if (ev.target.closest('label')) return;
-        logoFileInput.click();
+      if (logoPlaceholder) {
+        logoPlaceholder.addEventListener('click', (ev) => {
+          ev.preventDefault();
+          logoFileInput.click();
+        });
+      }
+
+      ['dragenter', 'dragover'].forEach((evt) => {
+        logoUploadArea.addEventListener(evt, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (logoPlaceholder) {
+            logoPlaceholder.style.borderColor = 'var(--bc-green)';
+            logoPlaceholder.style.background = '#ECFDF5';
+          }
+        }, false);
+      });
+
+      ['dragleave', 'drop'].forEach((evt) => {
+        logoUploadArea.addEventListener(evt, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (logoPlaceholder) {
+            logoPlaceholder.style.borderColor = '#D5D3CA';
+            logoPlaceholder.style.background = '#FAF8F5';
+          }
+        }, false);
+      });
+
+      logoUploadArea.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        if (dt && dt.files && dt.files.length > 0) {
+          logoFileInput.files = dt.files;
+          const ev = new Event('change', { bubbles: true });
+          logoFileInput.dispatchEvent(ev);
+        }
       });
 
       logoFileInput.addEventListener('change', (e) => {
@@ -1073,9 +1110,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     height: imgObj.naturalHeight
                   };
 
+              window.uploadedLogoInfo = uploadedLogoInfo;
+
               if (!brandInput.value.trim()) {
                 brandInput.value = file.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').toUpperCase();
               }
+              brandInput.required = false;
 
               if (logoFileNameEl) logoFileNameEl.textContent = `${file.name} (${uploadedLogoInfo.width}×${uploadedLogoInfo.height} px · ${sizeKB} KB)`;
               if (logoFileMetaEl) {
@@ -1085,7 +1125,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 logoFileMetaEl.innerHTML = `
                   <div style="margin-top:3px;"><strong>Palet Warna Terdeteksi:</strong> ${swatchesHtml}</div>
                   <div style="margin-top:2px;"><strong>Vienna Code:</strong> <code>${uploadedLogoInfo.viennaCode || '-'}</code> · <strong>Simetri:</strong> H:${uploadedLogoInfo.symmetryH || 80}% / V:${uploadedLogoInfo.symmetryV || 75}% · <strong>dHash:</strong> <code>${uploadedLogoInfo.dHash || '-'}</code></div>
-                  <div style="margin-top:2px;color:var(--green);font-weight:700;">✓ Klik "Cek Merek Gratis" untuk menampilkan Daftar Penelusuran Merek PDKI &amp; Filter Lanjutan!</div>
+                  <div style="margin-top:4px;color:var(--bc-green);font-weight:700;">✓ Logo siap dianalisis! Klik "Cek Merek Gratis" untuk membandingkan dengan pangkalan data DJKI.</div>
                 `;
               }
               if (logoPlaceholder) logoPlaceholder.hidden = true;
@@ -1268,8 +1308,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      const result = evaluateQuery(val, mode, chosenClass);
-      renderResults(result);
+      if (typeof window.runSearch === 'function') {
+        window.runSearch(val, mode, uploadedLogoInfo);
+      } else {
+        const result = evaluateQuery(val, mode, chosenClass);
+        renderResults(result);
+      }
     });
   };
 

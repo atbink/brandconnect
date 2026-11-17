@@ -290,21 +290,24 @@
     </section>
 
     <!-- ==================================================
-         SECTION 3 (IMAGE 3): HASIL PENCARIAN & ANALISIS DETAIL LIVE
+         SECTION 3: HASIL PENCARIAN & ANALISIS LIVE (FORMAT RESMI MEBISO)
          ================================================== -->
     <section class="bc-analysis-section" id="hasil-analisis" style="display:none; padding: 2.5rem 0 4.5rem; background:#FAF8F5; border-top: 1px solid #E5E7EB; border-bottom: 1px solid #E5E7EB;">
       <div class="container" style="max-width:1160px;">
-        <div class="hp-res-header-row" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:1.5rem;">
+        <div class="hp-res-header-row" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.5rem;flex-wrap:wrap;gap:1.5rem;">
           <div>
-            <div class="bc-features-eyebrow">HASIL PENCARIAN &amp; ANALISIS AI</div>
+            <div class="bc-features-eyebrow">PENELUSURAN RESMI DJKI &amp; AUDIT HUKUM AI</div>
             <h2 style="font-family:var(--font-heading);font-size:2.2rem;font-weight:800;color:var(--bc-text-dark);margin:0 0 0.35rem 0;" id="hp-res-title">
-              Hasil Analisis untuk "<span id="hp-query-display">MEREK</span>"
+              Hasil Penelusuran untuk "<span id="hp-query-display">MEREK</span>"
             </h2>
             <p style="font-size:0.95rem;color:#6B7280;margin:0;" id="hp-res-count">
-              Memeriksa data resmi DJKI dan evaluasi kriteria substantif Pasal 20 &amp; 21...
+              Pangkalan Data Resmi DJKI (PDKI) &amp; Analisis Keterdaftaran Berdasarkan UU No. 20 Tahun 2016
             </p>
           </div>
           <div class="hp-res-actions-row" style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+            <button type="button" class="btn btn-secondary btn-sm" id="hp-jump-deep-ai-btn" style="padding:0.6rem 1.15rem;border-radius:9999px;background:#E8F5E9;color:#0D472B;border:1px solid #A7F3D0;font-weight:700;display:inline-flex;align-items:center;gap:0.35rem;cursor:pointer;">
+              <span>✦ Lihat Audit AI</span>
+            </button>
             <button type="button" class="btn btn-secondary btn-sm" onclick="window.print()" style="padding:0.6rem 1.15rem;border-radius:9999px;">
               <span>📥 Unduh Laporan PDF</span>
             </button>
@@ -317,8 +320,22 @@
           </div>
         </div>
 
-        <!-- Summary Grid (Image 3 Upper Grid) -->
-        <div class="hp-res-summary-grid" style="display:grid;grid-template-columns:1fr 1.35fr;gap:1.5rem;margin-bottom:2.5rem;">
+        <!-- 2-COLUMN MEBISO DIRECTORY EXPLORER (Sidebar Filter di Kiri + List Merek di Kanan) -->
+        <div id="hp-mebiso-explorer-container" style="margin-bottom:2.5rem;"></div>
+
+        <!-- DEEP AI ANALYSIS SECTION (Revealed by [Cek Sekarang] CTA Banner or Direct Trigger) -->
+        <div id="hp-deep-ai-section" style="display:none;margin-top:2.5rem;padding-top:2.5rem;border-top:1.5px dashed #CBD5E1;">
+          <div style="margin-bottom:1.75rem;">
+            <div style="font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:var(--bc-green);letter-spacing:0.08em;margin-bottom:0.25rem;">
+              AUDIT SUBSTANTIF TINGKAT LANJUT // PASAL 20 &amp; 21 UU MEREK
+            </div>
+            <h3 style="font-family:var(--font-heading);font-size:1.85rem;font-weight:800;color:var(--bc-text-dark);margin:0;">
+              Analisis Mendalam AI &amp; Estimasi Risiko Penolakan
+            </h3>
+          </div>
+
+          <!-- Summary Grid (Image 3 Upper Grid) -->
+          <div class="hp-res-summary-grid" style="display:grid;grid-template-columns:1fr 1.35fr;gap:1.5rem;margin-bottom:2.5rem;">
           <div style="background:#FEF2F2;border:1px solid #FCA5A5;border-radius:16px;padding:1.75rem;transition:all 0.3s ease;" id="hp-risk-card">
             <div style="font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:#DC2626;display:inline-flex;align-items:center;gap:0.4rem;margin-bottom:0.5rem;" id="hp-risk-pill">
               <span>✦</span>
@@ -573,8 +590,9 @@
             <span>→</span>
           </a>
         </div>
-      </div>
-    </section>
+      </div><!-- /#hp-deep-ai-section -->
+    </div>
+  </section>
 
     <!-- ==================================================
          SECTION 4 (IMAGE 4): CARI KELAS MEREK ANDA (NICE 1-45)
@@ -1322,8 +1340,8 @@
     </div>
   </footer>
 
-  <script src="js/platform-store.js?v=2.2"></script>
-  <script src="js/main.js?v=2.2"></script>
+  <script src="js/platform-store.js?v=2.3"></script>
+  <script src="js/main.js?v=2.3"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const searchForm = document.getElementById('tm-search-form');
@@ -1364,55 +1382,71 @@
         });
       }
 
-      // Main Dynamic AI & DJKI Search Engine
-      async function runSearch(query) {
+      // Main Dynamic AI & DJKI Search Engine (Format Mebiso 2-Kolom + Deep AI Section)
+      async function runSearch(query, modeParam, logoParam) {
         const q = (query || (brandInput ? brandInput.value : '') || '').trim();
-        if (!q) {
+        const mode = modeParam || document.getElementById('tm-search-mode-input')?.value || 'name';
+        const logoMeta = logoParam || window.uploadedLogoInfo || null;
+
+        if (!q && !logoMeta) {
           if (brandInput) brandInput.focus();
           return;
         }
 
-        // 1. Reveal Section & show loading status
+        const effectiveQuery = q || (logoMeta?.name || 'LOGO_ANALYSIS');
+
+        // 1. Reveal Section & show initial loading status
         analysisSection.style.display = 'block';
-        if (queryDisplay) queryDisplay.textContent = q.toUpperCase();
-        if (searchedMeta) searchedMeta.textContent = q.toUpperCase();
+        if (queryDisplay) queryDisplay.textContent = effectiveQuery.toUpperCase();
+        if (searchedMeta) searchedMeta.textContent = effectiveQuery.toUpperCase();
         const resCountEl = document.getElementById('hp-res-count');
-        if (resCountEl) resCountEl.textContent = 'Menganalisis potensi pendaftaran dengan AI & data resmi DJKI...';
+        if (resCountEl) resCountEl.textContent = 'Pangkalan Data Resmi DJKI (PDKI) & Analisis Keterdaftaran Berdasarkan UU No. 20 Tahun 2016';
+
+        // 2. Mount Authentic Mebiso 2-Column Explorer Immediately
+        const mebisoContainer = document.getElementById('hp-mebiso-explorer-container');
+        if (mebisoContainer && window.BCStore && window.BCStore.mountPdkiExplorer) {
+          window.BCStore.mountPdkiExplorer(mebisoContainer, effectiveQuery, logoMeta, null);
+        }
 
         setTimeout(() => {
           analysisSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 80);
 
-        // Reset to first tab
+        // Reset to first tab in deep AI section
         if (document.getElementById('hp-btn-tab-ai')) {
           document.getElementById('hp-btn-tab-ai').click();
         }
 
-        // 2. Query Live DJKI API / Local Verified Cluster
+        // 3. Query Live DJKI API / Local Verified Cluster
         let djkiData = null;
         if (window.BCStore && window.BCStore.fetchLivePdkiApi) {
           try {
-            djkiData = await window.BCStore.fetchLivePdkiApi(q);
+            djkiData = await window.BCStore.fetchLivePdkiApi(effectiveQuery);
           } catch (e) {
             console.warn('Live API fetch warning:', e);
           }
         }
         if (!djkiData || !djkiData.items || djkiData.items.length === 0) {
           if (window.BCStore && window.BCStore.searchPdkiDirectory) {
-            djkiData = window.BCStore.searchPdkiDirectory(q);
+            djkiData = window.BCStore.searchPdkiDirectory(effectiveQuery);
           }
         }
 
-        // 3. Query Serverless AI (/api/ai-analyze) with live DJKI context
+        // Re-mount explorer if live data updated
+        if (mebisoContainer && window.BCStore && window.BCStore.mountPdkiExplorer) {
+          window.BCStore.mountPdkiExplorer(mebisoContainer, effectiveQuery, logoMeta, null);
+        }
+
+        // 4. Query Serverless AI (/api/ai-analyze) with live DJKI context
         let aiData = null;
         try {
-          const exactMatch = (djkiData?.items || []).find(it => (it.brand || '').toLowerCase().trim() === q.toLowerCase().trim());
+          const exactMatch = (djkiData?.items || []).find(it => (it.brand || '').toLowerCase().trim() === effectiveQuery.toLowerCase().trim());
           const topItem = exactMatch || ((djkiData?.items && djkiData.items.length > 0) ? djkiData.items[0] : null);
           const resp = await fetch('/api/ai-analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              brand: q,
+              brand: effectiveQuery,
               topMatch: topItem ? {
                 brand: topItem.brand,
                 owner: topItem.owner,
@@ -1433,8 +1467,26 @@
           console.log('Serverless AI endpoint check (fallback active):', e.message);
         }
 
-        // 4. Render Dynamic AI Results
-        renderAnalysisResults(q, djkiData, aiData);
+        // 5. Render Dynamic AI Results into the Deep AI Section
+        renderAnalysisResults(effectiveQuery, djkiData, aiData);
+      }
+
+      window.runSearch = runSearch;
+
+      // 6. Global Hook for CTA Banner "Cek Sekarang" (Smoothly reveals Deep AI Section)
+      window.runTrademarkCheck = function(targetBrand) {
+        const deepAiSection = document.getElementById('hp-deep-ai-section');
+        if (deepAiSection) {
+          deepAiSection.style.display = 'block';
+          deepAiSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      };
+
+      const jumpDeepAiBtn = document.getElementById('hp-jump-deep-ai-btn');
+      if (jumpDeepAiBtn) {
+        jumpDeepAiBtn.addEventListener('click', () => {
+          window.runTrademarkCheck();
+        });
       }
 
       function renderAnalysisResults(q, djki, ai) {
@@ -1721,19 +1773,29 @@
 
       window.hpRunSample = function(name) {
         if (brandInput) brandInput.value = name;
-        runSearch(name);
+        runSearch(name, 'name', null);
       };
 
       if (searchForm) {
         searchForm.addEventListener('submit', (e) => {
           e.preventDefault();
           const q = (brandInput ? brandInput.value : '').trim();
-          if (!q) {
+          const mode = document.getElementById('tm-search-mode-input')?.value || 'name';
+          const logoMeta = window.uploadedLogoInfo || null;
+          if (!q && !logoMeta) {
             if (brandInput) brandInput.focus();
             return;
           }
-          runSearch(q);
+          runSearch(q, mode, logoMeta);
         });
+      }
+
+      // URL Query auto-search (e.g. ?q=onitsuka or ?brand=kahf)
+      const urlParams = new URLSearchParams(window.location.search);
+      const initialQ = urlParams.get('q') || urlParams.get('brand');
+      if (initialQ) {
+        if (brandInput) brandInput.value = initialQ;
+        runSearch(initialQ, 'name', null);
       }
 
       // Filter pills for section 4 (Cari Kelas)

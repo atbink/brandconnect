@@ -261,7 +261,23 @@
 
       <!-- SEARCH BAR (Mebiso Direct Style) -->
       <div style="max-width:880px;margin:0 auto 1.5rem auto;">
+        <!-- Search Mode Tabs (Nama Merek, Nomor Permohonan, Upload Logo) -->
+        <div class="bc-mode-tabs" role="tablist" style="margin-bottom:1rem;display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
+          <button type="button" class="bc-mode-tab active" data-search-mode="name">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <span>Nama Merek</span>
+          </button>
+          <button type="button" class="bc-mode-tab" data-search-mode="number">
+            <span># Nomor Permohonan</span>
+          </button>
+          <button type="button" class="bc-mode-tab" data-search-mode="logo">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span>Upload Logo (Visual)</span>
+          </button>
+        </div>
+
         <form id="mebiso-search-form" class="mebiso-search-bar">
+          <input type="hidden" id="tm-search-mode-input" value="name" />
           <div style="display:flex;align-items:center;flex:1;position:relative;">
             <input
               type="text"
@@ -422,7 +438,7 @@
     </div>
   </footer>
 
-  <script src="js/platform-store.js?v=2.2"></script>
+  <script src="js/platform-store.js?v=2.3"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const searchForm = document.getElementById('mebiso-search-form');
@@ -441,6 +457,39 @@
 
       let uploadedMeta = null;
       let uploadedCompMeta = null;
+      let currentMode = 'name';
+
+      // Mode Tabs Switching
+      const modeTabs = document.querySelectorAll('.bc-mode-tab');
+      modeTabs.forEach(tab => {
+        tab.addEventListener('click', (ev) => {
+          ev.preventDefault();
+          modeTabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          currentMode = tab.dataset.searchMode || 'name';
+
+          if (currentMode === 'name') {
+            brandInput.placeholder = 'Ketik nama merek (contoh: onitsuka, adidas, nike, converse)...';
+            brandInput.required = true;
+            if (advPanel) advPanel.hidden = true;
+            if (advArrow) advArrow.textContent = '▾';
+          } else if (currentMode === 'number') {
+            brandInput.placeholder = 'Masukkan nomor permohonan / registrasi DJKI (contoh: DID2019079065, D002016040603, IDM000...)...';
+            brandInput.required = true;
+            if (advPanel) advPanel.hidden = true;
+            if (advArrow) advArrow.textContent = '▾';
+          } else if (currentMode === 'logo') {
+            brandInput.placeholder = 'Nama merek pada logo (opsional, otomatis terbaca dari file)...';
+            brandInput.required = false;
+            if (advPanel) {
+              advPanel.hidden = false;
+              if (advArrow) advArrow.textContent = '▴';
+              advPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+          }
+          brandInput.focus();
+        });
+      });
 
       // 1. Core Simple Search Runner (Direct PDKI DJKI Results just like Mebiso)
       const doSearch = (queryStr) => {
@@ -587,7 +636,12 @@
       if (searchForm) {
         searchForm.addEventListener('submit', (e) => {
           e.preventDefault();
-          doSearch(brandInput.value);
+          const q = (brandInput ? brandInput.value : '').trim();
+          if (!q && !uploadedMeta) {
+            if (brandInput) brandInput.focus();
+            return;
+          }
+          doSearch(q || uploadedMeta?.inferredBrand);
         });
       }
 
@@ -620,19 +674,45 @@
         });
       }
 
-      // 7. Handle file uploads for logo audit
+      // 7. Handle file uploads for logo audit (Pixel analysis & Vienna code detection)
       if (fileInput) {
         fileInput.addEventListener('change', (e) => {
           const file = e.target.files[0];
           if (file) {
             const reader = new FileReader();
             reader.onload = (ev) => {
-              uploadedMeta = {
-                dataUrl: ev.target.result,
-                name: file.name,
-                inferredBrand: file.name.replace(/\.[^/.]+$/, '').toUpperCase()
+              const dataUrl = ev.target.result;
+              const imgObj = new Image();
+              imgObj.onload = () => {
+                let pixelAnalysis = null;
+                if (window.BCStore && window.BCStore.analyzeLogoPixels) {
+                  try {
+                    pixelAnalysis = window.BCStore.analyzeLogoPixels(imgObj);
+                  } catch (err) {
+                    console.log('Pixel audit:', err.message);
+                  }
+                }
+
+                uploadedMeta = {
+                  ...(pixelAnalysis || {}),
+                  dataUrl: dataUrl,
+                  previewDataUrl: dataUrl,
+                  name: file.name,
+                  inferredBrand: file.name.replace(/\.[^/.]+$/, '').replace(/[-_]+/g, ' ').toUpperCase(),
+                  width: imgObj.naturalWidth,
+                  height: imgObj.naturalHeight
+                };
+
+                if (!brandInput.value || brandInput.value === 'onitsuka') {
+                  brandInput.value = uploadedMeta.inferredBrand;
+                }
+                brandInput.required = false;
+
+                if (fileStatus) {
+                  fileStatus.innerHTML = `<span style="color:var(--bc-green);font-weight:700;">✓ ${file.name}</span> (${uploadedMeta.width}×${uploadedMeta.height}px) · Vienna: <code>${uploadedMeta.viennaCode || '-'}</code> · dHash: <code>${uploadedMeta.dHash || '-'}</code>`;
+                }
               };
-              if (fileStatus) fileStatus.textContent = '✓ ' + file.name + ' siap diaudit.';
+              imgObj.src = dataUrl;
             };
             reader.readAsDataURL(file);
           }
