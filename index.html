@@ -135,10 +135,6 @@
             <button type="button" class="bc-mode-tab" data-search-mode="number">
               <span># Nomor Permohonan</span>
             </button>
-            <button type="button" class="bc-mode-tab" data-search-mode="logo">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-              <span>Upload Logo (Visual)</span>
-            </button>
           </div>
 
           <p class="bc-search-label" id="tm-mode-prompt">Cek Merek Anda Gratis, sekarang!</p>
@@ -151,7 +147,7 @@
               <input
                 type="text"
                 id="tm-brand-input"
-                placeholder="Masukkan nama merek (contoh: Kopi Nusantara, Zenova, GlowS)"
+                placeholder="Masukkan nama merek (contoh: Kopi Nusantara, Zenova, GlowSkin)..."
                 value=""
                 required
               />
@@ -159,25 +155,6 @@
                 <span>Cek Merek Gratis</span>
                 <span>→</span>
               </button>
-            </div>
-
-            <div class="tm-logo-upload-area" id="tm-logo-upload-area" hidden>
-              <input type="file" id="tm-logo-file-input" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden />
-              <div id="tm-logo-upload-placeholder" style="cursor:pointer;padding:1.5rem;border:2px dashed #D5D3CA;border-radius:16px;background:#FAF8F5;">
-                <strong style="font-family:var(--font-heading);font-size:0.95rem;color:var(--bc-text-dark);display:block;margin-bottom:0.35rem;">
-                  📎 Klik untuk Pilih File Logo Anda (PNG, JPG, WEBP, SVG)
-                </strong>
-                <span style="font-size:0.82rem;color:#6B7280;">
-                  Sistem otomatis menjalankan analisis kemiripan visual logo (dHash, geometri simetri, klasifikasi Vienna &amp; palet warna).
-                </span>
-              </div>
-              <div class="tm-logo-preview-wrap" id="tm-logo-preview-wrap" hidden style="margin-top:1rem;display:flex;align-items:center;gap:1rem;background:#fff;padding:0.75rem 1rem;border-radius:12px;border:1px solid #E5E2D9;">
-                <img src="" alt="Preview Logo" class="tm-logo-preview-img" id="tm-logo-preview-img" style="max-height:48px;max-width:64px;object-fit:contain;" />
-                <div style="text-align:left;flex:1;">
-                  <strong id="tm-logo-file-name" style="font-size:0.88rem;display:block;">logo.png</strong>
-                  <span id="tm-logo-file-meta" style="font-family:var(--font-mono);font-size:0.75rem;color:var(--bc-green);">Siap dianalisis</span>
-                </div>
-              </div>
             </div>
           </form>
 
@@ -1340,8 +1317,8 @@
     </div>
   </footer>
 
-  <script src="js/platform-store.js?v=2.5"></script>
-  <script src="js/main.js?v=2.5"></script>
+  <script src="js/platform-store.js?v=2.6"></script>
+  <script src="js/main.js?v=2.6"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const searchForm = document.getElementById('tm-search-form');
@@ -1383,17 +1360,16 @@
       }
 
       // Main Dynamic AI & DJKI Search Engine (Format Mebiso 2-Kolom + Deep AI Section)
-      async function runSearch(query, modeParam, logoParam) {
+      async function runSearch(query, modeParam) {
         const q = (query || (brandInput ? brandInput.value : '') || '').trim();
         const mode = modeParam || document.getElementById('tm-search-mode-input')?.value || 'name';
-        const logoMeta = logoParam || window.uploadedLogoInfo || null;
 
-        if (!q && !logoMeta) {
+        if (!q) {
           if (brandInput) brandInput.focus();
           return;
         }
 
-        const effectiveQuery = q || (logoMeta?.name || 'LOGO_ANALYSIS');
+        const effectiveQuery = q;
 
         // 1. Reveal Section & show initial loading status
         analysisSection.style.display = 'block';
@@ -1405,7 +1381,7 @@
         // 2. Mount Authentic Mebiso 2-Column Explorer Immediately
         const mebisoContainer = document.getElementById('hp-mebiso-explorer-container');
         if (mebisoContainer && window.BCStore && window.BCStore.mountPdkiExplorer) {
-          window.BCStore.mountPdkiExplorer(mebisoContainer, effectiveQuery, logoMeta, null);
+          window.BCStore.mountPdkiExplorer(mebisoContainer, effectiveQuery, null, null);
         }
 
         setTimeout(() => {
@@ -1434,7 +1410,7 @@
 
         // Re-mount explorer if live data updated
         if (mebisoContainer && window.BCStore && window.BCStore.mountPdkiExplorer) {
-          window.BCStore.mountPdkiExplorer(mebisoContainer, effectiveQuery, logoMeta, null);
+          window.BCStore.mountPdkiExplorer(mebisoContainer, effectiveQuery, null, null);
         }
 
         // 4. Query Serverless AI (/api/ai-analyze) with live DJKI context
@@ -1448,8 +1424,6 @@
             body: JSON.stringify({
               brand: effectiveQuery,
               mode: mode,
-              logoDataUrl: logoMeta?.previewDataUrl || null,
-              fileName: logoMeta?.name || null,
               topMatch: topItem ? {
                 brand: topItem.brand,
                 owner: topItem.owner,
@@ -1464,13 +1438,6 @@
             const json = await resp.json();
             if (json.success && json.analysis) {
               aiData = json.analysis;
-              if (logoMeta && aiData.logoAudit) {
-                logoMeta.logoAudit = aiData.logoAudit;
-                // Re-mount explorer with enriched AI Vision conflict findings
-                if (mebisoContainer && window.BCStore && window.BCStore.mountPdkiExplorer) {
-                  window.BCStore.mountPdkiExplorer(mebisoContainer, effectiveQuery, logoMeta, null);
-                }
-              }
             }
           }
         } catch (e) {
@@ -1784,7 +1751,7 @@
 
       window.hpRunSample = function(name) {
         if (brandInput) brandInput.value = name;
-        runSearch(name, 'name', null);
+        runSearch(name, 'name');
       };
 
       if (searchForm) {
@@ -1792,12 +1759,11 @@
           e.preventDefault();
           const q = (brandInput ? brandInput.value : '').trim();
           const mode = document.getElementById('tm-search-mode-input')?.value || 'name';
-          const logoMeta = window.uploadedLogoInfo || null;
-          if (!q && !logoMeta) {
+          if (!q) {
             if (brandInput) brandInput.focus();
             return;
           }
-          runSearch(q, mode, logoMeta);
+          runSearch(q, mode);
         });
       }
 
@@ -1806,7 +1772,7 @@
       const initialQ = urlParams.get('q') || urlParams.get('brand');
       if (initialQ) {
         if (brandInput) brandInput.value = initialQ;
-        runSearch(initialQ, 'name', null);
+        runSearch(initialQ, 'name');
       }
 
       // Filter pills for section 4 (Cari Kelas)

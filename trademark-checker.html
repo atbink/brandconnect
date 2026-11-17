@@ -267,7 +267,7 @@
 
       <!-- SEARCH BAR (Mebiso Direct Style) -->
       <div style="max-width:880px;margin:0 auto 1.5rem auto;">
-        <!-- Search Mode Tabs (Nama Merek, Nomor Permohonan, Upload Logo) -->
+        <!-- Search Mode Tabs (Nama Merek, Nomor Permohonan) -->
         <div class="bc-mode-tabs" role="tablist" style="margin-bottom:1rem;display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
           <button type="button" class="bc-mode-tab active" data-search-mode="name">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -275,10 +275,6 @@
           </button>
           <button type="button" class="bc-mode-tab" data-search-mode="number">
             <span># Nomor Permohonan</span>
-          </button>
-          <button type="button" class="bc-mode-tab" data-search-mode="logo">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            <span>Upload Logo (Visual)</span>
           </button>
         </div>
 
@@ -300,8 +296,8 @@
           </button>
         </form>
 
-        <!-- Quick Chips & Advanced AI Toggle -->
-        <div style="margin-top:0.75rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.6rem;font-size:0.82rem;">
+        <!-- Quick Chips -->
+        <div style="margin-top:0.75rem;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:0.6rem;font-size:0.82rem;">
           <div style="color:#64748B;">
             <strong style="color:#334155;">Pencarian Populer:</strong>
             <button type="button" class="quick-chip" data-q="onitsuka">onitsuka</button>
@@ -310,38 +306,6 @@
             <button type="button" class="quick-chip" data-q="nike">nike</button>
             <button type="button" class="quick-chip" data-q="kopi kenangan">kopi kenangan</button>
             <button type="button" class="quick-chip" data-q="wardah">wardah</button>
-          </div>
-          <button type="button" id="toggle-advanced-ai" style="background:transparent;border:none;color:var(--bc-green);font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;cursor:pointer;text-decoration:underline;display:inline-flex;align-items:center;gap:4px;">
-            <span>⚙️ Opsi Tambahan: Upload Logo &amp; Audit AI</span>
-            <span id="adv-arrow">▾</span>
-          </button>
-        </div>
-
-        <!-- Collapsible Advanced Upload Box -->
-        <div id="advanced-ai-panel" hidden style="margin-top:1rem;background:#FAF8F5;border:1.5px dashed var(--bc-card-border);padding:1.35rem;border-radius:14px;text-align:left;">
-          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:1.25rem;">
-            <div style="background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:12px;padding:1.15rem;">
-              <strong style="font-family:var(--font-heading);font-size:0.88rem;display:block;margin-bottom:0.25rem;color:var(--bc-text-dark);">1. Upload Logo Merek Anda (Audit Etiket &amp; Vienna)</strong>
-              <span style="font-size:0.78rem;color:#6B7280;display:block;margin-bottom:0.75rem;" id="dc-file-status">Unggah gambar PNG/JPG untuk mendeteksi kemiripan visual etiket dan Klasifikasi Vienna.</span>
-              <label class="btn btn-secondary btn-sm" style="cursor:pointer;width:100%;justify-content:center;display:flex;align-items:center;padding:0.65rem;background:#FAF8F5;border:1.5px dashed #D5D3CA;border-radius:8px;font-size:0.82rem;font-weight:600;color:var(--bc-green);">
-                <span>📎 Pilih File Logo Anda</span>
-                <input type="file" id="dc-file-input" accept="image/*" hidden />
-              </label>
-            </div>
-            <div style="background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:12px;padding:1.15rem;">
-              <strong style="font-family:var(--font-heading);font-size:0.88rem;display:block;margin-bottom:0.25rem;color:var(--bc-text-dark);">2. Upload Logo Pembanding (Head-to-Head 1-on-1)</strong>
-              <span style="font-size:0.78rem;color:#6B7280;display:block;margin-bottom:0.75rem;" id="dc-comp-file-status">Unggah logo kompetitor untuk menghitung persentase kemiripan bentuk siluet &amp; warna secara langsung.</span>
-              <label class="btn btn-secondary btn-sm" style="cursor:pointer;width:100%;justify-content:center;display:flex;align-items:center;padding:0.65rem;background:#FAF8F5;border:1.5px dashed #D5D3CA;border-radius:8px;font-size:0.82rem;font-weight:600;color:var(--bc-green);">
-                <span>⚖️ Pilih Logo Pembanding</span>
-                <input type="file" id="dc-comp-file-input" accept="image/*" hidden />
-              </label>
-            </div>
-          </div>
-          <div style="margin-top:1.15rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">
-            <span style="font-size:0.76rem;color:#6B7280;">* Format etiket diverifikasi sesuai standar Permohonan Merek DJKI RI.</span>
-            <button type="button" id="btn-run-advanced" style="background:var(--bc-green);color:#FFF;border:none;padding:0.65rem 1.45rem;border-radius:9999px;font-weight:700;font-size:0.84rem;cursor:pointer;box-shadow:0 2px 8px rgba(13,59,46,0.18);">
-              <span>Perbarui Penelusuran dengan Logo →</span>
-            </button>
           </div>
         </div>
       </div>
@@ -444,28 +408,18 @@
     </div>
   </footer>
 
-  <script src="js/platform-store.js?v=2.5"></script>
+  <script src="js/platform-store.js?v=2.6"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const searchForm = document.getElementById('mebiso-search-form');
       const brandInput = document.getElementById('dc-brand');
       const clearBtn = document.getElementById('clear-search-btn');
-      const toggleAdvBtn = document.getElementById('toggle-advanced-ai');
-      const advPanel = document.getElementById('advanced-ai-panel');
-      const advArrow = document.getElementById('adv-arrow');
-      const fileInput = document.getElementById('dc-file-input');
-      const fileStatus = document.getElementById('dc-file-status');
-      const compFileInput = document.getElementById('dc-comp-file-input');
-      const compFileStatus = document.getElementById('dc-comp-file-status');
-      const btnRunAdv = document.getElementById('btn-run-advanced');
       const visualSimContainer = document.getElementById('dc-visual-similarity-container');
       const resultBox = document.getElementById('dc-result-box');
 
-      let uploadedMeta = null;
-      let uploadedCompMeta = null;
       let currentMode = 'name';
 
-      // Mode Tabs Switching
+      // Mode Tabs Switching (Nama Merek & # Nomor Permohonan)
       const modeTabs = document.querySelectorAll('.bc-mode-tab');
       modeTabs.forEach(tab => {
         tab.addEventListener('click', (ev) => {
@@ -477,21 +431,9 @@
           if (currentMode === 'name') {
             brandInput.placeholder = 'Ketik nama merek (contoh: onitsuka, adidas, nike, converse)...';
             brandInput.required = true;
-            if (advPanel) advPanel.hidden = true;
-            if (advArrow) advArrow.textContent = '▾';
           } else if (currentMode === 'number') {
             brandInput.placeholder = 'Masukkan nomor permohonan / registrasi DJKI (contoh: DID2019079065, D002016040603, IDM000...)...';
             brandInput.required = true;
-            if (advPanel) advPanel.hidden = true;
-            if (advArrow) advArrow.textContent = '▾';
-          } else if (currentMode === 'logo') {
-            brandInput.placeholder = 'Nama merek pada logo (opsional, otomatis terbaca dari file)...';
-            brandInput.required = false;
-            if (advPanel) {
-              advPanel.hidden = false;
-              if (advArrow) advArrow.textContent = '▴';
-              advPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
           }
           brandInput.focus();
         });
@@ -500,8 +442,8 @@
       // 1. Core Simple Search Runner (Direct PDKI DJKI Results just like Mebiso)
       const doSearch = (queryStr) => {
         const q = (queryStr || (brandInput ? brandInput.value : '') || 'onitsuka').trim();
-        if (!q && !uploadedMeta) return;
-        if (brandInput && q) brandInput.value = q;
+        if (!q) return;
+        if (brandInput) brandInput.value = q;
         if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
 
         // Pre-fetch live API if key is available
@@ -511,39 +453,18 @@
 
         // Mount PDKI Explorer immediately
         if (visualSimContainer && window.BCStore && window.BCStore.mountPdkiExplorer) {
-          window.BCStore.mountPdkiExplorer(visualSimContainer, q, uploadedMeta, uploadedCompMeta);
-        }
-
-        // If logo is uploaded, query AI Vision shape analysis asynchronously
-        if (uploadedMeta && uploadedMeta.previewDataUrl && !uploadedMeta.logoAudit) {
-          fetch('/api/ai-analyze', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              brand: q || uploadedMeta.inferredBrand || 'LOGO_AUDIT',
-              mode: 'logo',
-              fileName: uploadedMeta.name,
-              logoDataUrl: uploadedMeta.previewDataUrl
-            })
-          }).then(r => r.json()).then(res => {
-            if (res.success && res.analysis && res.analysis.logoAudit) {
-              uploadedMeta.logoAudit = res.analysis.logoAudit;
-              if (visualSimContainer && window.BCStore && window.BCStore.mountPdkiExplorer) {
-                window.BCStore.mountPdkiExplorer(visualSimContainer, q, uploadedMeta, uploadedCompMeta);
-              }
-            }
-          }).catch(err => console.log('Logo visual audit note:', err));
+          window.BCStore.mountPdkiExplorer(visualSimContainer, q, null, null);
         }
 
         // Hide AI deep result box when a new keyword search is initiated until user requests it
-        if (resultBox && !uploadedMeta) {
+        if (resultBox) {
           resultBox.hidden = true;
         }
       };
 
       // 2. Global Deep AI Analysis Trigger (called by CTA banner "Cek Sekarang" inside search results)
       window.runTrademarkCheck = async (brandName) => {
-        const targetQ = (brandName || (brandInput ? brandInput.value : '') || (uploadedMeta ? uploadedMeta.inferredBrand : 'MEREK BARU')).trim();
+        const targetQ = (brandName || (brandInput ? brandInput.value : '') || 'MEREK BARU').trim();
         
         // Show result box with loading state
         if (resultBox) {
@@ -567,13 +488,13 @@
         }
 
         // 2. Evaluate with BCStore local analyzer
-        const rec = window.BCStore.analyzeTrademark(targetQ, currentMode, '', '', uploadedMeta, uploadedCompMeta);
+        const rec = window.BCStore.analyzeTrademark(targetQ, currentMode, '', '', null, null);
         const lowerQ = targetQ.toLowerCase().trim();
         const liveItems = (liveDjki && Array.isArray(liveDjki.items)) ? liveDjki.items : (rec.similarMarks || []);
         const exactMatchItem = liveItems.find(it => (it.brand || '').toLowerCase().trim() === lowerQ);
         const topConflict = exactMatchItem || (liveItems.length > 0 ? liveItems[0] : null);
 
-        // 3. Try serverless AI (/api/ai-analyze) with top match and logo context
+        // 3. Try serverless AI (/api/ai-analyze) with top match context
         let aiData = null;
         try {
           const resp = await fetch('/api/ai-analyze', {
@@ -582,8 +503,6 @@
             body: JSON.stringify({
               brand: targetQ,
               mode: currentMode,
-              logoDataUrl: uploadedMeta?.previewDataUrl || null,
-              fileName: uploadedMeta?.name || null,
               topMatch: topConflict ? {
                 brand: topConflict.brand,
                 owner: topConflict.owner,
@@ -598,12 +517,6 @@
             const json = await resp.json();
             if (json.success && json.analysis) {
               aiData = json.analysis;
-              if (uploadedMeta && aiData.logoAudit) {
-                uploadedMeta.logoAudit = aiData.logoAudit;
-                if (visualSimContainer && window.BCStore && window.BCStore.mountPdkiExplorer) {
-                  window.BCStore.mountPdkiExplorer(visualSimContainer, targetQ, uploadedMeta, uploadedCompMeta);
-                }
-              }
             }
           }
         } catch (e) {
@@ -614,7 +527,6 @@
           exactMatchItem ||
           (topConflict && ((topConflict.brand || '').toLowerCase().trim() === lowerQ || (topConflict.similarityPct && topConflict.similarityPct >= 70))) ||
           (aiData && aiData.riskLevel === 'Tinggi') ||
-          (aiData?.logoAudit?.visualConflictRisk === 'Tinggi') ||
           (rec.riskLevel === 'high')
         );
 
@@ -674,11 +586,11 @@
         searchForm.addEventListener('submit', (e) => {
           e.preventDefault();
           const q = (brandInput ? brandInput.value : '').trim();
-          if (!q && !uploadedMeta) {
+          if (!q) {
             if (brandInput) brandInput.focus();
             return;
           }
-          doSearch(q || uploadedMeta?.inferredBrand);
+          doSearch(q);
         });
       }
 
@@ -701,83 +613,6 @@
           if (q) doSearch(q);
         });
       });
-
-      // 6. Toggle Advanced AI Panel
-      if (toggleAdvBtn && advPanel) {
-        toggleAdvBtn.addEventListener('click', () => {
-          const isOpen = !advPanel.hidden;
-          advPanel.hidden = isOpen;
-          if (advArrow) advArrow.textContent = isOpen ? '▾' : '▴';
-        });
-      }
-
-      // 7. Handle file uploads for logo audit (Pixel analysis & Vienna code detection)
-      if (fileInput) {
-        fileInput.addEventListener('change', (e) => {
-          const file = e.target.files[0];
-          if (file) {
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-              const dataUrl = ev.target.result;
-              const imgObj = new Image();
-              imgObj.onload = () => {
-                let pixelAnalysis = null;
-                if (window.BCStore && window.BCStore.analyzeLogoPixels) {
-                  try {
-                    pixelAnalysis = window.BCStore.analyzeLogoPixels(imgObj);
-                  } catch (err) {
-                    console.log('Pixel audit:', err.message);
-                  }
-                }
-
-                uploadedMeta = {
-                  ...(pixelAnalysis || {}),
-                  dataUrl: dataUrl,
-                  previewDataUrl: dataUrl,
-                  name: file.name,
-                  inferredBrand: file.name.replace(/\.[^/.]+$/, '').replace(/[-_]+/g, ' ').toUpperCase(),
-                  width: imgObj.naturalWidth,
-                  height: imgObj.naturalHeight
-                };
-
-                if (!brandInput.value || brandInput.value === 'onitsuka') {
-                  brandInput.value = uploadedMeta.inferredBrand;
-                }
-                brandInput.required = false;
-
-                if (fileStatus) {
-                  fileStatus.innerHTML = `<span style="color:var(--bc-green);font-weight:700;">✓ ${file.name}</span> (${uploadedMeta.width}×${uploadedMeta.height}px) · Vienna: <code>${uploadedMeta.viennaCode || '-'}</code> · dHash: <code>${uploadedMeta.dHash || '-'}</code>`;
-                }
-              };
-              imgObj.src = dataUrl;
-            };
-            reader.readAsDataURL(file);
-          }
-        });
-      }
-
-      if (compFileInput) {
-        compFileInput.addEventListener('change', (e) => {
-          const file = e.target.files[0];
-          if (file) {
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-              uploadedCompMeta = {
-                dataUrl: ev.target.result,
-                name: file.name
-              };
-              if (compFileStatus) compFileStatus.textContent = '✓ ' + file.name + ' siap dibandingkan.';
-            };
-            reader.readAsDataURL(file);
-          }
-        });
-      }
-
-      if (btnRunAdv) {
-        btnRunAdv.addEventListener('click', () => {
-          doSearch(brandInput.value);
-        });
-      }
 
       // Check URL search query parameter (e.g. ?q=onitsuka)
       const urlParams = new URLSearchParams(window.location.search);

@@ -984,13 +984,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectedClassHidden = document.getElementById('tm-selected-class-hidden');
     const modeTabs = document.querySelectorAll('.bc-mode-tab, .tm-mode-tab');
     const modePrompt = document.getElementById('tm-mode-prompt');
-    const logoUploadArea = document.getElementById('tm-logo-upload-area');
-    const logoFileInput = document.getElementById('tm-logo-file-input');
-    const logoPlaceholder = document.getElementById('tm-logo-upload-placeholder');
-    const logoPreviewWrap = document.getElementById('tm-logo-preview-wrap');
-    const logoPreviewImg = document.getElementById('tm-logo-preview-img');
-    const logoFileNameEl = document.getElementById('tm-logo-file-name');
-    const logoFileMetaEl = document.getElementById('tm-logo-file-meta');
     const resultsPanel = document.getElementById('tm-results-panel');
     const honestNoticeEl = document.getElementById('tm-honest-notice');
 
@@ -1008,14 +1001,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!searchForm || !brandInput) return;
 
-    const compLogoInput = document.getElementById('tm-comp-logo-input');
-    const compLogoStatus = document.getElementById('tm-comp-logo-status');
-    const visualSimContainer = document.getElementById('tm-visual-similarity-container');
-
-    let uploadedLogoInfo = null;
-    let uploadedCompLogoInfo = null;
-
-    // Mode Tabs Switching (Supports both .bc-mode-tab and .tm-mode-tab)
+    // Mode Tabs Switching (Supports Nama Merek & Nomor Permohonan)
     modeTabs.forEach((tab) => {
       tab.addEventListener('click', (ev) => {
         ev.preventDefault();
@@ -1033,139 +1019,14 @@ document.addEventListener('DOMContentLoaded', () => {
           brandInput.placeholder = 'Masukkan nama merek (contoh: Kopi Nusantara, Zenova, GlowSkin)...';
           brandInput.required = true;
           if (modePrompt) modePrompt.textContent = 'Cek Merek Anda Gratis, sekarang!';
-          if (logoUploadArea) logoUploadArea.hidden = true;
         } else if (mode === 'number') {
           brandInput.placeholder = 'Masukkan nomor permohonan / registrasi DJKI (contoh: DID2019079065, D002016040603, IDM000...)...';
           brandInput.required = true;
           if (modePrompt) modePrompt.textContent = 'Cek Status & Keterdaftaran Nomor Permohonan DJKI';
-          if (logoUploadArea) logoUploadArea.hidden = true;
-        } else if (mode === 'logo') {
-          brandInput.placeholder = 'Ketik nama merek pada logo (opsional, otomatis terbaca dari file)...';
-          brandInput.required = false;
-          if (modePrompt) modePrompt.textContent = 'Unggah Logo untuk Analisis Kemiripan Visual AI (dHash, Vienna Code & Komposisi Warna)';
-          if (logoUploadArea) logoUploadArea.hidden = false;
         }
         brandInput.focus();
       });
     });
-
-    // Logo Upload Handling (Click + Drag & Drop)
-    if (logoUploadArea && logoFileInput) {
-      if (logoPlaceholder) {
-        logoPlaceholder.addEventListener('click', (ev) => {
-          ev.preventDefault();
-          logoFileInput.click();
-        });
-      }
-
-      ['dragenter', 'dragover'].forEach((evt) => {
-        logoUploadArea.addEventListener(evt, (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (logoPlaceholder) {
-            logoPlaceholder.style.borderColor = 'var(--bc-green)';
-            logoPlaceholder.style.background = '#ECFDF5';
-          }
-        }, false);
-      });
-
-      ['dragleave', 'drop'].forEach((evt) => {
-        logoUploadArea.addEventListener(evt, (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (logoPlaceholder) {
-            logoPlaceholder.style.borderColor = '#D5D3CA';
-            logoPlaceholder.style.background = '#FAF8F5';
-          }
-        }, false);
-      });
-
-      logoUploadArea.addEventListener('drop', (e) => {
-        const dt = e.dataTransfer;
-        if (dt && dt.files && dt.files.length > 0) {
-          logoFileInput.files = dt.files;
-          const ev = new Event('change', { bubbles: true });
-          logoFileInput.dispatchEvent(ev);
-        }
-      });
-
-      logoFileInput.addEventListener('change', (e) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-          const dataUrl = ev.target?.result;
-          if (logoPreviewImg && typeof dataUrl === 'string') {
-            logoPreviewImg.src = dataUrl;
-            const imgObj = new Image();
-            imgObj.onload = () => {
-              const sizeKB = Math.round(file.size / 1024);
-              uploadedLogoInfo = window.BCStore && window.BCStore.analyzeLogoPixels
-                ? window.BCStore.analyzeLogoPixels(imgObj, file.name, sizeKB)
-                : {
-                    name: file.name,
-                    sizeKB,
-                    width: imgObj.naturalWidth,
-                    height: imgObj.naturalHeight
-                  };
-
-              window.uploadedLogoInfo = uploadedLogoInfo;
-
-              if (!brandInput.value.trim()) {
-                brandInput.value = file.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').toUpperCase();
-              }
-              brandInput.required = false;
-
-              if (logoFileNameEl) logoFileNameEl.textContent = `${file.name} (${uploadedLogoInfo.width}×${uploadedLogoInfo.height} px · ${sizeKB} KB)`;
-              if (logoFileMetaEl) {
-                const swatchesHtml = (uploadedLogoInfo.dominantColors || [])
-                  .map((c) => `<span style="display:inline-flex;align-items:center;gap:4px;margin-right:8px;"><span style="width:11px;height:11px;border-radius:2px;background:${c.hex};border:1px solid #333;display:inline-block;"></span>${c.nameId} (${c.hex})</span>`)
-                  .join('');
-                logoFileMetaEl.innerHTML = `
-                  <div style="margin-top:3px;"><strong>Palet Warna Terdeteksi:</strong> ${swatchesHtml}</div>
-                  <div style="margin-top:2px;"><strong>Vienna Code:</strong> <code>${uploadedLogoInfo.viennaCode || '-'}</code> · <strong>Simetri:</strong> H:${uploadedLogoInfo.symmetryH || 80}% / V:${uploadedLogoInfo.symmetryV || 75}% · <strong>dHash:</strong> <code>${uploadedLogoInfo.dHash || '-'}</code></div>
-                  <div style="margin-top:4px;color:var(--bc-green);font-weight:700;">✓ Logo siap dianalisis! Klik "Cek Merek Gratis" untuk membandingkan dengan pangkalan data DJKI.</div>
-                `;
-              }
-              if (logoPlaceholder) logoPlaceholder.hidden = true;
-              if (logoPreviewWrap) logoPreviewWrap.hidden = false;
-            };
-            imgObj.src = dataUrl;
-          }
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-
-    // Competitor Logo 1-on-1 Upload Handling
-    if (compLogoInput) {
-      compLogoInput.addEventListener('change', (e) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-          const dataUrl = ev.target?.result;
-          if (typeof dataUrl === 'string') {
-            const imgObj = new Image();
-            imgObj.onload = () => {
-              const sizeKB = Math.round(file.size / 1024);
-              uploadedCompLogoInfo = window.BCStore && window.BCStore.analyzeLogoPixels
-                ? window.BCStore.analyzeLogoPixels(imgObj, file.name, sizeKB)
-                : null;
-              if (compLogoStatus && uploadedCompLogoInfo) {
-                const cmp = uploadedLogoInfo && window.BCStore.compareTwoLogos
-                  ? window.BCStore.compareTwoLogos(uploadedLogoInfo, uploadedCompLogoInfo)
-                  : null;
-                compLogoStatus.innerHTML = `<strong style="color:var(--green);">✓ Logo Pembanding Terbaca: ${file.name}</strong> (dHash: <code>${uploadedCompLogoInfo.dHash}</code>)${cmp ? ` — <strong>Kemiripan 1-on-1: ${cmp.totalSim}% (${cmp.verdict})</strong>` : ''}`;
-              }
-            };
-            imgObj.src = dataUrl;
-          }
-        };
-        reader.readAsDataURL(file);
-      });
-    }
 
     // Known well-known marks in Indonesia for rule-based collision warning
     const highConflictTokens = [
