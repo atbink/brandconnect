@@ -1403,10 +1403,25 @@
           }
         }
 
-        // 3. Query Serverless AI (/api/ai-analyze) with instant fallback
+        // 3. Query Serverless AI (/api/ai-analyze) with live DJKI context
         let aiData = null;
         try {
-          const resp = await fetch('/api/ai-analyze?brand=' + encodeURIComponent(q));
+          const topItem = (djkiData?.items && djkiData.items.length > 0) ? djkiData.items[0] : null;
+          const resp = await fetch('/api/ai-analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              brand: q,
+              topMatch: topItem ? {
+                brand: topItem.brand,
+                owner: topItem.owner,
+                appNo: topItem.appNo,
+                status: topItem.status,
+                niceClass: topItem.niceClass
+              } : null,
+              totalFound: djkiData?.totalFound || (djkiData?.items ? djkiData.items.length : 0)
+            })
+          });
           if (resp.ok) {
             const json = await resp.json();
             if (json.success && json.analysis) {
@@ -1422,9 +1437,19 @@
       }
 
       function renderAnalysisResults(q, djki, ai) {
-        const lower = q.toLowerCase();
+        const lower = q.toLowerCase().trim();
         const items = (djki && Array.isArray(djki.items)) ? djki.items : [];
         const totalFound = djki?.totalFound || items.length;
+
+        // Check if top item in DJKI is identical or closely conflicting
+        const top = items.length > 0 ? items[0] : null;
+        const topBrandLower = (top?.brand || '').toLowerCase().trim();
+        const isExactOrConflict = top && (
+          topBrandLower === lower ||
+          lower.includes(topBrandLower) ||
+          topBrandLower.includes(lower) ||
+          (top.similarityPct && top.similarityPct >= 70)
+        );
 
         // Determine Risk Level dynamically
         let riskLevel = 'Rendah';
@@ -1432,25 +1457,21 @@
         let riskText = 'Risiko Rendah (Peluang Lolos Tinggi)';
         let riskDesc = `Daya pembeda kuat! Belum ditemukan merek identik terdaftar untuk "${q.toUpperCase()}". Peluang lolos pemeriksaan substantif DJKI sangat besar.`;
 
-        if (ai) {
+        if (isExactOrConflict) {
+          riskLevel = 'Tinggi';
+          riskScore = 18;
+          riskText = 'Risiko Tinggi (Persamaan Pada Pokoknya)';
+          riskDesc = `Merek "${q.toUpperCase()}" memiliki persamaan identik/substantif dengan merek "${top.brand}" (No. ${top.appNo || '-'}) yang sudah terdaftar di DJKI milik ${top.owner || 'pihak lain'}. Berdasarkan Pasal 21 ayat (1) huruf a UU No. 20/2016, permohonan baru berpotensi besar DITOLAK.`;
+        } else if (ai) {
           riskLevel = ai.riskLevel || 'Rendah';
           riskScore = ai.riskScore || 90;
           riskText = ai.verdict || (`Risiko ${riskLevel}`);
           riskDesc = ai.explanation || riskDesc;
         } else if (items.length > 0) {
-          const top = items[0];
-          const topSim = top.similarityPct || 80;
-          if (topSim >= 70 || top.brand.toLowerCase() === lower) {
-            riskLevel = 'Tinggi';
-            riskScore = 24;
-            riskText = 'Risiko Tinggi (Persamaan Pada Pokoknya)';
-            riskDesc = `Teridentifikasi kemiripan signifikan dengan merek "${top.brand}" terdaftar di DJKI (No. ${top.appNo}). Berpotensi ditolak berdasarkan Pasal 21 ayat (1) UU No. 20/2016.`;
-          } else {
-            riskLevel = 'Menengah';
-            riskScore = 62;
-            riskText = 'Risiko Menengah (Perlu Diferensiasi)';
-            riskDesc = `Ditemukan beberapa merek dengan unsur kata yang mirip. Disarankan menambahkan kata pembeda atau etiket logo khusus agar tidak memicu sanggahan.`;
-          }
+          riskLevel = 'Menengah';
+          riskScore = 58;
+          riskText = 'Risiko Menengah (Perlu Diferensiasi)';
+          riskDesc = `Ditemukan beberapa merek dengan unsur kata yang mirip. Disarankan menambahkan kata pembeda atau etiket logo khusus agar tidak memicu sanggahan.`;
         }
 
         // Update Risk Card Styling

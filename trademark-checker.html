@@ -480,10 +480,24 @@
         document.getElementById('dc-ai-interp').textContent = 'Memeriksa kriteria substantif Pasal 20 & 21 UU No. 20/2016...';
         document.getElementById('dc-prof-assess').textContent = 'Menyiapkan rekomendasi taktis pendaftaran merek...';
 
-        // 1. Try serverless AI (/api/ai-analyze)
+        // 1. Try serverless AI (/api/ai-analyze) with top match context
         let aiData = null;
         try {
-          const resp = await fetch('/api/ai-analyze?brand=' + encodeURIComponent(targetQ));
+          const topItem = (rec?.similarMarks && rec.similarMarks.length > 0) ? rec.similarMarks[0] : null;
+          const resp = await fetch('/api/ai-analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              brand: targetQ,
+              topMatch: topItem ? {
+                brand: topItem.brand,
+                owner: topItem.owner,
+                appNo: topItem.appNo,
+                status: topItem.status,
+                niceClass: topItem.niceClass
+              } : null
+            })
+          });
           if (resp.ok) {
             const json = await resp.json();
             if (json.success && json.analysis) {
