@@ -422,7 +422,7 @@
     </div>
   </footer>
 
-  <script src="js/platform-store.js"></script>
+  <script src="js/platform-store.js?v=2.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const searchForm = document.getElementById('mebiso-search-form');
@@ -480,22 +480,39 @@
         document.getElementById('dc-ai-interp').textContent = 'Memeriksa kriteria substantif Pasal 20 & 21 UU No. 20/2016...';
         document.getElementById('dc-prof-assess').textContent = 'Menyiapkan rekomendasi taktis pendaftaran merek...';
 
-        // 1. Try serverless AI (/api/ai-analyze) with top match context
+        // 1. Fetch live DJKI data first to guarantee full context
+        let liveDjki = null;
+        if (window.BCStore && window.BCStore.fetchLivePdkiApi) {
+          try {
+            liveDjki = await window.BCStore.fetchLivePdkiApi(targetQ);
+          } catch (e) {
+            console.log('Live PDKI info:', e.message);
+          }
+        }
+
+        // 2. Evaluate with BCStore local analyzer
+        const rec = window.BCStore.analyzeTrademark(targetQ, 'name', '', '', uploadedMeta, uploadedCompMeta);
+        const lowerQ = targetQ.toLowerCase().trim();
+        const liveItems = (liveDjki && Array.isArray(liveDjki.items)) ? liveDjki.items : (rec.similarMarks || []);
+        const exactMatchItem = liveItems.find(it => (it.brand || '').toLowerCase().trim() === lowerQ);
+        const topConflict = exactMatchItem || (liveItems.length > 0 ? liveItems[0] : null);
+
+        // 3. Try serverless AI (/api/ai-analyze) with top match context
         let aiData = null;
         try {
-          const topItem = (rec?.similarMarks && rec.similarMarks.length > 0) ? rec.similarMarks[0] : null;
           const resp = await fetch('/api/ai-analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               brand: targetQ,
-              topMatch: topItem ? {
-                brand: topItem.brand,
-                owner: topItem.owner,
-                appNo: topItem.appNo,
-                status: topItem.status,
-                niceClass: topItem.niceClass
-              } : null
+              topMatch: topConflict ? {
+                brand: topConflict.brand,
+                owner: topConflict.owner,
+                appNo: topConflict.appNo,
+                status: topConflict.status,
+                niceClass: topConflict.niceClass
+              } : null,
+              totalFound: liveDjki?.totalFound || liveItems.length
             })
           });
           if (resp.ok) {
@@ -508,15 +525,19 @@
           console.log('AI analyze offline/fallback:', e.message);
         }
 
-        // 2. If no serverless response, fallback to BCStore local analyzer
-        const rec = window.BCStore.analyzeTrademark(targetQ, 'name', '', '', uploadedMeta, uploadedCompMeta);
+        const isConflict = Boolean(
+          exactMatchItem ||
+          (topConflict && ((topConflict.brand || '').toLowerCase().trim() === lowerQ || (topConflict.similarityPct && topConflict.similarityPct >= 70))) ||
+          (aiData && aiData.riskLevel === 'Tinggi') ||
+          (rec.riskLevel === 'high')
+        );
 
         const refCode = rec.referenceCode || ('BC-' + Date.now().toString().slice(-6));
         const brand = targetQ.toUpperCase();
-        const primaryClass = aiData?.classRecommendation?.primaryClass || rec.recommendedClasses;
-        const score = aiData?.riskScore || rec.distinctivenessIndex || 85;
-        const riskLevel = aiData?.riskLevel ? (aiData.riskLevel === 'Tinggi' ? 'high' : aiData.riskLevel === 'Menengah' ? 'moderate' : 'low') : rec.riskLevel;
-        const verdict = aiData?.verdict || rec.verdict;
+        const primaryClass = (topConflict?.niceClass ? `Kelas ${topConflict.niceClass}` : null) || aiData?.classRecommendation?.primaryClass || rec.recommendedClasses;
+        const score = isConflict ? 18 : (aiData?.riskScore || rec.distinctivenessIndex || 85);
+        const riskLevel = isConflict ? 'high' : (aiData?.riskLevel ? (aiData.riskLevel === 'Menengah' ? 'moderate' : 'low') : rec.riskLevel);
+        const verdict = isConflict ? 'Persamaan Pada Pokoknya (Risiko Penolakan Tinggi)' : (aiData?.verdict || rec.verdict);
 
         document.getElementById('dc-res-ref').textContent = 'LAPORAN ANALISIS // REF: ' + refCode;
         document.getElementById('dc-res-brand').textContent = brand;
@@ -533,17 +554,29 @@
           scoreLabelEl.textContent = riskLevel === 'high' ? 'POTENSI PENOLAKAN DJKI' : 'INDEKS DAYA PEMBEDA';
         }
 
-        document.getElementById('dc-p1').textContent = aiData?.phonetic?.status || rec.phoneticStatus;
-        document.getElementById('dc-p1-d').textContent = aiData?.phonetic?.detail || rec.phoneticDetail;
-        document.getElementById('dc-p2').textContent = aiData?.visual?.status || rec.visualStatus;
-        document.getElementById('dc-p2-d').textContent = aiData?.visual?.detail || rec.visualDetail;
-        document.getElementById('dc-p3').textContent = primaryClass;
-        document.getElementById('dc-p3-d').textContent = aiData?.classRecommendation?.commodities ? aiData.classRecommendation.commodities.join(', ') : 'Berdasarkan klasifikasi barang/jasa Nice.';
-        document.getElementById('dc-p4').textContent = aiData?.statute?.status || rec.statuteStatus;
-        document.getElementById('dc-p4-d').textContent = aiData?.statute?.detail || rec.statuteDetail;
-
-        document.getElementById('dc-ai-interp').textContent = aiData?.explanation || rec.aiInterpretation;
-        document.getElementById('dc-prof-assess').textContent = (aiData?.nextSteps ? aiData.nextSteps.join(' · ') : '') || rec.professionalAssessment;
+        if (isConflict) {
+          document.getElementById('dc-p1').textContent = 'Persamaan Bunyi / Fonetik Identik';
+          document.getElementById('dc-p1-d').textContent = `Lafal dan struktur bunyi "${brand}" memiliki kesamaan identik dengan merek terdaftar milik ${topConflict?.owner || 'pihak lain'}.`;
+          document.getElementById('dc-p2').textContent = 'Rawan Konflik Hak Eksklusif';
+          document.getElementById('dc-p2-d').textContent = `Pemilik merek terdahulu memegang hak monopoli atas nama dan susunan huruf ini.`;
+          document.getElementById('dc-p3').textContent = primaryClass;
+          document.getElementById('dc-p3-d').textContent = 'Klasifikasi barang/jasa identik/sejenis dengan merek yang telah terdaftar di DJKI.';
+          document.getElementById('dc-p4').textContent = 'Potensi Ditolak Pasal 21 Ayat (1)';
+          document.getElementById('dc-p4-d').textContent = 'Pasal 21 ayat (1) huruf a UU No. 20/2016 mewajibkan penolakan permohonan yang memiliki persamaan pada pokoknya.';
+          document.getElementById('dc-ai-interp').textContent = aiData?.explanation || `Merek "${brand}" memiliki persamaan substantif dengan merek "${topConflict?.brand || brand}" yang sudah terdaftar milik ${topConflict?.owner || 'pihak lain'}. Berpotensi besar ditolak DJKI.`;
+          document.getElementById('dc-prof-assess').textContent = 'Saran Konsultan HKI: Hindari mendaftarkan nama ini secara langsung. Diperlukan rebranding atau izin lisensi resmi dari pemilik merek.';
+        } else {
+          document.getElementById('dc-p1').textContent = aiData?.phonetic?.status || rec.phoneticStatus;
+          document.getElementById('dc-p1-d').textContent = aiData?.phonetic?.detail || rec.phoneticDetail;
+          document.getElementById('dc-p2').textContent = aiData?.visual?.status || rec.visualStatus;
+          document.getElementById('dc-p2-d').textContent = aiData?.visual?.detail || rec.visualDetail;
+          document.getElementById('dc-p3').textContent = primaryClass;
+          document.getElementById('dc-p3-d').textContent = aiData?.classRecommendation?.commodities ? aiData.classRecommendation.commodities.join(', ') : 'Berdasarkan klasifikasi barang/jasa Nice.';
+          document.getElementById('dc-p4').textContent = aiData?.statute?.status || rec.statuteStatus;
+          document.getElementById('dc-p4-d').textContent = aiData?.statute?.detail || rec.statuteDetail;
+          document.getElementById('dc-ai-interp').textContent = aiData?.explanation || rec.aiInterpretation;
+          document.getElementById('dc-prof-assess').textContent = (aiData?.nextSteps ? aiData.nextSteps.join(' · ') : '') || rec.professionalAssessment;
+        }
 
         document.getElementById('dc-btn-report').onclick = () => window.BCStore && window.BCStore.openReportModal ? window.BCStore.openReportModal(rec.id) : window.print();
         document.getElementById('dc-btn-handover').onclick = () => window.BCStore && window.BCStore.openHandoverModal ? window.BCStore.openHandoverModal(brand) : alert('Silakan hubungi tim spesialis kami.');

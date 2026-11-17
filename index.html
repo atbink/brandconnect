@@ -1322,8 +1322,8 @@
     </div>
   </footer>
 
-  <script src="js/platform-store.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/platform-store.js?v=2.2"></script>
+  <script src="js/main.js?v=2.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const searchForm = document.getElementById('tm-search-form');
@@ -1406,7 +1406,8 @@
         // 3. Query Serverless AI (/api/ai-analyze) with live DJKI context
         let aiData = null;
         try {
-          const topItem = (djkiData?.items && djkiData.items.length > 0) ? djkiData.items[0] : null;
+          const exactMatch = (djkiData?.items || []).find(it => (it.brand || '').toLowerCase().trim() === q.toLowerCase().trim());
+          const topItem = exactMatch || ((djkiData?.items && djkiData.items.length > 0) ? djkiData.items[0] : null);
           const resp = await fetch('/api/ai-analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1441,37 +1442,51 @@
         const items = (djki && Array.isArray(djki.items)) ? djki.items : [];
         const totalFound = djki?.totalFound || items.length;
 
-        // Check if top item in DJKI is identical or closely conflicting
-        const top = items.length > 0 ? items[0] : null;
+        // Comprehensive conflict check across all search results
+        const exactMatchItem = items.find(it => (it.brand || '').toLowerCase().trim() === lower);
+        const highSimItem = items.find(it => (it.similarityPct && it.similarityPct >= 70));
+        const partialConflictItem = items.find(it => {
+          const bLower = (it.brand || '').toLowerCase().trim();
+          return lower.length >= 3 && (bLower.includes(lower) || lower.includes(bLower));
+        });
+
+        const conflictItem = exactMatchItem || highSimItem || partialConflictItem || (items.length > 0 && totalFound > 0 ? items[0] : null);
+        const top = conflictItem || (items.length > 0 ? items[0] : null);
         const topBrandLower = (top?.brand || '').toLowerCase().trim();
-        const isExactOrConflict = top && (
-          topBrandLower === lower ||
-          lower.includes(topBrandLower) ||
-          topBrandLower.includes(lower) ||
-          (top.similarityPct && top.similarityPct >= 70)
+
+        const isExactOrConflict = Boolean(
+          exactMatchItem ||
+          (top && (
+            topBrandLower === lower ||
+            (lower.length >= 3 && (lower.includes(topBrandLower) || topBrandLower.includes(lower))) ||
+            (top.similarityPct && top.similarityPct >= 70)
+          ))
         );
 
-        // Determine Risk Level dynamically
+        // Determine Risk Level dynamically (DJKI live legal records strictly override generic AI)
         let riskLevel = 'Rendah';
         let riskScore = 94;
         let riskText = 'Risiko Rendah (Peluang Lolos Tinggi)';
         let riskDesc = `Daya pembeda kuat! Belum ditemukan merek identik terdaftar untuk "${q.toUpperCase()}". Peluang lolos pemeriksaan substantif DJKI sangat besar.`;
 
-        if (isExactOrConflict) {
+        if (isExactOrConflict || (ai && ai.riskLevel === 'Tinggi')) {
           riskLevel = 'Tinggi';
-          riskScore = 18;
+          riskScore = (ai && ai.riskScore <= 25) ? ai.riskScore : 18;
           riskText = 'Risiko Tinggi (Persamaan Pada Pokoknya)';
-          riskDesc = `Merek "${q.toUpperCase()}" memiliki persamaan identik/substantif dengan merek "${top.brand}" (No. ${top.appNo || '-'}) yang sudah terdaftar di DJKI milik ${top.owner || 'pihak lain'}. Berdasarkan Pasal 21 ayat (1) huruf a UU No. 20/2016, permohonan baru berpotensi besar DITOLAK.`;
+          const ownerText = top?.owner ? ` milik ${top.owner}` : ' milik pihak lain';
+          const appNoText = top?.appNo ? ` (No. ${top.appNo})` : '';
+          const classText = top?.niceClass ? ` untuk Kelas ${top.niceClass}` : '';
+          riskDesc = ai?.explanation || `Merek "${q.toUpperCase()}" memiliki persamaan identik/substantif dengan merek "${top?.brand || q.toUpperCase()}"${appNoText} yang sudah terdaftar di DJKI RI${ownerText}${classText}. Berdasarkan Pasal 21 ayat (1) huruf a UU No. 20/2016 tentang Merek dan Indikasi Geografis, permohonan baru untuk merek ini WAJIB DITOLAK oleh pemeriksa substantif DJKI.`;
+        } else if (items.length > 0 || totalFound > 0) {
+          riskLevel = 'Menengah';
+          riskScore = 58;
+          riskText = 'Risiko Menengah (Perlu Diferensiasi)';
+          riskDesc = `Ditemukan ${totalFound} merek terkait di pangkalan data resmi DJKI. Disarankan menambahkan kata pembeda unik atau etiket visual kustom agar tidak memicu sanggahan oposisi atau risiko penolakan.`;
         } else if (ai) {
           riskLevel = ai.riskLevel || 'Rendah';
           riskScore = ai.riskScore || 90;
           riskText = ai.verdict || (`Risiko ${riskLevel}`);
           riskDesc = ai.explanation || riskDesc;
-        } else if (items.length > 0) {
-          riskLevel = 'Menengah';
-          riskScore = 58;
-          riskText = 'Risiko Menengah (Perlu Diferensiasi)';
-          riskDesc = `Ditemukan beberapa merek dengan unsur kata yang mirip. Disarankan menambahkan kata pembeda atau etiket logo khusus agar tidak memicu sanggahan.`;
         }
 
         // Update Risk Card Styling
@@ -1484,7 +1499,7 @@
           if (riskLevel === 'Tinggi') {
             riskCard.style.background = '#FEF2F2';
             riskCard.style.border = '1px solid #FCA5A5';
-            if (riskPill) { riskPill.style.color = '#DC2626'; riskPill.innerHTML = '<span>✦</span><span>Peringatan Risiko AI</span>'; }
+            if (riskPill) { riskPill.style.color = '#DC2626'; riskPill.innerHTML = '<span>✦</span><span>Peringatan Risiko AI & DJKI</span>'; }
             riskStatus.style.color = '#991B1B';
             riskStatus.textContent = riskText;
             riskExpl.style.color = '#7F1D1D';
@@ -1508,34 +1523,34 @@
           }
         }
 
-        // Determine Class Recommendation
+        // Determine Class Recommendation (Prioritize registered DJKI mark's Nice Class)
         let primaryClass = '35';
         let commodities = ['Retail & Toko', 'Distribusi', 'Marketplace', 'Jasa Bisnis'];
-        if (/kopi|teh|makanan|roti|snack|bumbu|cake|minuman|kuliner/i.test(lower)) {
-          primaryClass = '30';
-          commodities = ['Kopi', 'Teh', 'Roti', 'Kue', 'Bumbu Makanan', 'Snack Olahan'];
-        } else if (/sepatu|baju|kaos|celana|fashion|apparel|jaket|hijab|sandal/i.test(lower)) {
-          primaryClass = '25';
-          commodities = ['Pakaian', 'Alas Kaki', 'Sepatu Olahraga', 'Tutup Kepala', 'Jaket'];
-        } else if (/skincare|serum|krim|sabun|kosmetik|parfum|beauty|glow/i.test(lower)) {
-          primaryClass = '03';
-          commodities = ['Kosmetik', 'Skincare', 'Serum Wajah', 'Sabun Kecantikan', 'Parfum'];
-        } else if (/aplikasi|software|tech|it|cloud|digital|system|komputer|ai/i.test(lower)) {
-          primaryClass = '42';
-          commodities = ['Software Development', 'Layanan Cloud', 'Platform Digital', 'SaaS'];
-        } else if (/kafe|restoran|resto|kedai|warung|catering/i.test(lower)) {
-          primaryClass = '43';
-          commodities = ['Layanan Restoran', 'Kafe Penyedia Kopi', 'Kedai Minuman', 'Jasa Katering'];
-        } else if (/obat|jamu|herbal|farmasi|suplemen|vitamin/i.test(lower)) {
-          primaryClass = '05';
-          commodities = ['Farmasi', 'Suplemen Kesehatan', 'Vitamin', 'Obat Herbal'];
+
+        if (top?.niceClass) {
+          primaryClass = String(top.niceClass).replace(/[^0-9]/g, '') || primaryClass;
+        } else if (ai?.classRecommendation?.primaryClass) {
+          primaryClass = ai.classRecommendation.primaryClass.replace(/[^0-9]/g, '') || primaryClass;
         }
 
-        if (ai?.classRecommendation?.primaryClass) {
-          primaryClass = ai.classRecommendation.primaryClass.replace(/[^0-9]/g, '') || primaryClass;
-          if (Array.isArray(ai.classRecommendation.commodities)) {
-            commodities = ai.classRecommendation.commodities;
-          }
+        if (primaryClass === '3' || primaryClass === '03' || /skincare|serum|krim|sabun|kosmetik|parfum|beauty|glow|cantik|kahf/i.test(lower)) {
+          primaryClass = '03';
+          commodities = ['Kosmetik', 'Skincare & Perawatan Kulit', 'Serum Wajah', 'Sabun Pembersih', 'Parfum'];
+        } else if (primaryClass === '25' || /sepatu|baju|kaos|celana|fashion|apparel|jaket|hijab|sandal|onitsuka|converse|adidas|nike/i.test(lower)) {
+          primaryClass = '25';
+          commodities = ['Pakaian', 'Alas Kaki', 'Sepatu Olahraga', 'Tutup Kepala', 'Jaket'];
+        } else if (primaryClass === '30' || /kopi|teh|makanan|roti|snack|bumbu|cake|minuman|kuliner/i.test(lower)) {
+          primaryClass = '30';
+          commodities = ['Kopi', 'Teh', 'Roti', 'Kue', 'Bumbu Makanan', 'Snack Olahan'];
+        } else if (primaryClass === '42' || /aplikasi|software|tech|it|cloud|digital|system|komputer|ai/i.test(lower)) {
+          primaryClass = '42';
+          commodities = ['Software Development', 'Layanan Cloud', 'Platform Digital', 'SaaS'];
+        } else if (primaryClass === '43' || /kafe|restoran|resto|kedai|warung|catering/i.test(lower)) {
+          primaryClass = '43';
+          commodities = ['Layanan Restoran', 'Kafe Penyedia Kopi', 'Kedai Minuman', 'Jasa Katering'];
+        } else if (primaryClass === '05' || /obat|jamu|herbal|farmasi|suplemen|vitamin/i.test(lower)) {
+          primaryClass = '05';
+          commodities = ['Farmasi', 'Suplemen Kesehatan', 'Vitamin', 'Obat Tradisional/Herbal'];
         }
 
         // Update Meta Grid
@@ -1552,19 +1567,35 @@
             : `Belum ditemukan merek identik terdaftar untuk "${q.toUpperCase()}". Peluang diterima tinggi!`;
         }
 
-        // Update 4 Dimension Cards
+        // Update 4 Dimension Cards (Strict legal metrics when conflict occurs)
         const dimPhoneticStatus = document.getElementById('hp-dim-phonetic-status');
         const dimPhoneticDetail = document.getElementById('hp-dim-phonetic-detail');
         if (dimPhoneticStatus && dimPhoneticDetail) {
-          dimPhoneticStatus.textContent = ai?.phonetic?.status || (riskLevel === 'Tinggi' ? 'Persamaan Pada Pokoknya / Identik' : (riskLevel === 'Menengah' ? 'Kemiripan Parsial' : 'Daya Pembeda Kuat'));
-          dimPhoneticDetail.textContent = ai?.phonetic?.detail || (riskLevel === 'Tinggi' ? `Nama/lafal "${q.toUpperCase()}" memiliki kesamaan vokal & konsonan dengan merek terdaftar.` : `Susunan bunyi dan suku kata "${q.toUpperCase()}" memiliki orisinalitas baik dan karakter pembeda jelas.`);
+          if (riskLevel === 'Tinggi') {
+            dimPhoneticStatus.textContent = 'Persamaan Bunyi / Fonetik Identik';
+            dimPhoneticDetail.textContent = `Lafal dan susunan intonasi "${q.toUpperCase()}" identik dengan merek terdaftar milik ${top?.owner || 'pihak lain'}. Berpotensi membingungkan konsumen.`;
+          } else if (riskLevel === 'Menengah') {
+            dimPhoneticStatus.textContent = 'Kemiripan Parsial';
+            dimPhoneticDetail.textContent = `Terdapat suku kata atau bunyi yang mirip dengan merek di pangkalan data DJKI (${totalFound} merek terkait).`;
+          } else {
+            dimPhoneticStatus.textContent = 'Daya Pembeda Kuat';
+            dimPhoneticDetail.textContent = `Susunan bunyi dan suku kata "${q.toUpperCase()}" memiliki orisinalitas baik dan karakter pembeda jelas.`;
+          }
         }
 
         const dimVisualStatus = document.getElementById('hp-dim-visual-status');
         const dimVisualDetail = document.getElementById('hp-dim-visual-detail');
         if (dimVisualStatus && dimVisualDetail) {
-          dimVisualStatus.textContent = ai?.visual?.status || (riskLevel === 'Tinggi' ? 'Rawan Konflik Hak Eksklusif' : (riskLevel === 'Menengah' ? 'Perlu Etiket Visual Kuat' : 'Unik & Distingtif'));
-          dimVisualDetail.textContent = ai?.visual?.detail || (riskLevel === 'Tinggi' ? 'Pemilik merek terdahulu memiliki hak monopoli hukum atas susunan visual nama ini.' : 'Susunan ejaan tipografi memenuhi standar kebaruan identitas visual merek.');
+          if (riskLevel === 'Tinggi') {
+            dimVisualStatus.textContent = 'Rawan Konflik Hak Eksklusif';
+            dimVisualDetail.textContent = `Pemilik merek terdahulu (${top?.owner || 'pihak lain'}) memegang hak eksklusif monopoli hukum atas nama dan variasinya di DJKI RI.`;
+          } else if (riskLevel === 'Menengah') {
+            dimVisualStatus.textContent = 'Perlu Etiket Visual Kuat';
+            dimVisualDetail.textContent = 'Kombinasi logo, tipografi kustom, atau elemen grafis sangat disarankan untuk memperkuat daya pembeda.';
+          } else {
+            dimVisualStatus.textContent = 'Unik & Distingtif';
+            dimVisualDetail.textContent = 'Susunan ejaan tipografi memenuhi standar kebaruan identitas visual merek.';
+          }
         }
 
         const dimClassStatus = document.getElementById('hp-dim-class-status');
@@ -1579,8 +1610,16 @@
         const dimStatuteStatus = document.getElementById('hp-dim-statute-status');
         const dimStatuteDetail = document.getElementById('hp-dim-statute-detail');
         if (dimStatuteStatus && dimStatuteDetail) {
-          dimStatuteStatus.textContent = ai?.statute?.status || (riskLevel === 'Tinggi' ? 'Potensi Ditolak Pasal 21' : (riskLevel === 'Menengah' ? 'Perlu Penegasan Pasal 20' : 'Memenuhi Pasal 20 & 21'));
-          dimStatuteDetail.textContent = ai?.statute?.detail || (riskLevel === 'Tinggi' ? 'Pasal 21 ayat (1) huruf a & b melarang pendaftaran merek dengan persamaan pada pokoknya dengan merek pihak lain.' : 'Memenuhi seluruh kriteria daya pembeda dan tidak melanggar ketentuan penolakan UU No. 20/2016.');
+          if (riskLevel === 'Tinggi') {
+            dimStatuteStatus.textContent = 'Potensi Ditolak Pasal 21 Ayat (1)';
+            dimStatuteDetail.textContent = 'Pasal 21 ayat (1) huruf a UU No. 20/2016 mewajibkan penolakan permohonan yang memiliki persamaan pada pokoknya dengan merek terdaftar milik pihak lain.';
+          } else if (riskLevel === 'Menengah') {
+            dimStatuteStatus.textContent = 'Perlu Penegasan Daya Pembeda (Pasal 20)';
+            dimStatuteDetail.textContent = 'Merek harus memiliki daya pembeda yang cukup dan tidak mendeskripsikan barang/jasa secara umum.';
+          } else {
+            dimStatuteStatus.textContent = 'Memenuhi Kriteria Pasal 20 & 21';
+            dimStatuteDetail.textContent = 'Tidak bertentangan dengan norma, tidak menyesatkan, dan memenuhi seluruh kriteria keterdaftaran UU No. 20/2016.';
+          }
         }
 
         // Update Comparator Card
@@ -1591,8 +1630,7 @@
         const compClass = document.getElementById('hp-comp-class');
         const compBadge = document.getElementById('hp-comp-status-badge');
 
-        if (items.length > 0) {
-          const top = items[0];
+        if (top) {
           if (compName) compName.textContent = top.brand;
           if (compOwner) compOwner.textContent = top.owner || 'Pemilik Terdaftar (DJKI)';
           if (compAppNo) compAppNo.textContent = top.appNo || '-';

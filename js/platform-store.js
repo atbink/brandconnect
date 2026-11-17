@@ -1648,7 +1648,8 @@
       'coca-cola', 'pepsi', 'mcdonald', 'kfc', 'zara', 'h&m', 'louis vuitton', 'rolex', 'ikea', 'lego',
       'mebiso', 'gojek', 'tokopedia', 'shopee', 'lazada', 'grab', 'indomie', 'aqua', 'bca', 'mandiri',
       'telkomsel', 'pertamina', 'erigo', 'kopi kenangan', 'janji jiwa', 'chatime', 'starbucks',
-      'unilever', 'nestle', 'djarum', 'sampoerna', 'wardah', 'somethinc', 'scarlett', 'ms glow'
+      'unilever', 'nestle', 'djarum', 'sampoerna', 'wardah', 'somethinc', 'scarlett', 'ms glow',
+      'kahf', 'paragon', 'onitsuka', 'converse', 'vans', 'asics', 'emina', 'make over', 'sensatia'
     ];
     const genericTokens = [
       'kopi', 'coffee', 'teh', 'tea', 'susu', 'baju', 'kaos', 'tas', 'sepatu', 'roti',
