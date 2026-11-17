@@ -8058,3 +8058,10 @@ body {
     height: 38px !important;
   }
 }
+
+@media (max-width: 680px) {
+  .bc-logo-audit-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+

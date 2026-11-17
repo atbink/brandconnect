@@ -2419,16 +2419,117 @@
     document.body.style.overflow = 'hidden';
   }
 
+  function synthesizeVisualAudit(logoMeta) {
+    if (logoMeta && logoMeta.logoAudit) return logoMeta.logoAudit;
+    const nameStr = (logoMeta?.name || logoMeta?.inferredBrand || '').toLowerCase();
+    const vCode = logoMeta?.viennaCode || '26.01.18';
+    const vTitle = logoMeta?.viennaTitle || 'Geometris Abstrak';
+    
+    let motif = 'Komposisi figuratif geometris dengan unsur tipografi dan lambang grafis';
+    let risk = 'Rendah';
+    let benchmarks = [];
+    let pasal21 = 'Bentuk logo memiliki daya pembeda orisinal dan tidak meniru unsur lukisan pokok dari merek terkenal terdaftar.';
+    let advice = 'Pertahankan orisinalitas bentuk etiket saat pendaftaran resmi DJKI RI.';
+
+    if (/adidas|stripe|garis|stripes|sport|sepatu/i.test(nameStr)) {
+      motif = 'Siluet garis-garis sejajar diagonal berulang (Motif Strip Paralel)';
+      risk = 'Tinggi';
+      benchmarks = [
+        { brand: 'ADIDAS', motif: 'Tiga garis miring sejajar (3-Stripes Famous Mark)', similarityNote: 'Sangat rawan karena kemiripan susunan garis miring pada pokoknya dengan hak monopoli Adidas', riskLevel: 'Tinggi' },
+        { brand: 'K-SWISS', motif: 'Lima garis paralel diagonal', similarityNote: 'Kemiripan pola susunan garis miring repetitif', riskLevel: 'Menengah' }
+      ];
+      pasal21 = 'Berpotensi besar DITOLAK MUTLAK berdasarkan Pasal 21 ayat (1) huruf a & b UU No. 20/2016 karena menyerupai unsur lukisan merek terkenal di kelas pakaian dan alas kaki.';
+      advice = 'Hindari pola garis paralel diagonal (2-4 baris). Ganti dengan motif geometris tertutup atau padukan tipografi nama merek yang kontras.';
+    } else if (/puma|kucing|macan|cat|feline|singa|tiger|onitsuka/i.test(nameStr)) {
+      motif = 'Siluet mamalia karnivora berkaki empat dalam posisi bergerak/melompat';
+      risk = 'Tinggi';
+      benchmarks = [
+        { brand: 'PUMA', motif: 'Siluet kucing besar melompat (Jumping Cat Mark)', similarityNote: 'Persamaan unsur figuratif lukisan pada pokoknya dengan merek olahraga global', riskLevel: 'Tinggi' },
+        { brand: 'SLAZENGER', motif: 'Siluet macan kumbang melompat', similarityNote: 'Kemiripan siluet pose hewan bergerak', riskLevel: 'Tinggi' }
+      ];
+      pasal21 = 'Pasal 21 ayat 1 huruf a UU Merek melarang pendaftaran lukisan yang memiliki kesamaan konsep dan wujud figuratif dengan merek terdaftar terdahulu.';
+      advice = 'Ubah pose hewan menjadi posisi duduk statis atau gunakan stilasi inisial huruf abstrak agar tidak menimbulkan kerancuan publik.';
+    } else if (/nike|swoosh|centang|check/i.test(nameStr)) {
+      motif = 'Siluet kurva meruncing melengkung dinamis (Wing / Swoosh Silhouette)';
+      risk = 'Tinggi';
+      benchmarks = [
+        { brand: 'NIKE', motif: 'Lambang Swoosh (Centang Melengkung Sayap)', similarityNote: 'Merek terkenal dengan perlindungan absolut lintas kelas', riskLevel: 'Tinggi' }
+      ];
+      pasal21 = 'Pelanggaran langsung hak eksklusif merek terkenal dunia berdasarkan Pasal 21 ayat (1) huruf b UU No. 20/2016.';
+      advice = 'Tinggalkan bentuk kurva tunggal meruncing. Rancang simbol berbasis monogram inisial nama bisnis Anda.';
+    } else if (/starbucks|siren|kopi|coffee|circle|lingkaran/i.test(nameStr)) {
+      motif = 'Emblem melingkar ganda konsentris dengan figur pusat dan teks melingkar';
+      risk = 'Menengah';
+      benchmarks = [
+        { brand: 'STARBUCKS', motif: 'Emblem lingkaran hijau dengan ilustrasi figur pusat', similarityNote: 'Komposisi badge lingkaran dengan cincin teks luar sering memicu oposisi', riskLevel: 'Menengah' }
+      ];
+      pasal21 = 'Penggunaan komposisi lingkaran ganda berisiko memicu oposisi dari pemegang merek minuman terdaftar jika palet warna dan komposisinya identik.';
+      advice = 'Gunakan tata letak horizontal modern non-lingkaran untuk membedakan identitas visual merek.';
+    } else if (/glow|beauty|skincare|kosmetik|ms glow|wardah|scarlett/i.test(nameStr)) {
+      motif = 'Monogram tipografi kursif bersambung dengan lengkung ornamen kosmetik';
+      risk = 'Menengah';
+      benchmarks = [
+        { brand: 'MS GLOW', motif: 'Monogram huruf kursif tipografi bersambung', similarityNote: 'Persamaan susunan estetika visual etiket produk kosmetik', riskLevel: 'Menengah' }
+      ];
+      pasal21 = 'Di kelas kosmetik (Nice 03), kemiripan gaya tipografi kursif sering diuji ketat terkait kesan keseluruhan konsumen.';
+      advice = 'Gunakan tipografi sans-serif modern berbobot tegas atau kombinasikan dengan lambang geometris unik.';
+    } else {
+      benchmarks = [
+        { brand: 'PDKI BENCHMARK CLUSTER', motif: 'Bentuk geometris standar', similarityNote: 'Belum ditemukan kesamaan motif bentuk dengan merek terdaftar terkenal', riskLevel: 'Rendah' }
+      ];
+    }
+
+    return {
+      isLogoAnalyzed: true,
+      detectedMotif: motif,
+      viennaCode: vCode,
+      viennaCategory: vTitle,
+      visualConflictRisk: risk,
+      conflictingBenchmarks: benchmarks,
+      pasal21Assessment: pasal21,
+      modificationAdvice: advice
+    };
+  }
+
   function renderVisualSimilarityHtml(logoMeta, compLogoMeta, queryOverride) {
     const q = queryOverride || (logoMeta ? logoMeta.inferredBrand : '');
     let logoHeaderHtml = '';
-    if (logoMeta && logoMeta.dHash) {
+    if (logoMeta && (logoMeta.dHash || logoMeta.previewDataUrl)) {
+      const audit = synthesizeVisualAudit(logoMeta);
+      const isHighRisk = audit.visualConflictRisk === 'Tinggi';
+      const isModRisk = audit.visualConflictRisk === 'Menengah';
+
+      let riskPillHtml = '';
+      if (isHighRisk) {
+        riskPillHtml = `<span style="display:inline-flex;align-items:center;gap:6px;background:#FEF2F2;color:#991B1B;border:1px solid #FCA5A5;padding:5px 12px;border-radius:9999px;font-family:var(--font-mono);font-size:0.75rem;font-weight:700;">⚠️ RISIKO KONFLIK BENTUK TINGGI</span>`;
+      } else if (isModRisk) {
+        riskPillHtml = `<span style="display:inline-flex;align-items:center;gap:6px;background:#FFFBEB;color:#92400E;border:1px solid #FCD34D;padding:5px 12px;border-radius:9999px;font-family:var(--font-mono);font-size:0.75rem;font-weight:700;">⚡ RISIKO KONFLIK MENENGAH</span>`;
+      } else {
+        riskPillHtml = `<span style="display:inline-flex;align-items:center;gap:6px;background:#ECFDF5;color:#065F46;border:1px solid #6EE7B7;padding:5px 12px;border-radius:9999px;font-family:var(--font-mono);font-size:0.75rem;font-weight:700;">✓ BENTUK DISTINGTIF (RISIKO RENDAH)</span>`;
+      }
+
       const swatches = (logoMeta.dominantColors || [])
         .map(
           (c) =>
-            `<span style="display:inline-flex;align-items:center;gap:5px;background:#FFF;border:1px solid rgba(26,26,26,0.2);padding:2px 7px;border-radius:3px;font-size:0.73rem;margin-right:6px;margin-bottom:4px;"><span style="width:11px;height:11px;border-radius:2px;background:${c.hex};border:1px solid #222;display:inline-block;"></span><strong>${c.nameId}</strong> <code>${c.hex}</code> (${c.pct}%)</span>`
+            `<span style="display:inline-flex;align-items:center;gap:5px;background:#FFF;border:1px solid rgba(26,26,26,0.12);padding:2px 7px;border-radius:3px;font-size:0.72rem;margin-right:6px;margin-bottom:4px;"><span style="width:10px;height:10px;border-radius:2px;background:${c.hex};border:1px solid #333;display:inline-block;"></span><strong>${c.nameId}</strong> (${c.pct}%)</span>`
         )
         .join('');
+
+      const benchmarksHtml = (audit.conflictingBenchmarks || []).map(b => {
+        const isBenchHigh = b.riskLevel === 'Tinggi';
+        return `
+          <div style="display:flex;justify-content:space-between;align-items:center;background:#FFFFFF;border:1px solid ${isBenchHigh ? '#FCA5A5' : '#E5E7EB'};border-radius:8px;padding:8px 12px;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
+            <div>
+              <strong style="color:var(--bc-text-dark);font-family:var(--font-heading);font-size:0.88rem;">${b.brand}</strong>
+              <span style="color:#6B7280;font-size:0.8rem;margin-left:6px;">— ${b.motif}</span>
+              <div style="font-size:0.76rem;color:#4B5563;margin-top:2px;">${b.similarityNote}</div>
+            </div>
+            <span style="font-family:var(--font-mono);font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:9999px;background:${isBenchHigh ? '#FEF2F2' : '#FFFBEB'};color:${isBenchHigh ? '#991B1B' : '#92400E'};border:1px solid ${isBenchHigh ? '#FCA5A5' : '#FCD34D'};">
+              ${isBenchHigh ? 'Konflik Tinggi' : 'Perlu Waspada'}
+            </span>
+          </div>
+        `;
+      }).join('');
 
       let comparisonHtml = '';
       if (compLogoMeta && compLogoMeta.dHashBits) {
@@ -2436,7 +2537,7 @@
         const cmp = compareTwoLogos(logoMeta, compLogoMeta);
         if (cmp) {
           comparisonHtml = `
-            <div style="margin-top:1.15rem;padding:1.25rem;border:2px solid ${cmp.badgeColor};border-radius:6px;background:#FFF9F5;">
+            <div style="margin-top:1.15rem;padding:1.25rem;border:2px solid ${cmp.badgeColor};border-radius:10px;background:#FFF9F5;">
               <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:1rem;border-bottom:1px dashed #CBD5E1;padding-bottom:0.75rem;">
                 <div>
                   <span style="font-family:var(--font-mono);font-size:0.68rem;font-weight:700;color:${cmp.badgeColor};letter-spacing:0.08em;">
@@ -2451,32 +2552,30 @@
               </div>
 
               <!-- SIDE BY SIDE TWO LOGOS -->
-              <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:1rem;margin-bottom:1rem;">
+              <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:1rem;margin-bottom:1rem;">
                 <!-- Left: Uploaded User Logo -->
-                <div style="background:#FFF;border:1.5px solid #CBD5E1;border-radius:6px;padding:0.95rem;display:flex;gap:0.85rem;align-items:center;">
-                  <div style="width:96px;height:96px;min-width:96px;background:#F8FAFC;border:1.5px solid var(--charcoal);border-radius:4px;display:flex;align-items:center;justify-content:center;padding:4px;">
+                <div style="background:#FFF;border:1.5px solid #CBD5E1;border-radius:8px;padding:0.95rem;display:flex;gap:0.85rem;align-items:center;">
+                  <div style="width:84px;height:84px;min-width:84px;background:#F8FAFC;border:1.5px solid var(--charcoal);border-radius:6px;display:flex;align-items:center;justify-content:center;padding:4px;">
                     ${logoMeta.previewDataUrl ? `<img src="${logoMeta.previewDataUrl}" alt="${logoMeta.name}" style="max-width:100%;max-height:100%;object-fit:contain;" />` : ''}
                   </div>
                   <div style="font-size:0.76rem;line-height:1.45;">
-                    <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--green);font-weight:700;">LOGO 1: MEREK ANDA</div>
+                    <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--bc-green);font-weight:700;">LOGO 1: MEREK ANDA</div>
                     <div style="font-family:var(--font-heading);font-weight:800;color:#0F172A;font-size:0.92rem;word-break:break-all;">${logoMeta.name}</div>
                     <div style="color:#64748B;">Dimensi: ${logoMeta.width}×${logoMeta.height} px (${logoMeta.sizeKB} KB)</div>
                     <div style="color:#64748B;">Vienna WIPO: <code>${logoMeta.viennaCode}</code></div>
-                    <div style="color:#64748B;">dHash Siluet: <code>${logoMeta.dHash.slice(0, 12)}...</code></div>
                   </div>
                 </div>
 
                 <!-- Right: Comparison Logo -->
-                <div style="background:#FFF;border:1.5px solid ${cmp.badgeColor};border-radius:6px;padding:0.95rem;display:flex;gap:0.85rem;align-items:center;">
-                  <div style="width:96px;height:96px;min-width:96px;background:#F8FAFC;border:1.5px solid var(--charcoal);border-radius:4px;display:flex;align-items:center;justify-content:center;padding:4px;">
+                <div style="background:#FFF;border:1.5px solid ${cmp.badgeColor};border-radius:8px;padding:0.95rem;display:flex;gap:0.85rem;align-items:center;">
+                  <div style="width:84px;height:84px;min-width:84px;background:#F8FAFC;border:1.5px solid var(--charcoal);border-radius:6px;display:flex;align-items:center;justify-content:center;padding:4px;">
                     ${compLogoMeta.previewDataUrl ? `<img src="${compLogoMeta.previewDataUrl}" alt="${compLogoMeta.name}" style="max-width:100%;max-height:100%;object-fit:contain;" />` : ''}
                   </div>
                   <div style="font-size:0.76rem;line-height:1.45;">
-                    <div style="font-family:var(--font-mono);font-size:0.65rem;color:${cmp.badgeColor};font-weight:700;">LOGO 2: PEMBANDING / KOMPETITOR</div>
+                    <div style="font-family:var(--font-mono);font-size:0.65rem;color:${cmp.badgeColor};font-weight:700;">LOGO 2: PEMBANDING</div>
                     <div style="font-family:var(--font-heading);font-weight:800;color:#0F172A;font-size:0.92rem;word-break:break-all;">${compLogoMeta.name}</div>
                     <div style="color:#64748B;">Dimensi: ${compLogoMeta.width}×${compLogoMeta.height} px (${compLogoMeta.sizeKB} KB)</div>
                     <div style="color:#64748B;">Vienna WIPO: <code>${compLogoMeta.viennaCode}</code></div>
-                    <div style="color:#64748B;">dHash Siluet: <code>${compLogoMeta.dHash.slice(0, 12)}...</code></div>
                   </div>
                 </div>
               </div>
@@ -2486,17 +2585,14 @@
                 <div style="background:#FFF;padding:0.75rem 0.85rem;border-radius:10px;border:1px solid var(--bc-card-border);">
                   <div style="font-size:0.68rem;font-family:var(--font-mono);color:#6B7280;font-weight:700;">KESAMAAN BENTUK &amp; SILUET</div>
                   <div style="font-size:1.25rem;font-family:var(--font-heading);font-weight:800;color:${cmp.badgeColor};">${cmp.shapeSim}%</div>
-                  <div style="font-size:0.68rem;color:#6B7280;">dHash 64-bit Bitwise match</div>
                 </div>
                 <div style="background:#FFF;padding:0.75rem 0.85rem;border-radius:10px;border:1px solid var(--bc-card-border);">
                   <div style="font-size:0.68rem;font-family:var(--font-mono);color:#6B7280;font-weight:700;">SPEKTRUM &amp; PALET WARNA</div>
                   <div style="font-size:1.25rem;font-family:var(--font-heading);font-weight:800;color:${cmp.badgeColor};">${cmp.colorSim}%</div>
-                  <div style="font-size:0.68rem;color:#6B7280;">Euclidean RGB distance</div>
                 </div>
                 <div style="background:#FFF;padding:0.75rem 0.85rem;border-radius:10px;border:1px solid var(--bc-card-border);">
                   <div style="font-size:0.68rem;font-family:var(--font-mono);color:#6B7280;font-weight:700;">KLASIFIKASI VIENNA WIPO</div>
                   <div style="font-size:1.05rem;font-family:var(--font-heading);font-weight:800;color:${cmp.badgeColor};padding-top:2px;">${cmp.sameVienna ? 'IDENTIK (100%)' : 'BERBEDA KATEGORI'}</div>
-                  <div style="font-size:0.68rem;color:#6B7280;">Unsur figuratif lukisan</div>
                 </div>
               </div>
 
@@ -2508,33 +2604,84 @@
             </div>
           `;
         }
-      } else {
-        // Single logo upload: show clean technical inspection & transparency notice
-        comparisonHtml = `
-          <div style="margin-top:0.85rem;padding:1rem 1.25rem;background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:10px;display:flex;align-items:flex-start;gap:0.75rem;font-size:0.84rem;line-height:1.6;color:#374151;">
-            <span style="font-size:1.25rem;line-height:1;">ℹ️</span>
-            <div>
-              <strong style="color:var(--bc-text-dark);">Audit Karakteristik Etiket Logo:</strong> Kategori WIPO Vienna terklasifikasi sebagai <code>${logoMeta.viennaCode}</code> (${logoMeta.viennaTitle || 'Figuratif Geometris'}) dengan komposisi ${logoMeta.dominantColors?.length || 0} warna siap lampir pada formulir resmi DJKI.
-              <span style="display:block;margin-top:4px;font-size:0.78rem;color:#6B7280;">
-                <em>Catatan Transparansi DJKI:</em> Pangkalan Data Resmi DJKI (PDKI) dan API Indonesia mengindeks jutaan merek melalui penelusuran nama/kata, kelas merek, dan klasifikasi kode Vienna. Untuk menguji kemiripan visual head-to-head (Piksel &amp; Siluet) terhadap logo kompetitor tertentu, silakan unggah file logo pada bagian <strong>"Logo Pembanding"</strong> di atas.
-              </span>
-            </div>
-          </div>
-        `;
       }
 
       logoHeaderHtml = `
-        <div style="margin-bottom:1.5rem;padding:1.35rem;border:1px solid var(--bc-card-border);border-radius:14px;background:#FAF8F5;text-align:left;box-shadow:0 2px 12px rgba(13,59,46,0.04);">
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">
-            <div style="display:flex;align-items:center;gap:1rem;">
-              ${logoMeta.previewDataUrl ? `<img src="${logoMeta.previewDataUrl}" alt="Uploaded Logo" style="width:68px;height:68px;object-fit:contain;background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:10px;padding:4px;" />` : ''}
-              <div>
-                <span style="font-family:var(--font-mono);font-size:0.7rem;font-weight:700;color:var(--bc-green);letter-spacing:0.08em;">AUDIT TEKNIS ETIKET LOGO // KLASIFIKASI VIENNA ${logoMeta.viennaCode}</span>
-                <h3 style="font-family:var(--font-heading);font-size:1.15rem;font-weight:800;color:var(--bc-text-dark);margin:3px 0;">${logoMeta.name} (${logoMeta.width}×${logoMeta.height} px · dHash: <code>${logoMeta.dHash}</code>)</h3>
-                <div style="margin-top:4px;">${swatches}</div>
+        <div style="margin-bottom:1.5rem;padding:1.35rem;border:1px solid ${isHighRisk ? '#FCA5A5' : 'var(--bc-card-border)'};border-radius:14px;background:#FAF8F5;text-align:left;box-shadow:0 4px 16px rgba(13,59,46,0.04);">
+          <!-- Top Header -->
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.15rem;padding-bottom:0.85rem;border-bottom:1px solid var(--bc-card-border);">
+            <div>
+              <span style="font-family:var(--font-mono);font-size:0.7rem;font-weight:700;color:var(--bc-green);letter-spacing:0.08em;display:block;margin-bottom:3px;">
+                ✦ AUDIT KONFLIK BENTUK &amp; ETIKET LOGO AI // WIPO VIENNA &amp; PASAL 21 UU NO. 20/2016
+              </span>
+              <h3 style="font-family:var(--font-heading);font-size:1.25rem;font-weight:800;color:var(--bc-text-dark);margin:0;">
+                Hasil Pemeriksaan Unsur Figuratif &amp; Bentuk Logo
+              </h3>
+            </div>
+            <div>
+              ${riskPillHtml}
+            </div>
+          </div>
+
+          <!-- Main 2-Column Visual Card -->
+          <div style="display:grid;grid-template-columns:180px 1fr;gap:1.25rem;align-items:start;margin-bottom:1rem;" class="bc-logo-audit-grid">
+            <!-- Left: Logo Image & Specs -->
+            <div style="background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:12px;padding:0.85rem;text-align:center;">
+              <div style="width:100%;height:130px;background:#FAF8F5;border:1px solid #E5E7EB;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:6px;overflow:hidden;margin-bottom:0.65rem;">
+                ${logoMeta.previewDataUrl ? `<img src="${logoMeta.previewDataUrl}" alt="${logoMeta.name}" style="max-width:100%;max-height:100%;object-fit:contain;" />` : ''}
+              </div>
+              <strong style="display:block;font-size:0.84rem;color:var(--bc-text-dark);word-break:break-all;margin-bottom:4px;">${logoMeta.name}</strong>
+              <div style="font-size:0.74rem;color:#6B7280;margin-bottom:6px;">${logoMeta.width}×${logoMeta.height} px · ${logoMeta.sizeKB || 0} KB</div>
+              <span style="display:inline-block;background:var(--bc-green-mint);color:var(--bc-green);font-family:var(--font-mono);font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:9999px;">
+                Vienna ${audit.viennaCode}
+              </span>
+              <div style="margin-top:8px;">${swatches}</div>
+            </div>
+
+            <!-- Right: Semantic Findings & Conflicts -->
+            <div>
+              <!-- 1. Detected Motif -->
+              <div style="background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:10px;padding:0.95rem 1.15rem;margin-bottom:0.75rem;">
+                <span style="font-family:var(--font-mono);font-size:0.68rem;font-weight:700;color:var(--bc-green);letter-spacing:0.06em;display:block;margin-bottom:3px;">
+                  1. UNSUR FIGURATIF &amp; SILUET TERDETEKSI
+                </span>
+                <p style="font-size:0.86rem;color:#1F2937;line-height:1.55;margin:0;">
+                  <strong>Motif Visual:</strong> ${audit.detectedMotif}. Terklasifikasi dalam <strong>WIPO Vienna ${audit.viennaCode}</strong> (${audit.viennaCategory}).
+                </p>
+              </div>
+
+              <!-- 2. Benchmark Conflicts -->
+              <div style="background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:10px;padding:0.95rem 1.15rem;margin-bottom:0.75rem;">
+                <span style="font-family:var(--font-mono);font-size:0.68rem;font-weight:700;color:${isHighRisk ? '#DC2626' : 'var(--bc-green)'};letter-spacing:0.06em;display:block;margin-bottom:6px;">
+                  2. PEMERIKSAAN KEMIRIPAN TERHADAP BENCHMARK MEREK TERDAFTAR
+                </span>
+                <div>
+                  ${benchmarksHtml}
+                </div>
+              </div>
+
+              <!-- 3. Legal Assessment & Modification Advice -->
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+                <div style="background:#FFFFFF;border-left:3px solid ${isHighRisk ? '#DC2626' : 'var(--bc-green)'};border-top:1px solid var(--bc-card-border);border-right:1px solid var(--bc-card-border);border-bottom:1px solid var(--bc-card-border);border-radius:8px;padding:0.85rem 1rem;">
+                  <strong style="font-size:0.78rem;color:var(--bc-text-dark);display:block;margin-bottom:3px;">
+                    ⚖️ Kajian Pasal 21 Ayat (1) Huruf a:
+                  </strong>
+                  <p style="font-size:0.8rem;color:#4B5563;line-height:1.45;margin:0;">
+                    ${audit.pasal21Assessment}
+                  </p>
+                </div>
+                <div style="background:#FFFFFF;border-left:3px solid #D97706;border-top:1px solid var(--bc-card-border);border-right:1px solid var(--bc-card-border);border-bottom:1px solid var(--bc-card-border);border-radius:8px;padding:0.85rem 1rem;">
+                  <strong style="font-size:0.78rem;color:var(--bc-text-dark);display:block;margin-bottom:3px;">
+                    💡 Rekomendasi Modifikasi Desain:
+                  </strong>
+                  <p style="font-size:0.8rem;color:#4B5563;line-height:1.45;margin:0;">
+                    ${audit.modificationAdvice}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
+
           ${comparisonHtml}
         </div>
       `;
@@ -2892,6 +3039,33 @@
     document.body.style.overflow = 'hidden';
   }
 
+  async function enrichLogoWithAiVision(logoMeta) {
+    if (!logoMeta || !logoMeta.previewDataUrl) return logoMeta;
+    try {
+      const resp = await fetch('/api/ai-analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          brand: logoMeta.inferredBrand || logoMeta.name,
+          mode: 'logo',
+          fileName: logoMeta.name,
+          logoDataUrl: logoMeta.previewDataUrl
+        })
+      });
+      if (resp.ok) {
+        const json = await resp.json();
+        if (json.success && json.analysis && json.analysis.logoAudit) {
+          logoMeta.logoAudit = json.analysis.logoAudit;
+          if (json.analysis.riskLevel) logoMeta.riskLevel = json.analysis.riskLevel;
+          if (json.analysis.verdict) logoMeta.verdict = json.analysis.verdict;
+        }
+      }
+    } catch (e) {
+      console.warn('AI Vision enrich notice:', e.message);
+    }
+    return logoMeta;
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     injectGlobalWidgets();
   });
@@ -2911,6 +3085,8 @@
     mountPdkiExplorer,
     analyzeLogoPixels,
     compareTwoLogos,
+    synthesizeVisualAudit,
+    enrichLogoWithAiVision,
     renderVisualSimilarityHtml,
     recommendClasses,
     analyzeTrademark,

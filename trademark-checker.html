@@ -444,7 +444,7 @@
     </div>
   </footer>
 
-  <script src="js/platform-store.js?v=2.4"></script>
+  <script src="js/platform-store.js?v=2.5"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const searchForm = document.getElementById('mebiso-search-form');
@@ -500,8 +500,8 @@
       // 1. Core Simple Search Runner (Direct PDKI DJKI Results just like Mebiso)
       const doSearch = (queryStr) => {
         const q = (queryStr || (brandInput ? brandInput.value : '') || 'onitsuka').trim();
-        if (!q) return;
-        if (brandInput) brandInput.value = q;
+        if (!q && !uploadedMeta) return;
+        if (brandInput && q) brandInput.value = q;
         if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
 
         // Pre-fetch live API if key is available
@@ -514,6 +514,27 @@
           window.BCStore.mountPdkiExplorer(visualSimContainer, q, uploadedMeta, uploadedCompMeta);
         }
 
+        // If logo is uploaded, query AI Vision shape analysis asynchronously
+        if (uploadedMeta && uploadedMeta.previewDataUrl && !uploadedMeta.logoAudit) {
+          fetch('/api/ai-analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              brand: q || uploadedMeta.inferredBrand || 'LOGO_AUDIT',
+              mode: 'logo',
+              fileName: uploadedMeta.name,
+              logoDataUrl: uploadedMeta.previewDataUrl
+            })
+          }).then(r => r.json()).then(res => {
+            if (res.success && res.analysis && res.analysis.logoAudit) {
+              uploadedMeta.logoAudit = res.analysis.logoAudit;
+              if (visualSimContainer && window.BCStore && window.BCStore.mountPdkiExplorer) {
+                window.BCStore.mountPdkiExplorer(visualSimContainer, q, uploadedMeta, uploadedCompMeta);
+              }
+            }
+          }).catch(err => console.log('Logo visual audit note:', err));
+        }
+
         // Hide AI deep result box when a new keyword search is initiated until user requests it
         if (resultBox && !uploadedMeta) {
           resultBox.hidden = true;
@@ -522,7 +543,7 @@
 
       // 2. Global Deep AI Analysis Trigger (called by CTA banner "Cek Sekarang" inside search results)
       window.runTrademarkCheck = async (brandName) => {
-        const targetQ = (brandName || (brandInput ? brandInput.value : '') || 'MEREK BARU').trim();
+        const targetQ = (brandName || (brandInput ? brandInput.value : '') || (uploadedMeta ? uploadedMeta.inferredBrand : 'MEREK BARU')).trim();
         
         // Show result box with loading state
         if (resultBox) {
@@ -546,13 +567,13 @@
         }
 
         // 2. Evaluate with BCStore local analyzer
-        const rec = window.BCStore.analyzeTrademark(targetQ, 'name', '', '', uploadedMeta, uploadedCompMeta);
+        const rec = window.BCStore.analyzeTrademark(targetQ, currentMode, '', '', uploadedMeta, uploadedCompMeta);
         const lowerQ = targetQ.toLowerCase().trim();
         const liveItems = (liveDjki && Array.isArray(liveDjki.items)) ? liveDjki.items : (rec.similarMarks || []);
         const exactMatchItem = liveItems.find(it => (it.brand || '').toLowerCase().trim() === lowerQ);
         const topConflict = exactMatchItem || (liveItems.length > 0 ? liveItems[0] : null);
 
-        // 3. Try serverless AI (/api/ai-analyze) with top match context
+        // 3. Try serverless AI (/api/ai-analyze) with top match and logo context
         let aiData = null;
         try {
           const resp = await fetch('/api/ai-analyze', {
@@ -560,6 +581,9 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               brand: targetQ,
+              mode: currentMode,
+              logoDataUrl: uploadedMeta?.previewDataUrl || null,
+              fileName: uploadedMeta?.name || null,
               topMatch: topConflict ? {
                 brand: topConflict.brand,
                 owner: topConflict.owner,
@@ -574,6 +598,12 @@
             const json = await resp.json();
             if (json.success && json.analysis) {
               aiData = json.analysis;
+              if (uploadedMeta && aiData.logoAudit) {
+                uploadedMeta.logoAudit = aiData.logoAudit;
+                if (visualSimContainer && window.BCStore && window.BCStore.mountPdkiExplorer) {
+                  window.BCStore.mountPdkiExplorer(visualSimContainer, targetQ, uploadedMeta, uploadedCompMeta);
+                }
+              }
             }
           }
         } catch (e) {
@@ -584,6 +614,7 @@
           exactMatchItem ||
           (topConflict && ((topConflict.brand || '').toLowerCase().trim() === lowerQ || (topConflict.similarityPct && topConflict.similarityPct >= 70))) ||
           (aiData && aiData.riskLevel === 'Tinggi') ||
+          (aiData?.logoAudit?.visualConflictRisk === 'Tinggi') ||
           (rec.riskLevel === 'high')
         );
 

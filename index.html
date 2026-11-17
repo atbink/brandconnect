@@ -1340,8 +1340,8 @@
     </div>
   </footer>
 
-  <script src="js/platform-store.js?v=2.4"></script>
-  <script src="js/main.js?v=2.4"></script>
+  <script src="js/platform-store.js?v=2.5"></script>
+  <script src="js/main.js?v=2.5"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const searchForm = document.getElementById('tm-search-form');
@@ -1447,6 +1447,9 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               brand: effectiveQuery,
+              mode: mode,
+              logoDataUrl: logoMeta?.previewDataUrl || null,
+              fileName: logoMeta?.name || null,
               topMatch: topItem ? {
                 brand: topItem.brand,
                 owner: topItem.owner,
@@ -1461,6 +1464,13 @@
             const json = await resp.json();
             if (json.success && json.analysis) {
               aiData = json.analysis;
+              if (logoMeta && aiData.logoAudit) {
+                logoMeta.logoAudit = aiData.logoAudit;
+                // Re-mount explorer with enriched AI Vision conflict findings
+                if (mebisoContainer && window.BCStore && window.BCStore.mountPdkiExplorer) {
+                  window.BCStore.mountPdkiExplorer(mebisoContainer, effectiveQuery, logoMeta, null);
+                }
+              }
             }
           }
         } catch (e) {
@@ -1494,7 +1504,7 @@
         const items = (djki && Array.isArray(djki.items)) ? djki.items : [];
         const totalFound = djki?.totalFound || items.length;
 
-        // Comprehensive conflict check across all search results
+        // Comprehensive conflict check across all search results + AI Vision shape conflicts
         const exactMatchItem = items.find(it => (it.brand || '').toLowerCase().trim() === lower);
         const highSimItem = items.find(it => (it.similarityPct && it.similarityPct >= 70));
         const partialConflictItem = items.find(it => {
@@ -1512,7 +1522,8 @@
             topBrandLower === lower ||
             (lower.length >= 3 && (lower.includes(topBrandLower) || topBrandLower.includes(lower))) ||
             (top.similarityPct && top.similarityPct >= 70)
-          ))
+          )) ||
+          (ai?.logoAudit?.visualConflictRisk === 'Tinggi')
         );
 
         // Determine Risk Level dynamically (DJKI live legal records strictly override generic AI)
