@@ -1,18 +1,13 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mulai Penelusuran Merek — BRANDCONNECT | Pangkalan Data Resmi DJKI &amp; Analisis AI</title>
-  <meta name="description"
-    content="Penelusuran merek resmi DJKI dan audit analisis AI BrandConnect: data merek terdaftar, status pendaftaran, klasifikasi Nice, etiket logo, dan estimasi risiko penolakan." />
+  <meta name="description" content="Penelusuran merek resmi DJKI dan audit analisis AI BrandConnect: data merek terdaftar, status pendaftaran, klasifikasi Nice, etiket logo, dan estimasi risiko penolakan." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@500;600;700;800;900&display=swap"
-    rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css?v=2.4" />
   <style>
     :root {
@@ -22,7 +17,6 @@
       --bc-card-border: #E5E7EB;
       --bc-text-dark: #1F2937;
     }
-
     body {
       background-color: #FAF8F5;
       font-family: 'Inter', sans-serif;
@@ -30,7 +24,6 @@
       margin: 0;
       padding: 0;
     }
-
     .site-header {
       background: #FFFFFF;
       border-bottom: 1px solid var(--bc-card-border);
@@ -38,20 +31,17 @@
       top: 0;
       z-index: 100;
     }
-
     .nav-container {
       display: flex;
       align-items: center;
       justify-content: space-between;
       height: 72px;
     }
-
     .brand-logo .logo-img {
       height: 28px;
       width: auto;
       display: block;
     }
-
     .main-nav .nav-list {
       display: flex;
       gap: 1.75rem;
@@ -59,7 +49,6 @@
       margin: 0;
       padding: 0;
     }
-
     .main-nav .nav-link {
       color: #4B5563;
       text-decoration: none;
@@ -67,13 +56,10 @@
       font-size: 0.95rem;
       transition: color 0.15s;
     }
-
-    .main-nav .nav-link:hover,
-    .main-nav .nav-link.active {
+    .main-nav .nav-link:hover, .main-nav .nav-link.active {
       color: var(--bc-green);
       font-weight: 700;
     }
-
     .nav-login-pill {
       display: inline-flex;
       align-items: center;
@@ -86,12 +72,10 @@
       font-weight: 600;
       text-decoration: none;
     }
-
     .nav-login-pill svg {
       width: 15px;
       height: 15px;
     }
-
     /* Search Form Styling — BrandConnect Signature */
     .mebiso-search-bar {
       display: flex;
@@ -104,12 +88,10 @@
       box-shadow: 0 4px 24px rgba(13, 59, 46, 0.06);
       transition: all 0.2s ease;
     }
-
     .mebiso-search-bar:focus-within {
       border-color: var(--bc-green);
       box-shadow: 0 6px 28px rgba(13, 59, 46, 0.14);
     }
-
     .mebiso-search-input {
       border: none;
       box-shadow: none;
@@ -122,7 +104,6 @@
       color: var(--bc-text-dark);
       font-weight: 500;
     }
-
     .mebiso-submit-btn {
       background: var(--bc-green);
       color: #FFFFFF;
@@ -140,13 +121,11 @@
       transition: all 0.2s ease;
       flex-shrink: 0;
     }
-
     .mebiso-submit-btn:hover {
       background: var(--bc-green-hover);
       transform: translateY(-1px);
       box-shadow: 0 4px 14px rgba(13, 59, 46, 0.25);
     }
-
     .quick-chip {
       background: #FFFFFF;
       border: 1px solid var(--bc-card-border);
@@ -159,13 +138,11 @@
       font-size: 0.8rem;
       transition: all 0.15s ease;
     }
-
     .quick-chip:hover {
       background: var(--bc-green-mint);
       border-color: var(--bc-green);
       color: var(--bc-green);
     }
-
     /* AI Result Box Styling */
     .ai-deep-box {
       margin-top: 2.5rem;
@@ -177,7 +154,6 @@
       box-shadow: 0 12px 36px rgba(13, 59, 46, 0.06);
       position: relative;
     }
-
     .tm-score-badge {
       display: inline-flex;
       align-items: center;
@@ -186,39 +162,33 @@
       border-radius: 12px;
       font-weight: 700;
     }
-
     .score-high {
       background: #ECFDF5;
       border: 1px solid #6EE7B7;
       color: #065F46;
     }
-
     .score-medium {
       background: #FFFBEB;
       border: 1px solid #FCD34D;
       color: #92400E;
     }
-
     .score-low {
       background: #FEF2F2;
       border: 1px solid #FCA5A5;
       color: #991B1B;
     }
-
     .tm-breakdown-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 1rem;
       margin-top: 1rem;
     }
-
     .tm-pill-card {
       background: #F9FAFB;
       border: 1px solid #E5E7EB;
       border-radius: 10px;
       padding: 1rem;
     }
-
     .tm-pill-title {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.72rem;
@@ -226,125 +196,34 @@
       color: var(--bc-green);
       margin-bottom: 0.35rem;
     }
-
     .tm-pill-status {
       font-weight: 800;
       font-size: 0.92rem;
       color: #111827;
       margin-bottom: 0.3rem;
     }
-
     .tm-pill-detail {
       font-size: 0.8rem;
       color: #4B5563;
       line-height: 1.4;
     }
-
     @media (max-width: 768px) {
       .nav-container {
         padding: 0 1rem;
       }
-
       .main-nav {
         display: none;
       }
-
       .bc-pdki-grid {
         grid-template-columns: 1fr !important;
       }
-
       .mebiso-submit-btn {
         padding: 0.75rem 1.25rem;
       }
     }
   </style>
 </head>
-
 <body>
-  <!-- Container Utama UI -->
-  <div class="min-h-screen bg-zinc-900 flex flex-col items-center justify-center p-6 font-sans">
-
-    <!-- Card Claymorphism -->
-    <div
-      class="bg-zinc-800 rounded-3xl p-8 max-w-md w-full shadow-[12px_12px_24px_#1a1a1a,-12px_-12px_24px_#363636] border border-zinc-700/30 flex flex-col items-center text-center">
-
-      <h2 class="text-2xl font-bold text-amber-500 mb-2 tracking-wide">Cek Status Merek</h2>
-      <p class="text-zinc-400 mb-8 text-sm">
-        Sistem akan membangun koneksi aman ke pangkalan data DJKI
-      </p>
-
-      <!-- Input Field -->
-      <input type="text" id="keywordInput" placeholder="Masukkan nama merek (mis: ms glow)..."
-        class="w-full bg-zinc-900 border border-zinc-800 text-zinc-100 px-5 py-3 rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-700 shadow-inner mb-6 transition-all placeholder:text-zinc-600" />
-
-      <!-- Tombol Pencarian -->
-      <button id="searchButton"
-        class="w-full bg-gradient-to-br from-amber-600 to-orange-800 hover:from-amber-500 hover:to-orange-700 disabled:opacity-50 disabled:cursor-not-allowed text-zinc-50 font-semibold py-3.5 px-6 rounded-2xl shadow-[6px_6px_12px_#1a1a1a,-6px_-6px_12px_#363636] active:shadow-inner transition-all duration-200 flex justify-center items-center">
-        <span id="buttonText">Telusuri Database DJKI</span>
-
-        <!-- Animasi Loading (Sembunyi secara default) -->
-        <span id="loadingSpinner" class="hidden flex items-center gap-3 animate-pulse">
-          <svg class="animate-spin h-5 w-5 text-zinc-50" viewBox="0 0 24 24" fill="none">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-            </path>
-          </svg>
-          Membangun koneksi...
-        </span>
-      </button>
-    </div>
-
-    <!-- Atribut Footer YDSN Studio -->
-    <div class="mt-14 flex flex-col items-center gap-3 opacity-60 hover:opacity-100 transition-opacity duration-300">
-      <span class="text-zinc-500 text-xs font-semibold tracking-[0.2em] uppercase">
-        By Yuddesign studio
-      </span>
-      <img src="https://res.cloudinary.com/dvy4znkvy/image/upload/v1784365776/YUDDESIGN_STUDIO_LOGO-05_ymted0.png"
-        alt="YDSN Studio" class="h-7 w-auto drop-shadow-md grayscale hover:grayscale-0 transition-all duration-300" />
-    </div>
-  </div>
-
-  <!-- Logika Javascript Murni untuk Efek Loading & Redirect -->
-  <script>
-    const input = document.getElementById('keywordInput');
-    const button = document.getElementById('searchButton');
-    const btnText = document.getElementById('buttonText');
-    const spinner = document.getElementById('loadingSpinner');
-
-    // Biar bisa enter langsung nyari
-    input.addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') {
-        executeSearch();
-      }
-    });
-
-    button.addEventListener('click', executeSearch);
-
-    function executeSearch() {
-      const keyword = input.value.trim();
-      if (!keyword) return;
-
-      // 1. Ubah tombol jadi loading dan kunci inputnya
-      input.disabled = true;
-      button.disabled = true;
-      btnText.classList.add('hidden');
-      spinner.classList.remove('hidden');
-
-      // 2. Beri jeda 2 detik untuk ilusi "menghubungkan ke server DJKI"
-      setTimeout(() => {
-        // 3. Buka tab baru ke web DJKI
-        const searchUrl = `https://pdki-indonesia.dgip.go.id/search?keyword=${encodeURIComponent(keyword)}&type=trademark&page=1`;
-        window.open(searchUrl, '_blank');
-
-        // 4. Kembalikan tombol ke keadaan semula kalau tab lamanya dilihat lagi
-        input.disabled = false;
-        button.disabled = false;
-        btnText.classList.remove('hidden');
-        spinner.classList.add('hidden');
-      }, 2000); // 2000 milidetik = 2 detik
-    }
-  </script>
   <!-- HEADER -->
   <header class="site-header">
     <div class="container nav-container">
@@ -362,10 +241,7 @@
       </nav>
       <div class="nav-actions" style="display:flex;align-items:center;gap:0.75rem;">
         <a href="dashboard.html" class="nav-login-pill">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
           <span>Login</span>
         </a>
       </div>
@@ -375,32 +251,26 @@
   <!-- MAIN CONTENT -->
   <main style="padding: 2rem 0 5rem;">
     <div class="container" style="max-width:1160px;margin:0 auto;padding:0 1rem;">
-
+      
       <!-- TITLE (BrandConnect Editorial Style) -->
       <div style="text-align:center;max-width:760px;margin:1.25rem auto 2rem auto;">
         <div class="bc-hero-eyebrow" style="margin-bottom:0.75rem;justify-content:center;">
           PANGKALAN DATA RESMI DJKI // KEMENKUMHAM RI
         </div>
-        <h1
-          style="font-family:var(--font-heading);font-size:2.65rem;font-weight:800;color:var(--bc-text-dark);letter-spacing:-0.03em;margin:0 0 0.65rem 0;line-height:1.2;">
+        <h1 style="font-family:var(--font-heading);font-size:2.65rem;font-weight:800;color:var(--bc-text-dark);letter-spacing:-0.03em;margin:0 0 0.65rem 0;line-height:1.2;">
           Penelusuran Merek <span class="serif-accent">Resmi &amp; Terintegrasi.</span>
         </h1>
         <p style="font-size:1.02rem;color:#6B7280;margin:0 auto;max-width:620px;line-height:1.6;">
-          Cek keterdaftaran nama merek, telusuri etiket visual, dan evaluasi potensi risiko penolakan substantif
-          berdasarkan UU No. 20 Tahun 2016 secara instan.
+          Cek keterdaftaran nama merek, telusuri etiket visual, dan evaluasi potensi risiko penolakan substantif berdasarkan UU No. 20 Tahun 2016 secara instan.
         </p>
       </div>
 
       <!-- SEARCH BAR (Mebiso Direct Style) -->
       <div style="max-width:880px;margin:0 auto 1.5rem auto;">
         <!-- Search Mode Tabs (Nama Merek, Nomor Permohonan) -->
-        <div class="bc-mode-tabs" role="tablist"
-          style="margin-bottom:1rem;display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
+        <div class="bc-mode-tabs" role="tablist" style="margin-bottom:1rem;display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
           <button type="button" class="bc-mode-tab active" data-search-mode="name">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             <span>Nama Merek</span>
           </button>
           <button type="button" class="bc-mode-tab" data-search-mode="number">
@@ -411,11 +281,15 @@
         <form id="mebiso-search-form" class="mebiso-search-bar">
           <input type="hidden" id="tm-search-mode-input" value="name" />
           <div style="display:flex;align-items:center;flex:1;position:relative;">
-            <input type="text" id="dc-brand" class="mebiso-search-input"
-              placeholder="Ketik nama merek (contoh: onitsuka, adidas, nike, converse)..." value="onitsuka" required />
-            <button type="button" id="clear-search-btn"
-              style="position:absolute;right:10px;background:none;border:none;color:#94A3B8;font-size:1.15rem;cursor:pointer;"
-              title="Hapus">✕</button>
+            <input
+              type="text"
+              id="dc-brand"
+              class="mebiso-search-input"
+              placeholder="Ketik nama merek (contoh: onitsuka, adidas, nike, converse)..."
+              value="onitsuka"
+              required
+            />
+            <button type="button" id="clear-search-btn" style="position:absolute;right:10px;background:none;border:none;color:#94A3B8;font-size:1.15rem;cursor:pointer;" title="Hapus">✕</button>
           </div>
           <button type="submit" class="mebiso-submit-btn">
             <span>🔍 Cari</span>
@@ -423,8 +297,7 @@
         </form>
 
         <!-- Quick Chips -->
-        <div
-          style="margin-top:0.75rem;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:0.6rem;font-size:0.82rem;">
+        <div style="margin-top:0.75rem;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:0.6rem;font-size:0.82rem;">
           <div style="color:#64748B;">
             <strong style="color:#334155;">Pencarian Populer:</strong>
             <button type="button" class="quick-chip" data-q="onitsuka">onitsuka</button>
@@ -442,22 +315,16 @@
 
       <!-- 3-TIER DEEP AI ANALYSIS BOX (Revealed via 'Cek Sekarang' CTA Banner) -->
       <div id="dc-result-box" hidden class="ai-deep-box">
-        <div
-          style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1.5px solid #E5E7EB;padding-bottom:1.25rem;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1.5px solid #E5E7EB;padding-bottom:1.25rem;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
           <div>
-            <span
-              style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:var(--bc-green);font-weight:700;"
-              id="dc-res-ref">REF: BC-SRCH</span>
-            <h2 style="font-family:'Manrope',sans-serif;font-size:1.95rem;font-weight:900;color:#0F172A;margin:4px 0;"
-              id="dc-res-brand">MEREK</h2>
-            <p style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;color:#6B7280;margin:0;"
-              id="dc-res-classes">Rekomendasi Kelas: -</p>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;color:var(--bc-green);font-weight:700;" id="dc-res-ref">REF: BC-SRCH</span>
+            <h2 style="font-family:'Manrope',sans-serif;font-size:1.95rem;font-weight:900;color:#0F172A;margin:4px 0;" id="dc-res-brand">MEREK</h2>
+            <p style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;color:#6B7280;margin:0;" id="dc-res-classes">Rekomendasi Kelas: -</p>
           </div>
           <div class="tm-score-badge score-high" id="dc-res-badge">
             <span style="font-size:1.85rem;font-weight:900;line-height:1;" id="dc-res-score">89%</span>
             <div style="text-align:left;">
-              <span style="font-size:0.68rem;display:block;opacity:0.85;text-transform:uppercase;"
-                class="tm-score-label">Indeks Daya Pembeda</span>
+              <span style="font-size:0.68rem;display:block;opacity:0.85;text-transform:uppercase;" class="tm-score-label">Indeks Daya Pembeda</span>
               <span style="font-size:0.95rem;font-weight:800;" id="dc-res-verdict">POTENSI POSITIF</span>
             </div>
           </div>
@@ -465,8 +332,7 @@
 
         <!-- TIER 1: 4 DIMENSIONS GRID -->
         <div style="margin-bottom:1.5rem;">
-          <h3
-            style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:0.1em;color:var(--bc-green);margin-bottom:0.75rem;">
+          <h3 style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:0.1em;color:var(--bc-green);margin-bottom:0.75rem;">
             LAPISAN 01 // PARAMETER PENCARIAN &amp; KEMIRIPAN (PASAL 20 &amp; 21 UU MEREK)
           </h3>
           <div class="tm-breakdown-grid">
@@ -494,39 +360,31 @@
         </div>
 
         <!-- TIER 2: AI INTERPRETATION -->
-        <div
-          style="margin-bottom:1.5rem;padding:1.25rem 1.4rem;background:#F0FDF4;border-left:4px solid #16A34A;border-radius:8px;">
-          <h3
-            style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:0.1em;color:#166534;margin-bottom:0.45rem;">
+        <div style="margin-bottom:1.5rem;padding:1.25rem 1.4rem;background:#F0FDF4;border-left:4px solid #16A34A;border-radius:8px;">
+          <h3 style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:0.1em;color:#166534;margin-bottom:0.45rem;">
             LAPISAN 02 // INTERPRETASI PRA-SKRINING AI (DJKI SUBSTANTIVE AUDIT)
           </h3>
           <p id="dc-ai-interp" style="font-size:0.92rem;line-height:1.65;color:#1E293B;margin:0;"></p>
         </div>
 
         <!-- TIER 3: PROFESSIONAL LEGAL ASSESSMENT -->
-        <div
-          style="margin-bottom:1.75rem;padding:1.25rem 1.4rem;background:#FAF8F5;border-left:4px solid var(--bc-green);border-radius:8px;">
-          <h3
-            style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:0.1em;color:var(--bc-green);margin-bottom:0.45rem;">
+        <div style="margin-bottom:1.75rem;padding:1.25rem 1.4rem;background:#FAF8F5;border-left:4px solid var(--bc-green);border-radius:8px;">
+          <h3 style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:0.1em;color:var(--bc-green);margin-bottom:0.45rem;">
             LAPISAN 03 // PENILAIAN HUKUM PROFESIONAL (KONSULTAN MEREK BRANDCONNECT)
           </h3>
           <p id="dc-prof-assess" style="font-size:0.92rem;line-height:1.65;color:#1E293B;margin:0;"></p>
         </div>
 
         <!-- ACTIONS ROW -->
-        <div
-          style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;padding-top:1.5rem;border-top:1px dashed var(--bc-card-border);">
-          <button type="button" class="btn btn-secondary btn-sm" id="dc-btn-report"
-            style="padding:0.7rem 1.45rem;border-radius:9999px;font-weight:600;background:#FFF;border:1px solid #D5D3CA;cursor:pointer;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;padding-top:1.5rem;border-top:1px dashed var(--bc-card-border);">
+          <button type="button" class="btn btn-secondary btn-sm" id="dc-btn-report" style="padding:0.7rem 1.45rem;border-radius:9999px;font-weight:600;background:#FFF;border:1px solid #D5D3CA;cursor:pointer;">
             <span>📄 Cetak Laporan AI Resmi</span>
           </button>
           <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
-            <button type="button" class="btn btn-secondary btn-sm" id="dc-btn-handover"
-              style="padding:0.7rem 1.45rem;border-radius:9999px;font-weight:600;background:#FFF;border:1px solid #D5D3CA;cursor:pointer;">
+            <button type="button" class="btn btn-secondary btn-sm" id="dc-btn-handover" style="padding:0.7rem 1.45rem;border-radius:9999px;font-weight:600;background:#FFF;border:1px solid #D5D3CA;cursor:pointer;">
               <span>🎧 Konsultasi Spesialis</span>
             </button>
-            <button type="button" class="btn btn-primary btn-sm" id="dc-btn-order"
-              style="padding:0.7rem 1.6rem;border-radius:9999px;font-weight:700;background:var(--bc-green);color:#FFF;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(13,59,46,0.2);">
+            <button type="button" class="btn btn-primary btn-sm" id="dc-btn-order" style="padding:0.7rem 1.6rem;border-radius:9999px;font-weight:700;background:var(--bc-green);color:#FFF;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(13,59,46,0.2);">
               <span>® Pesan Pendaftaran Merek →</span>
             </button>
           </div>
@@ -537,13 +395,11 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="site-footer"
-    style="background:#FFFFFF;border-top:1px solid var(--bc-card-border);padding:2.5rem 0;text-align:center;">
+  <footer class="site-footer" style="background:#FFFFFF;border-top:1px solid var(--bc-card-border);padding:2.5rem 0;text-align:center;">
     <div class="container" style="max-width:1160px;margin:0 auto;padding:0 1rem;">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
         <p style="margin:0;font-size:0.88rem;color:#6B7280;">
-          © 2026 BRANDCONNECT. All Rights Reserved. · <a href="index.html"
-            style="color:var(--bc-green);font-weight:600;text-decoration:none;">Kembali ke Beranda</a>
+          © 2026 BRANDCONNECT. All Rights Reserved. · <a href="index.html" style="color:var(--bc-green);font-weight:600;text-decoration:none;">Kembali ke Beranda</a>
         </p>
         <span style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--bc-green);font-weight:700;">
           Pangkalan Data Resmi DJKI // Kemenkumham RI
@@ -609,7 +465,7 @@
       // 2. Global Deep AI Analysis Trigger (called by CTA banner "Cek Sekarang" inside search results)
       window.runTrademarkCheck = async (brandName) => {
         const targetQ = (brandName || (brandInput ? brandInput.value : '') || 'MEREK BARU').trim();
-
+        
         // Show result box with loading state
         if (resultBox) {
           resultBox.hidden = false;
@@ -770,5 +626,4 @@
     });
   </script>
 </body>
-
 </html>
