@@ -203,58 +203,58 @@ document.addEventListener('DOMContentLoaded', () => {
      -------------------------------------------------- */
   const journeyData = {
     '01': {
-      badge: 'STAGE 01 // IDEA',
-      heading: 'Setiap bisnis besar dimulai dari sketsa di atas kertas.',
-      desc: 'Sebelum badan usaha berdiri atau produk masuk ke pasar, semuanya berawal dari konsep, catatan buku, dan rencana awal. Kami membantu Anda memetakan langkah yang tepat sejak hari pertama.',
-      sketch: 'Catatan ide bisnis, konsep nama brand, & sketsa produk awal',
-      reality: 'Peta kebutuhan badan usaha, KBLI, merek, dan izin produk yang jelas',
-      target: '#stage-build',
-      linkLabel: 'LIHAT TAHAP 01: BUILD'
+      badge: 'STAGE 01 // IDEA & NAME EXPLORATION',
+      heading: 'Setiap merek besar dimulai dari sketsa nama dan identitas unik.',
+      desc: 'Sebelum merilis produk atau mencetak kemasan, pastikan konsep nama dan logo brand Anda memiliki daya pembeda kuat di bawah Pasal 20 UU Merek.',
+      sketch: 'Sketsa logo awal, konsep nama brand, & daftar produk/layanan',
+      reality: 'Konsep identitas merek orisinal siap cek kemiripan di DJKI',
+      target: '#cek-merek',
+      linkLabel: 'CEK MEREK SEKARANG'
     },
     '02': {
-      badge: 'STAGE 02 // BUILD (BUSINESS FOUNDATION)',
-      heading: 'Siapkan fondasi badan usaha yang tepat.',
-      desc: 'Kami membantu mempersiapkan pendirian PT, CV, atau badan usaha Anda beserta penentuan kode KBLI dan NIB agar bisnis memiliki struktur resmi yang jelas.',
-      sketch: 'Rencana struktur usaha, pembagian peran, & draf kegiatan bisnis',
-      reality: 'Akta Pendirian PT/CV, SK Kemenkumham, NPWP Badan, & NIB',
-      target: '#stage-build',
-      linkLabel: 'MENUJU 01 / BUILD'
+      badge: 'STAGE 02 // AI TRADEMARK SEARCH',
+      heading: 'Cek potensi kemiripan sebelum mengajukan ke DJKI.',
+      desc: 'Telusuri kesamaan bunyi (fonetik), ejaan, maupun nama terdaftar di pangkalan data PDKI DJKI untuk menghindari risiko penolakan Pasal 21.',
+      sketch: 'Ide nama brand mentah sebelum masuk database resmi',
+      reality: 'Laporan analisis risiko penolakan & status ketersediaan merek',
+      target: '#cek-merek',
+      linkLabel: 'MENUJU CEK MEREK'
     },
     '03': {
-      badge: 'STAGE 03 // LEGALIZE (LEGAL ENTITY & LICENSING)',
-      heading: 'Jadikan operasional bisnis Anda resmi dan terarah.',
-      desc: 'Kami membantu mengidentifikasi dan mengurus kebutuhan NIB, sistem OSS Berbasis Risiko, serta izin operasional yang relevan dengan kegiatan usaha Anda.',
-      sketch: 'Daftar kebutuhan operasional & kelengkapan dokumen usaha',
-      reality: 'NIB Aktif, Perizinan Berusaha OSS, & Izin Operasional Terverifikasi',
-      target: '#stage-legalize',
-      linkLabel: 'MENUJU 02 / LEGALIZE'
+      badge: 'STAGE 03 // NICE CLASSIFICATION (1–45)',
+      heading: 'Petakan kelas barang dan jasa secara presisi.',
+      desc: 'Perlindungan hukum merek hanya berlaku pada kelas yang didaftarkan. Kombinasikan kelas produk utama (1–34) dan kelas jasa (35–45) sesuai lini bisnis.',
+      sketch: 'Daftar barang/jasa yang dijual maupun rencana toko online',
+      reality: 'Pemetaan kelas Nice 1–45 presisi untuk perlindungan berlapis',
+      target: '#cari-kelas',
+      linkLabel: 'CARI KELAS MEREK'
     },
     '04': {
-      badge: 'STAGE 04 // PROTECT (PROTECTED BRAND)',
-      heading: 'Lindungi nama dan identitas brand yang Anda bangun.',
-      desc: 'Ubah nama dan logo brand Anda menjadi aset kekayaan intelektual yang terlindungi secara resmi melalui pendaftaran merek di DJKI.',
-      sketch: 'Sketsa logo awal, pemilihan nama brand, & eksplorasi identitas',
-      reality: 'Bukti Permohonan / Sertifikat Merek Terdaftar (®) di DJKI',
-      target: '#stage-protect',
-      linkLabel: 'MENUJU 03 / PROTECT'
+      badge: 'STAGE 04 // PROTECT (TRADEMARK REGISTRATION)',
+      heading: 'Amankan Tanggal Penerimaan (Filing Date) di DJKI.',
+      desc: 'Ubah nama dan logo brand Anda menjadi aset kekayaan intelektual resmi melalui e-filing DJKI di bawah asas First-to-File.',
+      sketch: 'Etiket logo final & kelengkapan berkas pemohon (UMKM/Umum)',
+      reality: 'Bukti Permohonan Resmi / Sertifikat Merek Terdaftar (®) DJKI',
+      target: '#pendaftaran-merek',
+      linkLabel: 'DAFTAR MEREK RESMI'
     },
     '05': {
-      badge: 'STAGE 05 // CERTIFY (COMPLIANT PRODUCT)',
-      heading: 'Siapkan produk Anda sebelum masuk ke pasar.',
-      desc: 'Mulai dari evaluasi komposisi dan label kemasan hingga pendampingan izin edar BPOM dan sertifikasi Halal BPJPH sesuai kategori produk Anda.',
-      sketch: 'Sampel prototipe produk, daftar komposisi, & draf desain kemasan',
-      reality: 'Produk dengan Nomor Izin Edar BPOM & Sertifikat Halal siap jual',
-      target: '#stage-certify',
-      linkLabel: 'MENUJU 04 / CERTIFY'
+      badge: 'STAGE 05 // MONITOR & DEFENSE (BRM DJKI)',
+      heading: 'Pantau Berita Resmi Merek & cegah peniruan.',
+      desc: 'Awasi pengumuman BRM DJKI selama masa publikasi 2 bulan dan tangani kebutuhan sanggahan penolakan maupun pengajuan oposisi pihak ketiga.',
+      sketch: 'Pemantauan berkala terhadap pengajuan merek sejenis',
+      reality: 'Surat Oposisi / Tanggapan Sanggahan & proteksi hak eksklusif',
+      target: '#monitoring-merek',
+      linkLabel: 'MONITORING MEREK'
     },
     '06': {
-      badge: 'STAGE 06 // MOVE FORWARD',
-      heading: 'Melangkah lebih jauh dengan kesiapan penuh.',
-      desc: 'Ketika fondasi badan usaha telah berdiri, izin usaha jelas, merek terlindungi, dan produk telah terdaftar, bisnis Anda siap memperluas distribusi dan kemitraan.',
-      sketch: 'Seluruh tahapan bisnis terhubung dalam satu peta jalan',
-      reality: 'Bisnis dan produk beroperasi resmi serta siap berekspansi di pasar',
-      target: '#stage-move-forward',
-      linkLabel: 'MENUJU 05 / MOVE FORWARD'
+      badge: 'STAGE 06 // LICENSE & RENEW (10 YEARS+)',
+      heading: 'Kelola aset merek untuk ekspansi, lisensi, dan waralaba.',
+      desc: 'Dengan sertifikat merek terlindungi hingga 10 tahun dan dapat diperpanjang, bisnis Anda siap menjalin lisensi, pengalihan hak, atau franchise resmi.',
+      sketch: 'Portofolio merek aktif yang siap dikomersialisasikan',
+      reality: 'Perpanjangan 10 Tahun, Perjanjian Lisensi, & Pengalihan Hak Sah',
+      target: '#layanan-merek',
+      linkLabel: 'LIHAT LAYANAN MEREK'
     }
   };
 
@@ -569,103 +569,65 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Recommendation Engine based on User Answers
+  // Recommendation Engine based on User Answers (100% Trademark & Brand Protection Focus)
   const catalogBlocks = {
     BUILD: {
-      stageCode: '01 — BUILD',
-      title: 'FONDASI BISNIS & BADAN USAHA',
-      desc: 'Mulai dengan mempersiapkan struktur badan usaha (PT atau CV), penentuan kode KBLI yang tepat, serta pendaftaran awal agar bisnis Anda memiliki landasan resmi.',
-      services: ['Pendirian Badan Usaha (PT / CV)', 'Pendaftaran Bisnis & NPWP Badan', 'Pengurusan NIB'],
-      ctaLabel: 'MULAI BANGUN BISNIS →',
-      ctaHref: 'pendirian-bisnis.html',
-      preselect: '01 BUILD'
+      stageCode: '01 — SEARCH',
+      title: 'PENELUSURAN MEREK AI (PDKI DJKI)',
+      desc: 'Mulai dengan memeriksa potensi kemiripan bunyi, ejaan, dan merek terdaftar di pangkalan data resmi DJKI sebelum mengajukan permohonan.',
+      services: ['AI Trademark Search', 'Audit Risiko Pasal 20 & 21', 'Laporan Pra-Skrining Merek'],
+      ctaLabel: 'CEK MEREK SEKARANG →',
+      ctaHref: 'trademark-checker.html',
+      preselect: '01 SEARCH'
     },
     LEGALIZE: {
-      stageCode: '02 — LEGALIZE',
-      title: 'LEGALITAS & PERIZINAN USAHA',
-      desc: 'Lengkapi dan tertibkan Nomor Induk Berusaha (NIB), sinkronisasi sistem OSS Berbasis Risiko, serta izin operasional sesuai bidang usaha Anda.',
-      services: ['Pengurusan NIB', 'Perizinan Berusaha & OSS', 'Izin Operasional & Sertifikat Standar'],
-      ctaLabel: 'URUS LEGALITAS →',
-      ctaHref: 'legalitas-perizinan.html',
-      preselect: '02 LEGALIZE'
+      stageCode: '02 — CLASSIFY',
+      title: 'PEMETAAN KELAS MEREK (NICE 1–45)',
+      desc: 'Tentukan kelas barang (Kelas 1–34) dan jasa (Kelas 35–45) secara presisi agar perlindungan hukum merek Anda mencakup seluruh lini produk dan penjualan.',
+      services: ['Cari Kelas Merek Nice', 'Strategi Perlindungan Multi-Kelas', 'Validasi Uraian Barang/Jasa'],
+      ctaLabel: 'CARI KELAS MEREK →',
+      ctaHref: 'class-finder.html',
+      preselect: '02 CLASSIFY'
     },
     PROTECT: {
-      stageCode: '03 — PROTECT',
-      title: 'PENDAFTARAN MEREK & PROTEKSI BRAND',
-      desc: 'Lindungi nama dan identitas brand yang telah Anda bangun melalui pengecekan kemiripan dan pendaftaran merek resmi di DJKI sebelum diklaim pihak lain.',
-      services: ['Pendaftaran Merek (DJKI)', 'Konsultasi & Cek Kemiripan Merek', 'Perlindungan Kekayaan Intelektual'],
-      ctaLabel: 'PELAJARI LAYANAN MEREK →',
+      stageCode: '03 — REGISTER',
+      title: 'PENDAFTARAN MEREK RESMI DJKI',
+      desc: 'Lindungi nama dan logo brand Anda secara resmi di DJKI untuk mengamankan Tanggal Penerimaan (Filing Date) di bawah asas First-to-File.',
+      services: ['Pendaftaran Merek (DJKI)', 'Verifikasi Etiket Logo', 'Pemantauan Masa BRM'],
+      ctaLabel: 'DAFTAR MEREK RESMI →',
       ctaHref: 'pendaftaran-merek.html',
-      preselect: '03 PROTECT'
+      preselect: '03 REGISTER'
     },
     CERTIFY: {
-      stageCode: '04 — CERTIFY',
-      title: 'PERSIAPAN & REGISTRASI PRODUK',
-      desc: 'Identifikasi kebutuhan registrasi, evaluasi label kemasan, izin edar BPOM, serta sertifikasi Halal yang relevan dengan kategori produk Anda.',
-      services: ['Registrasi Produk', 'Kepatuhan Produk & Label', 'Pendampingan BPOM', 'Sertifikasi Halal'],
-      ctaLabel: 'SIAPKAN PRODUK →',
-      ctaHref: 'sertifikasi-produk.html',
-      preselect: '04 CERTIFY'
+      stageCode: '04 — DEFEND & MONITOR',
+      title: 'MONITORING BRM & PROTEKSI MEREK',
+      desc: 'Pantau publikasi Berita Resmi Merek secara berkala serta lindungi merek melalui layanan sanggahan penolakan, oposisi, perpanjangan, dan lisensi.',
+      services: ['Monitoring BRM DJKI', 'Sanggahan & Oposisi Merek', 'Perpanjangan & Lisensi Merek'],
+      ctaLabel: 'PROTEKSI MEREK →',
+      ctaHref: 'brand-protection.html',
+      preselect: '04 PROTECT'
     }
   };
 
   const computeRecommendations = () => {
-    const { building, stage, foundation, hasProduct, productCategory, priority } = mapperState;
-    const hasEntity = foundation.includes('BADAN_USAHA');
-    const hasNib = foundation.includes('NIB');
+    const { building, stage, foundation, productCategory, priority } = mapperState;
     const hasTrademark = foundation.includes('MEREK');
-    const hasNone =
-      foundation.length === 0 ||
-      foundation.includes('BELUM_SEMUA') ||
-      foundation.includes('BELUM_YAKIN');
 
     const order = [];
 
-    // Explicit Rule 1: "A BRAND" + "ALREADY OPERATING" + "NO REGISTERED TRADEMARK" -> Prioritize PROTECT
-    if (building === 'BRAND' && stage === 'ALREADY_OPERATING' && !hasTrademark) {
-      order.push('PROTECT', 'LEGALIZE', hasProduct === 'YA' ? 'CERTIFY' : 'BUILD');
-    }
-    // Explicit Rule 2: "A BUSINESS" + "IDEA" + "NONE OF THE ABOVE" -> Prioritize BUILD
-    else if (building === 'BISNIS' && stage === 'IDEA' && hasNone) {
-      order.push('BUILD', 'LEGALIZE', 'PROTECT');
-    }
-    // Explicit Rule 3: "A PRODUCT" + "READY TO LAUNCH" -> Prioritize CERTIFY
-    else if (building === 'PRODUK' && stage === 'READY_TO_LAUNCH') {
-      order.push('CERTIFY', !hasTrademark ? 'PROTECT' : 'LEGALIZE', !hasEntity ? 'BUILD' : 'LEGALIZE');
-    }
-    // Priority-driven & intelligent fallback rules
-    else {
-      if (priority === 'DAFTAR_MEREK' || building === 'BRAND') {
-        order.push('PROTECT');
-      } else if (
-        priority === 'REGISTRASI_PRODUK' ||
-        priority === 'BPOM' ||
-        priority === 'HALAL' ||
-        building === 'PRODUK'
-      ) {
-        order.push('CERTIFY');
-      } else if (priority === 'NIB_PERIZINAN') {
-        order.push('LEGALIZE');
-      } else {
-        order.push('BUILD');
-      }
-
-      // Secondary steps based on missing foundation
-      if (!hasEntity && !order.includes('BUILD')) order.push('BUILD');
-      if (!hasNib && !order.includes('LEGALIZE')) order.push('LEGALIZE');
-      if (!hasTrademark && !order.includes('PROTECT')) order.push('PROTECT');
-      if (hasProduct === 'YA' && !order.includes('CERTIFY')) order.push('CERTIFY');
-
-      ['BUILD', 'LEGALIZE', 'PROTECT', 'CERTIFY'].forEach((k) => {
-        if (!order.includes(k)) order.push(k);
-      });
+    if (priority === 'DAFTAR_MEREK' || !hasTrademark || stage === 'ALREADY_OPERATING') {
+      order.push('BUILD', 'LEGALIZE', 'PROTECT', 'CERTIFY');
+    } else if (building === 'BRAND' || priority === 'PROTEKSI_MEREK') {
+      order.push('PROTECT', 'CERTIFY', 'LEGALIZE', 'BUILD');
+    } else {
+      order.push('BUILD', 'LEGALIZE', 'PROTECT', 'CERTIFY');
     }
 
     const uniqueTop3 = [...new Set(order)].slice(0, 3);
     return uniqueTop3.map((key, idx) => {
       const base = { ...catalogBlocks[key] };
-      if (key === 'CERTIFY' && productCategory) {
-        base.title = `PERSIAPAN PRODUK (${productCategory.toUpperCase()})`;
+      if (key === 'LEGALIZE' && productCategory) {
+        base.title = `PEMETAAN KELAS MEREK (${productCategory.toUpperCase()})`;
       }
       return {
         ...base,
@@ -834,54 +796,52 @@ document.addEventListener('DOMContentLoaded', () => {
      -------------------------------------------------- */
   const articlesContent = {
     'article-1': {
-      category: '01 // FONDASI & LEGALITAS · ISSUE NO. 14',
-      title: 'What Does a New Business Actually Need to Start Legally?',
-      preselect: '01 BUILD',
+      category: '01 // KLASIFIKASI MEREK · ISSUE NO. 14',
+      title: 'Panduan Menentukan Kelas Merek (Nice Classification 1–45)',
+      preselect: '02 CLASSIFY',
       body: `
-        <p>Ketika seorang pengusaha melangkah dari konsep di buku catatan menuju eksekusi bisnis nyata, kebingungan yang paling sering muncul adalah: dokumen apa yang harus diurus lebih dulu agar bisnis berjalan resmi tanpa membuang biaya untuk izin yang belum diperlukan?</p>
-        <h4>1. Pilih Bentuk Badan Usaha yang Sesuai dengan Rencana Bisnis</h4>
-        <p>Pemilihan antara PT Umum, PT Perorangan, atau CV menentukan pemisahan tanggung jawab harta pribadi serta kemudahan saat bekerja sama dengan pihak ketiga atau mendaftarkan produk di kemudian hari.</p>
-        <h4>2. Ketepatan Memilih Kode KBLI Sejak Awal</h4>
-        <p>Seluruh perizinan usaha di Indonesia mengacu pada KBLI (Klasifikasi Baku Lapangan Usaha Indonesia). Memilih kode KBLI yang tepat saat pembuatan akta pendirian akan menghindarkan Anda dari keharusan mengubah akta ketika ingin mengurus izin operasional atau BPOM.</p>
+        <p>Salah satu kesalahan paling sering saat mengajukan pendaftaran merek adalah memilih kelas barang atau jasa yang kurang sesuai dengan lini usaha. Di DJKI RI, hak eksklusif merek hanya berlaku untuk barang dan jasa di kelas yang didaftarkan.</p>
+        <h4>1. Bedakan Kelas Barang (1–34) dan Kelas Jasa (35–45)</h4>
+        <p>Jika Anda memproduksi skincare, kosmetik, kopi bubuk, atau pakaian, pastikan kelas fisik utamanya terdaftar. Apabila Anda juga menjalankan toko ritel, marketplace, atau kedai kopi, pertimbangkan kelas jasa terkait seperti Kelas 35 atau Kelas 43.</p>
+        <h4>2. Strategi Perlindungan Multi-Kelas</h4>
         <ul>
-          <li><strong>Akta Pendirian & SK Kemenkumham:</strong> Dasar pengesahan berdirinya badan usaha Anda.</li>
-          <li><strong>NPWP Badan Usaha:</strong> Diperlukan untuk pembukaan rekening bank perusahaan dan administrasi perpajakan.</li>
-          <li><strong>NIB (Nomor Induk Berusaha):</strong> Identitas resmi pelaku usaha yang diterbitkan melalui sistem OSS.</li>
+          <li><strong>Produk Skincare &amp; Toko:</strong> Gabungkan Kelas 03 (Kosmetik) dengan Kelas 35 (Ritel/Toko Online).</li>
+          <li><strong>Kopi Kemasan &amp; Kedai:</strong> Kombinasikan Kelas 30 (Bubuk Kopi) dan Kelas 43 (Kedai Kopi/Kafe).</li>
+          <li><strong>Aplikasi &amp; SaaS:</strong> Lindungi dengan Kelas 09 (Aplikasi) dan Kelas 42 (Layanan Software).</li>
         </ul>
-        <p>Di BRANDCONNECT, kami membantu menyusun langkah awal ini secara berurutan agar fondasi perusahaan Anda siap mendukung perlindungan merek dan registrasi produk di tahap berikutnya.</p>
+        <p>Di BRANDCONNECT, konsultan kami membantu memetakan kelas Nice secara akurat sebelum pengajuan resmi ke DJKI.</p>
       `
     },
     'article-2': {
       category: '02 // PERLINDUNGAN MEREK · ISSUE NO. 19',
       title: 'Before Registering Your Trademark, Understand These Things.',
-      preselect: '03 PROTECT',
+      preselect: '03 REGISTER',
       body: `
-        <p>Banyak pemilik bisnis menginvestasikan biaya besar untuk desain kemasan, kampanye pemasaran, dan pembuatan toko fisik sebelum memeriksa apakah nama brand yang mereka gunakan masih tersedia secara hukum di DJKI.</p>
-        <h4>1. Hindari Nama yang Terlalu Umum (Deskriptif)</h4>
-        <p>Merek yang hanya menjelaskan jenis barang atau sifat produk umumnya sulit mendapatkan persetujuan. Nama yang unik dan memiliki daya pembeda kuat memiliki peluang pendaftaran yang jauh lebih tinggi.</p>
-        <h4>2. Tentukan Kelas Merek (Nice Classification) dengan Tepat</h4>
-        <p>Perlindungan merek berlaku berdasarkan kelas barang atau jasa (Kelas 1 hingga 45). Pastikan Anda mendaftarkan merek pada kelas yang benar-benar mewakili produk maupun layanan bisnis Anda saat ini dan rencana pengembangannya.</p>
+        <p>Banyak pemilik bisnis terlanjur membangun brand, mencetak kemasan, dan menjalankan kampanye pemasaran sebelum memeriksa apakah nama merek yang mereka gunakan tersedia secara hukum di pangkalan data DJKI.</p>
+        <h4>1. Hindari Nama yang Terlalu Umum (Pasal 20)</h4>
+        <p>Merek yang hanya menjelaskan jenis barang atau sifat produk umumnya akan ditolak secara absolut. Nama yang unik dan memiliki daya pembeda kuat jauh lebih berpeluang lolos pemeriksaan substantif.</p>
+        <h4>2. Hindari Persamaan pada Pokoknya (Pasal 21)</h4>
+        <p>Pemeriksa DJKI menilai kemiripan bunyi (fonetik), ejaan, maupun visual etiket dengan merek terdaftar lebih dulu di kelas sejenis.</p>
         <ul>
-          <li>Lakukan pengecekan kemiripan merek sebelum mencetak kemasan dalam jumlah besar.</li>
-          <li>Pahami prinsip <em>First-to-File</em>: pihak yang mendaftar lebih dulu memiliki prioritas perlindungan hukum.</li>
-          <li>Bukti pengajuan merek resmi juga menjadi syarat penting ketika Anda ingin mengurus izin edar BPOM.</li>
+          <li>Lakukan pengecekan kemiripan merek AI sebelum mencetak kemasan dalam jumlah besar.</li>
+          <li>Pahami asas <em>First-to-File</em>: pihak yang mendaftar lebih dulu dan memperoleh Tanggal Penerimaan (<em>Filing Date</em>) mendapat prioritas perlindungan hukum.</li>
+          <li>Konsultasikan hasil pra-skrining bersama Spesialis Merek BrandConnect sebelum mengajukan permohonan.</li>
         </ul>
       `
     },
     'article-3': {
-      category: '03 // REGISTRASI PRODUK · ISSUE NO. 23',
-      title: 'From Product Idea to Market: What Should You Prepare?',
-      preselect: '04 CERTIFY',
+      category: '03 // PROTEKSI & MONITORING · ISSUE NO. 23',
+      title: 'Cara Menghadapi Usulan Penolakan DJKI & Oposisi BRM',
+      preselect: '04 PROTECT',
       body: `
-        <p>Membawa produk fisik—seperti skincare, kosmetik, makanan dan minuman kemasan, atau suplemen—dari tahap sampel menuju penjualan resmi di pasar memerlukan persiapan kepatuhan produk yang terencana.</p>
-        <h4>1. Kesiapan Komposisi & Fasilitas Produksi</h4>
-        <p>Pastikan setiap bahan baku yang digunakan sesuai dengan batas keamanan yang berlaku. Baik Anda memproduksi sendiri maupun bekerja sama dengan pabrik maklon, dokumen kerjasama dan standar fasilitas produksi harus selaras.</p>
-        <h4>2. Kesesuaian Desain Label Kemasan</h4>
-        <p>Informasi pada kemasan produk (seperti nama produk, komposisi, berat bersih, nomor bets, dan klaim manfaat) wajib mengikuti ketentuan pelabelan agar tidak mengalami kendala saat evaluasi.</p>
+        <p>Perlindungan merek tidak berhenti pada tahap pengajuan. Selama proses pemeriksaan di DJKI, permohonan Anda akan melalui masa pengumuman Berita Resmi Merek (BRM) serta pemeriksaan substantif.</p>
+        <h4>1. Masa Pengumuman BRM 2 Bulan &amp; Oposisi (Pasal 14 &amp; 16)</h4>
+        <p>Selama masa publikasi 2 bulan, pemilik merek terdahulu berhak mengajukan keberatan tertulis (oposisi) terhadap pihak lain yang mendaftarkan merek mirip atau beriktikad tidak baik.</p>
+        <h4>2. Tanggapan Surat Usulan Penolakan (Pasal 24)</h4>
         <ul>
-          <li><strong>Nomor Izin Edar (NIE) BPOM:</strong> Syarat utama agar produk dapat dipasarkan secara luas dan aman.</li>
-          <li><strong>Sertifikasi Halal BPJPH:</strong> Memberikan jaminan kehalalan produk sekaligus memenuhi kewajiban regulasi yang berlaku.</li>
-          <li><strong>Keterhubungan Legalitas:</strong> Pastikan KBLI badan usaha dan pendaftaran merek Anda sudah siap mendukung proses registrasi produk.</li>
+          <li><strong>Batas Waktu 30 Hari Kerja:</strong> Pemohon diberi kesempatan resmi mengajukan sanggahan tertulis sejak surat diterima.</li>
+          <li><strong>Argumentasi Hukum:</strong> Menyusun pembuktian perbedaan fonetik, konsep, serta diferensiasi visual etiket logo.</li>
+          <li><strong>Perlindungan Jangka Panjang:</strong> Setelah sertifikat terbit, merek dilindungi 10 tahun dan dapat diperpanjang atau dilisensikan.</li>
         </ul>
       `
     }

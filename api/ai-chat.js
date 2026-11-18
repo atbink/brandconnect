@@ -104,7 +104,7 @@ const NICE_CLASS_RULES = [
   {
     num: '05', type: 'BARANG', title: 'Farmasi, Obat Herbal, Jamu & Suplemen',
     keywords: ['obat', 'farmasi', 'herbal', 'jamu', 'vitamin', 'suplemen', 'madu herbal', 'salep', 'medis', 'pelangsing', 'kolagen', 'suplement'],
-    strategy: 'Melindungi produk kesehatan, jamu berizin BPOM/TR, maupun suplemen konsumsi.'
+    strategy: 'Melindungi merek untuk produk farmasi, obat herbal, jamu, vitamin, dan suplemen kesehatan.'
   },
   {
     num: '09', type: 'BARANG', title: 'Aplikasi Mobile, Software & Elektronik',
@@ -214,8 +214,9 @@ const NOISE_WORDS = new Set([
   'disini', 'sini', 'brandconnect', 'online', 'resmi', 'langkah', 'langkahnya', 'alur', 'prosedur',
   'produk', 'usaha', 'bisnis', 'toko', 'barang', 'jasa', 'komoditas', 'orang', 'lain', 'kompetitor',
   'saja', 'dokumen', 'berkas', 'lampiran', 'nomor', 'permohonan', 'sertifikat', 'perpanjang',
-  'perpanjangan', 'pengalihan', 'lisensi', 'cipta', 'hak', 'copyright', 'milik', 'ya', 'dong', 'sih',
-  'nih', 'kak', 'min', 'bro', 'bos', 'halo', 'hai', 'selamat', 'pagi', 'siang', 'malam'
+  'perpanjangan', 'pengalihan', 'lisensi', 'cipta', 'hak', 'copyright', 'milik', 'bpom', 'halal',
+  'bpjph', 'sertifikasi', 'pirt', 'sni', 'nie', 'izin', 'edar', 'ya', 'dong', 'sih', 'nih',
+  'kak', 'min', 'bro', 'bos', 'halo', 'hai', 'selamat', 'pagi', 'siang', 'malam'
 ]);
 
 function escapeRegex(str) {
@@ -276,7 +277,7 @@ function extractCandidateBrand(message, brandContext) {
   // 4. Guard against general FAQ / procedural questions without a quoted or famous brand
   const isProceduralFaq =
     /^(?:gimana|bagaimana|cara|langkah|prosedur|alur|berapa|apa\s+saja|apa\s+itu|kapan|dimana|di\s+mana|mau\s+tanya|tanya|info)\b/i.test(lower) ||
-    /\b(?:gimana\s+(?:cara|mau)|cara\s+(?:daftar|mendaftar|order|pesan|cek)|mau\s+daftar\s*(?:merek|merk)?\s*(?:gimana|bagaimana)?|berapa\s+(?:biaya|harga|tarif|lama)|syarat\s+(?:daftar|pendaftaran|dokumen))\b/i.test(lower);
+    /\b(?:gimana\s+(?:cara|mau)|cara\s+(?:daftar|mendaftar|order|pesan|cek)|mau\s+daftar\s*(?:merek|merk)?\s*(?:gimana|bagaimana)?|berapa\s+(?:biaya|harga|tarif|lama)|syarat\s+(?:daftar|pendaftaran|dokumen)|bpom|halal|bpjph|izin\s+edar|pirt|sni|sertifikasi\s+halal|daftar\s+bpom|nie)\b/i.test(lower);
 
   if (isProceduralFaq) {
     return '';
@@ -405,6 +406,7 @@ async function lookupDjkiBrand(brandName) {
 
 function buildRuleBasedReply({ message, brandLookup, classMatches }) {
   const q = (message || '').toLowerCase();
+  const isNonTrademarkScope = /\b(bpom|halal|bpjph|izin\s+edar|pirt|sni|sertifikasi\s+halal|daftar\s+bpom|nie)\b/i.test(q);
   const isHowToRegisterFaq = /\b(gimana\s+(?:mau\s+|cara\s+)?daftar|bagaimana\s+(?:cara\s+)?(?:daftar|mendaftar)|cara\s+(?:daftar|mendaftar|pendaftaran|order|pesan)|mau\s+daftar|ingin\s+daftar|langkah\s+(?:daftar|pendaftaran)|alur\s+pendaftaran|prosedur\s+pendaftaran|daftar\s+merek\s+gimana|daftarnya\s+gimana)\b/i.test(q);
   const isFeeQuery = /\b(biaya|biayanya|harga|harganya|tarif|ongkos|bayar|pnbp|berapa\s+biaya|berapa\s+harga|paket\s+harga|pricelist)\b/i.test(q);
   const isRequirementsQuery = /\b(syarat|syaratnya|persyaratan|dokumen|berkas|lampiran|butuh\s+apa\s+saja)\b/i.test(q);
@@ -435,12 +437,13 @@ Saya baru saja mengecek pangkalan data resmi **DJKI RI** untuk merek **"${brand}
 • **Kelas Terdaftar**: ${classText}${appNoText !== '-' ? `\n• **Contoh No. Permohonan**: \`${appNoText}\`` : ''}
 
 **Dasar Hukum (UU No. 20 Tahun 2016):**
-Berdasarkan **Pasal 21 ayat (1) huruf a & b**, permohonan merek wajib **ditolak** apabila mempunyai persamaan pada pokoknya atau keseluruhannya dengan merek terdaftar milik pihak lain untuk barang/jasa sejenis, atau merek terkenal. Mengajukan nama **"${brand}"** berisiko **85%–95% ditolak DJKI** (biaya PNBP hangus) serta berpotensi memicu somasi pelanggaran HKI.${extraClassNote}
+Berdasarkan **Pasal 21 ayat (1) huruf a & b**, permohonan merek wajib **ditolak** apabila mempunyai persamaan pada pokoknya atau keseluruhannya dengan merek terdaftar milik pihak lain untuk barang/jasa sejenis, atau merek terkenal. Mengajukan nama **"${brand}"** berisiko tinggi ditolak DJKI serta berpotensi memicu sengketa pelanggaran HKI.${extraClassNote}
 
 **Rekomendasi Taktis Konsultan:**
 1. **Jangan ajukan** nama "${brand}" secara identik atau hanya menambah kata sifat/imbuhan tipis.
 2. Ciptakan **nama merek orisinal (*coined word*)** dengan minimal 2 kata pembeda yang unik.
-3. Klik **Handover ke Spesialis →** di bawah agar tim BrandConnect membantu mencari variasi nama yang aman lolos DJKI.`;
+3. Konsultasikan alternatif nama yang aman lolos DJKI langsung bersama Spesialis Merek BrandConnect:
+[💬 Konsultasi Merek via WhatsApp →](https://wa.me/6281234567890?text=Halo%20BrandConnect,%20saya%20ingin%20konsultasi%20alternatif%20merek%20yang%20aman%20dari%20konflik%20DJKI.)`;
     }
 
     if (isGenericDescriptive) {
@@ -451,7 +454,8 @@ Hasil pengecekan nama **"${brand}"**:
 • Berdasarkan **Pasal 20 huruf c, e, dan f UU No. 20/2016**, merek yang tidak memiliki daya pembeda atau hanya menyebutkan sifat barang akan **ditolak secara absolut** oleh Pemeriksa DJKI.
 
 **Saran Perubahan:**
-Tambahkan kata unik/imajinatif atau kata ciptaan sendiri (*fanciful word*) sebelum mendaftar. Tim Konsultan HKI BrandConnect dapat membantu merumuskan kombinasi nama dengan daya pembeda tinggi.`;
+Tambahkan kata unik/imajinatif atau kata ciptaan sendiri (*fanciful word*) sebelum mendaftar. Konsultasikan kombinasi nama dengan daya pembeda tinggi bersama tim kami:
+[💬 Konsultasi Merek via WhatsApp →](https://wa.me/6281234567890?text=Halo%20BrandConnect,%20saya%20ingin%20konsultasi%20merek%20agar%20lolos%20Pasal%2020%20DJKI.)`;
     }
 
     // Clear / Potentially Available
@@ -466,7 +470,22 @@ Hasil penelusuran pangkalan data resmi **DJKI RI** untuk **"${brand}"**:
 • **Penilaian Pasal 20 & 21**: Nama **"${brand}"** memiliki daya pembeda yang baik untuk didaftarkan.${clsNote}
 
 **Langkah Selanjutnya (Asas First-to-File):**
-Di Indonesia, siapa yang mendaftar lebih dulu dialah pemilik sah. Segera amankan **Tanggal Penerimaan (*Filing Date*)** dengan menyiapkan KTP, etiket logo, dan menentukan kelas barang/jasa. Klik **Handover ke Spesialis →** jika Anda ingin langsung mendaftarkan **"${brand}"**.`;
+Di Indonesia, siapa yang mendaftar lebih dulu dialah pemilik sah. Segera amankan **Tanggal Penerimaan (*Filing Date*)** dengan menyiapkan KTP, etiket logo, dan menentukan kelas barang/jasa.
+[💬 Daftarkan Merek Ini via WhatsApp →](https://wa.me/6281234567890?text=Halo%20BrandConnect,%20saya%20ingin%20mendaftarkan%20merek%20${encodeURIComponent(brand)}.)`;
+  }
+
+  // PRIORITY 1.5: Out-of-scope inquiry (BPOM, Halal, PIRT, SNI)
+  if (isNonTrademarkScope) {
+    return `📌 **Fokus Layanan BrandConnect: Khusus Merek & Perlindungan HKI**
+
+Saat ini **BrandConnect berfokus khusus pada layanan Merek**, mencakup:
+• Penelusuran & Audit Kemiripan Merek AI (DJKI RI)
+• Pendaftaran Merek Resmi & Pemetaan Klasifikasi Nice (Kelas 1–45)
+• Monitoring Berita Resmi Merek (BRM) DJKI
+• Proteksi Merek: Tanggapan Usulan Penolakan (Sanggahan), Pengajuan Oposisi, Perpanjangan 10 Tahun, Lisensi & Pengalihan Hak Merek
+
+Kami **tidak melayani pengurusan izin edar atau sertifikasi produk pangan/kosmetik**. Namun apabila Anda perlu **mengamankan merek dagang produk Anda lebih dulu** agar terlindungi secara hukum di DJKI, silakan hubungi Spesialis Merek kami:
+[💬 Konsultasi Merek via WhatsApp →](https://wa.me/6281234567890?text=Halo%20BrandConnect,%20saya%20ingin%20konsultasi%20mengenai%20pendaftaran%20dan%20perlindungan%20merek.)`;
   }
 
   // PRIORITY 2: FAQ Cara Daftar / Gimana Mau Daftar
@@ -478,29 +497,24 @@ Di Indonesia, siapa yang mendaftar lebih dulu dialah pemilik sah. Segera amankan
    • Scan/foto **KTP Pemohon** & **NPWP** (jika ada).
    • **Etiket / Logo Merek** beresolusi baik (format JPG/PNG).
    • **Tanda Tangan Pemohon** di atas kertas putih.
-   • *Tambahan*: **Surat Rekomendasi/Keterangan UMKM** dari Dinas terkait (untuk tarif subsidi UMKM) atau **Akta & NIB** (jika atas nama PT/CV).
-3. **Pilih Layanan & Buat Pesanan**: Klik tombol **Handover ke Spesialis →** di bawah atau pesan melalui menu **Layanan** (pilih Jalur UMKM Rp 1.850.000/kelas atau Jalur Umum Rp 3.200.000/kelas).
+   • *Tambahan*: **Surat Rekomendasi/Keterangan UMKM** dari Dinas terkait (untuk kategori pemohon UMKM) atau **Akta & NIB** (jika atas nama PT/CV).
+3. **Konsultasi & Pengajuan Layanan**: Hubungi Spesialis Merek BrandConnect melalui WhatsApp untuk validasi akhir nama merek, kelas Nice (1–45), dan kelengkapan dokumen.
 4. **E-Filing Resmi DJKI & Terbit Filing Date (1–3 Hari Kerja)**: Tim Konsultan HKI BrandConnect memproses pengajuan resmi ke sistem DJKI, menyerahkan Bukti Penerimaan Permohonan (*Filing Date*), dan memantau masa pengumuman BRM 2 bulan hingga sertifikat merek terbit.
 
-Butuh bantuan langsung atau ingin konsultasi terlebih dahulu? Klik **Handover ke Spesialis →** sekarang.`;
+[💬 Hubungi Spesialis Merek via WhatsApp →](https://wa.me/6281234567890?text=Halo%20BrandConnect,%20saya%20ingin%20mendaftarkan%20merek%20saya.)`;
   }
 
-  // PRIORITY 3: FAQ Biaya & Tarif Layanan
+  // PRIORITY 3: FAQ Estimasi Biaya / Konsultasi
   if (isFeeQuery) {
-    return `💳 **Daftar Biaya Resmi Layanan Merek & HAKI BrandConnect**
+    return `💬 **Konsultasi Estimasi & Pendaftaran Merek via WhatsApp**
 
-Semua biaya transparan tanpa biaya tersembunyi (untuk pendaftaran baru sudah **all-in** termasuk PNBP resmi DJKI & jasa pendampingan konsultan):
-• **Pendaftaran Merek Baru (DJKI)**:
-  - Jalur **UMKM**: **Rp 1.850.000 / kelas**
-  - Jalur **Umum (Perorangan / PT / CV)**: **Rp 3.200.000 / kelas**
-• **Perpanjangan Sertifikat Merek (10 Tahun)**: **Rp 2.400.000** *(UMKM)* | **Rp 3.800.000** *(Umum)*
-• **Tanggapan Usulan Penolakan (Sanggahan)**: **Rp 2.500.000** *(UMKM)* | **Rp 3.200.000** *(Umum)*
-• **Pengajuan Oposisi (Keberatan BRM)**: **Rp 4.500.000**
-• **Pengalihan Hak / Lisensi Merek**: **Rp 2.900.000 – Rp 3.500.000**
-• **Pencatatan Hak Cipta Logo/Karya**: **Rp 1.250.000** *(UMKM)* | **Rp 1.750.000** *(Umum)*
-• **Konsultasi Hukum 1-on-1 (60 Menit)**: **Rp 450.000** *(UMKM)* | **Rp 750.000** *(Umum)*
+Estimasi pengurusan pendaftaran maupun perlindungan merek disesuaikan secara personal berdasarkan:
+• **Kategori Pemohon**: Jalur UMKM *(dengan surat keterangan binaan dinas)* atau Jalur Umum *(Perorangan / PT / CV)*.
+• **Jumlah Kelas Merek**: Mengacu pada Klasifikasi Nice (Kelas 1–45 barang/jasa yang didaftarkan).
+• **Kebutuhan Layanan**: Pendaftaran Merek Baru, Perpanjangan 10 Tahun, Sanggahan Penolakan, Oposisi BRM, Pengalihan Hak, atau Lisensi Merek.
 
-Klik **Handover ke Spesialis →** untuk dibuatkan estimasi resmi sesuai jumlah kelas usaha Anda.`;
+Silakan konsultasikan langsung rencana merek dan jumlah kelas bisnis Anda bersama tim Spesialis Merek kami via WhatsApp agar mendapatkan rincian yang sesuai:
+[💬 Tanya Estimasi & Konsultasi via WhatsApp →](https://wa.me/6281234567890?text=Halo%20BrandConnect,%20saya%20ingin%20menanyakan%20estimasi%20dan%20konsultasi%20pendaftaran%20merek.)`;
   }
 
   // PRIORITY 4: FAQ Syarat Dokumen
@@ -508,7 +522,7 @@ Klik **Handover ke Spesialis →** untuk dibuatkan estimasi resmi sesuai jumlah 
     return `📂 **Syarat & Dokumen Pendaftaran Merek DJKI**
 
 Berikut kelengkapan berkas yang perlu disiapkan sesuai kategori pemohon:
-1. **Jalur UMKM (Tarif Subsidi)**:
+1. **Jalur UMKM**:
    • KTP Pemilik Usaha (Perorangan/Direktur).
    • File **Etiket Logo / Nama Merek** (JPG/PNG).
    • **Surat Keterangan / Rekomendasi Binaan UMKM** (dari Dinas Koperasi/UMKM, Perindustrian, atau Kementerian terkait).
@@ -521,7 +535,8 @@ Berikut kelengkapan berkas yang perlu disiapkan sesuai kategori pemohon:
    • NIB & NPWP Badan Usaha.
    • KTP Direktur/Penanggung Jawab, Logo, & Tanda Tangan Direktur + Stempel perusahaan.
 
-Seluruh pengecekan berkas dan formulir pernyataan dibantu penuh oleh tim BrandConnect. Klik **Handover ke Spesialis →** untuk memulai.`;
+Seluruh pengecekan berkas dan pengajuan resmi ke DJKI dibantu penuh oleh tim BrandConnect:
+[💬 Konsultasi Berkas via WhatsApp →](https://wa.me/6281234567890?text=Halo%20BrandConnect,%20saya%20ingin%20konsultasi%20kelengkapan%20dokumen%20pendaftaran%20merek.)`;
   }
 
   // PRIORITY 5: FAQ Rejection, Sanggahan, BRM Opposition
@@ -534,19 +549,21 @@ Jika merek mengalami kendala atau menerima surat dari DJKI, berikut dasar hukum 
 3. **Jika Menerima Surat Usulan Penolakan (Pasal 24)**: Anda memiliki waktu **maksimal 30 hari kerja** sejak tanggal surat untuk mengajukan **Surat Tanggapan / Sanggahan Resmi** berisi argumen pembeda fonetik, visual etiket, serta pembatasan uraian barang/jasa.
 4. **Masa Pengumuman BRM & Oposisi (Pasal 14 & 16)**: Setiap merek diumumkan 2 bulan di Berita Resmi Merek. Jika ada kompetitor meniru merek Anda saat masa BRM, segera ajukan **Surat Keberatan (Oposisi)**.
 
-Klik **Handover ke Spesialis →** untuk pendampingan penyusunan *Legal Drafting* Tanggapan/Oposisi oleh Konsultan HKI BrandConnect.`;
+Butuh pendampingan *Legal Drafting* Tanggapan/Oposisi oleh Konsultan HKI BrandConnect?
+[💬 Konsultasi Penolakan via WhatsApp →](https://wa.me/6281234567890?text=Halo%20BrandConnect,%20saya%20ingin%20konsultasi%20mengenai%20penolakan%20atau%20oposisi%20merek.)`;
   }
 
   // PRIORITY 6: FAQ Perpanjangan, Pengalihan, Lisensi, Hak Cipta
   if (isOtherServicesQuery) {
-    return `🛡️ **Layanan Lanjutan Merek & Hak Cipta (DJKI)**
+    return `🛡️ **Layanan Perlindungan & Pengelolaan Merek Lanjutan (DJKI)**
 
-1. **Perpanjangan Sertifikat Merek (Pasal 35)**: Perlindungan merek berlaku **10 tahun** dan dapat diperpanjang mulai **6 bulan sebelum** habis masa berlaku hingga masa tenggang **6 bulan setelahnya**. Biaya: **Rp 2.400.000** *(UMKM)* | **Rp 3.800.000** *(Umum)*.
-2. **Pengalihan Hak Atas Merek**: Pencatatan resmi balik nama kepemilikan (jual-beli brand, hibah, waris, atau perorangan ke PT) agar sah tercatat di BRM (**Rp 2.900.000**).
-3. **Perjanjian & Pencatatan Lisensi**: Kontrak penggunaan merek untuk waralaba/*franchise*, distributor, atau royalti beserta pencatatannya di DJKI (**Rp 3.500.000**).
-4. **Pencatatan Hak Cipta Logo & Karya**: Melindungi karya seni logo, ilustrasi, kemasan, atau software melalui e-HakCipta dalam **1–3 hari kerja** (**Rp 1.250.000** UMKM | **Rp 1.750.000** Umum).
+1. **Perpanjangan Sertifikat Merek (Pasal 35)**: Perlindungan merek berlaku **10 tahun** dan dapat diperpanjang mulai **6 bulan sebelum** habis masa berlaku hingga masa tenggang **6 bulan setelahnya**.
+2. **Pengalihan Hak Atas Merek**: Pencatatan resmi balik nama kepemilikan merek (jual-beli brand, hibah, waris, atau perorangan ke PT) agar sah tercatat di Berita Resmi Merek DJKI.
+3. **Perjanjian & Pencatatan Lisensi Merek**: Penyusunan kontrak penggunaan merek untuk waralaba/*franchise*, distributor, atau royalti beserta pencatatannya di DJKI.
+4. **Pencatatan Hak Cipta Logo & Karya**: Perlindungan karya seni logo, ilustrasi, atau desain merek melalui sistem e-HakCipta resmi dalam **1–3 hari kerja**.
 
-Ingin konsultasi layanan spesifik di atas? Klik **Handover ke Spesialis →**.`;
+Konsultasikan kebutuhan layanan perlindungan merek Anda langsung bersama Spesialis Merek kami:
+[💬 Konsultasi Layanan Merek via WhatsApp →](https://wa.me/6281234567890?text=Halo%20BrandConnect,%20saya%20ingin%20konsultasi%20layanan%20perlindungan%20merek%20lanjutan.)`;
   }
 
   // PRIORITY 7: FAQ Nice Classification Inquiry
@@ -560,7 +577,9 @@ Berdasarkan jenis usaha/produk yang Anda sebutkan, berikut kelas merek yang pali
 ${listStr}
 
 **Prinsip Hukum Perlindungan Kelas:**
-Hak eksklusif merek di Indonesia **hanya melindungi barang/jasa di kelas yang Anda daftarkan**. Disarankan mengambil kelas produk utama sekaligus kelas jasa pendukung (seperti **Kelas 35** untuk toko/ritel online) agar kompetitor tidak meniru nama toko Anda.`;
+Hak eksklusif merek di Indonesia **hanya melindungi barang/jasa di kelas yang Anda daftarkan**. Disarankan mengambil kelas produk utama sekaligus kelas jasa pendukung (seperti **Kelas 35** untuk toko/ritel online) agar kompetitor tidak meniru nama toko Anda.
+
+[💬 Validasi Kelas Merek via WhatsApp →](https://wa.me/6281234567890?text=Halo%20BrandConnect,%20saya%20ingin%20memvalidasi%20kelas%20merek%20usaha%20saya.)`;
     }
 
     return `📋 **Panduan Klasifikasi Nice (Kelas 1–45) DJKI**
@@ -569,7 +588,7 @@ Sistem pendaftaran merek di Indonesia membagi perlindungan ke dalam **45 kelas**
 • **Kelas 1 – 34 (BARANG)**: Melindungi wujud produk fisik. Contoh populer: **Kelas 03** (Skincare/Kosmetik), **Kelas 05** (Herbal/Suplemen), **Kelas 25** (Fashion/Sepatu), **Kelas 30** (Kopi/Roti/Snack).
 • **Kelas 35 – 45 (JASA)**: Melindungi layanan bisnis. Contoh populer: **Kelas 35** (Toko Online/Retail/Agency), **Kelas 42** (Software/IT/SaaS), **Kelas 43** (Kedai Kopi/Restoran), **Kelas 44** (Klinik Kecantikan/Salon).
 
-Silakan sebutkan **jenis produk atau layanan bisnis Anda**, nanti saya hitungkan nomor kelas yang paling tepat!`;
+Silakan sebutkan **jenis produk atau layanan bisnis Anda**, nanti saya bantu petakan nomor kelasnya!`;
   }
 
   // PRIORITY 8: FAQ Timeline / Procedure Duration
@@ -583,15 +602,14 @@ Silakan sebutkan **jenis produk atau layanan bisnis Anda**, nanti saya hitungkan
   }
 
   // PRIORITY 9: Conversational Greeting / General FAQ Menu
-  return `Halo! Saya **BrandConnect AI Assistant** yang terhubung ke pangkalan data resmi **DJKI RI** dan pusat bantuan FAQ BrandConnect. Anda bisa langsung menanyakan topik berikut:
+  return `Halo! Saya **BrandConnect AI Assistant** yang berfokus pada **Pendaftaran Merek, Cek Konflik DJKI, Klasifikasi Kelas, & Perlindungan Merek**. Anda bisa menanyakan topik berikut:
 
 • **Cara Pendaftaran**: *"Gimana mau daftar merek?"* atau *"Apa saja syarat dokumen?"*
-• **Biaya & Paket**: *"Berapa biaya daftar merek UMKM dan Umum?"*
 • **Rekomendasi Kelas Nice**: *"Usaha saya [produk/jasa Anda], masuk kelas berapa?"*
 • **Cek Konflik Merek**: *"Cek merek [Nama Merek Anda]"*
-• **Kendala Hukum & Layanan Lain**: *"Solusi usulan penolakan"*, *"Berapa lama prosesnya?"*, *"Perpanjangan / Hak Cipta"*
-
-Silakan tulis pertanyaan atau nama merek Anda sekarang!`;
+• **Perlindungan & Sengketa**: *"Solusi usulan penolakan"*, *"Alur & lama proses"*, *"Perpanjangan / Lisensi Merek"*
+• **Konsultasi Langsung**: Klik tombol WhatsApp di bawah untuk terhubung dengan Konsultan Merek kami:
+[💬 Konsultasi Merek via WhatsApp →](https://wa.me/6281234567890?text=Halo%20BrandConnect,%20saya%20ingin%20konsultasi%20mengenai%20pendaftaran%20dan%20perlindungan%20merek.)`;
 }
 
 module.exports = async (req, res) => {
@@ -638,18 +656,11 @@ module.exports = async (req, res) => {
 - Pemilik Terdaftar: ${brandLookup.uniqueOwners.join(', ') || brandLookup.famousEntry?.owner || '-'}
 - Kelas Terdaftar: ${brandLookup.uniqueClasses.join(', ') || brandLookup.famousEntry?.classes || '-'}
 - Indikasi Kata Generik Pasal 20: ${brandLookup.isGenericDescriptive ? 'YA' : 'TIDAK'}`
-      : 'Tidak ada nama merek spesifik dalam pertanyaan; fokus jawab pertanyaan FAQ pendaftaran, biaya, syarat dokumen, kelas Nice, regulasi UU No. 20/2016, atau layanan BrandConnect.';
+      : 'Tidak ada nama merek spesifik dalam pertanyaan; fokus jawab pertanyaan FAQ pendaftaran merek, syarat dokumen, kelas Nice, regulasi UU No. 20/2016, atau layanan perlindungan merek BrandConnect.';
 
     const faqContext = `DATA FAQ RESMI BRANDCONNECT (WAJIB KONSISTEN):
-- Cara Daftar (4 langkah): 1) Cek Merek & Kelas; 2) Siapkan KTP, NPWP (bila ada), Etiket Logo JPG/PNG, Tanda Tangan (+ Surat Rekomendasi UMKM untuk tarif UMKM atau Akta & NIB untuk PT/CV); 3) Order via tombol "Handover ke Spesialis →" / menu Layanan; 4) E-Filing DJKI & terbit Filing Date 1-3 hari kerja, lalu pantau BRM 2 bulan sampai sertifikat terbit (±6-12 bulan total proses DJKI).
-- Biaya Layanan (All-in termasuk PNBP resmi DJKI & pendampingan):
-  * Pendaftaran Merek Baru: UMKM Rp 1.850.000/kelas | Umum Rp 3.200.000/kelas
-  * Perpanjangan Merek (10 Tahun): UMKM Rp 2.400.000 | Umum Rp 3.800.000
-  * Tanggapan Usulan Penolakan: UMKM Rp 2.500.000 | Umum Rp 3.200.000
-  * Pengajuan Oposisi BRM: Rp 4.500.000
-  * Pengalihan Hak: Rp 2.900.000 | Lisensi Merek: Rp 3.500.000
-  * Pencatatan Hak Cipta Logo/Karya (1-3 hari kerja): UMKM Rp 1.250.000 | Umum Rp 1.750.000
-  * Konsultasi Hukum 60 Menit: UMKM Rp 450.000 | Umum Rp 750.000`;
+- Fokus Layanan: BrandConnect fokus eksklusif pada Merek & HKI (Cek Merek AI, Klasifikasi Nice 1-45, Pendaftaran Merek DJKI, Monitoring BRM, Sanggahan Usulan Penolakan, Oposisi, Perpanjangan 10 Tahun, Pengalihan Hak, Lisensi Merek, Hak Cipta Logo). BrandConnect TIDAK melayani pendaftaran BPOM maupun sertifikasi Halal.
+- Cara Daftar (4 langkah): 1) Cek Merek & Kelas; 2) Siapkan KTP, NPWP (bila ada), Etiket Logo JPG/PNG, Tanda Tangan (+ Surat Rekomendasi UMKM untuk kategori UMKM atau Akta & NIB untuk PT/CV); 3) Konsultasi langsung via WhatsApp Spesialis Merek; 4) E-Filing DJKI & terbit Filing Date 1-3 hari kerja, lalu pantau BRM 2 bulan sampai sertifikat terbit (±6-12 bulan total proses DJKI).`;
 
     const classSummary = classMatches.length > 0
       ? `REKOMENDASI KELAS NICE RELEVAN:\n${classMatches.map((c) => `- Kelas ${c.num} (${c.type}): ${c.title} -> ${c.strategy}`).join('\n')}`
@@ -658,10 +669,9 @@ module.exports = async (req, res) => {
     const prompt = `Anda adalah Konsultan HKI & BrandConnect AI Assistant di Indonesia.
 ATURAN KETAT (ANTI-HALUSINASI):
 1. DILARANG KERAS menyatakan suatu merek "aman" atau "berpotensi diterima" jika data DJKI di bawah menunjukkan KONFLIK LANGSUNG = YA. Anda wajib memberi peringatan tegas Risiko Tinggi ditolak di bawah Pasal 21 UU No. 20 Tahun 2016 dan menyebutkan nama pemilik terdaftarnya.
-2. Untuk pertanyaan FAQ (cara daftar, biaya, syarat dokumen, durasi, layanan), gunakan angka dan prosedur persis sesuai DATA FAQ RESMI BRANDCONNECT di bawah. Jangan menyebut merek pihak ketiga sebagai contoh bila tidak ditanyakan user.
-3. Selalu rujuk UU No. 20 Tahun 2016 (Pasal 20, Pasal 21, Pasal 24 batas 30 hari kerja untuk sanggahan, Pasal 14 & 16 untuk BRM 2 bulan, Pasal 35 masa berlaku 10 tahun).
-4. Jawab dengan bahasa Indonesia yang jelas, terstruktur (markdown **bold** dan poin-poin), ringkas namun padat solusi praktis.
-5. Akhiri dengan ajakan mengklik tombol "Handover ke Spesialis →" bila perlu pendampingan langsung.
+2. DILARANG KERAS mencantumkan nominal harga dalam Rupiah (Rp). Jika ditanya soal biaya atau harga, jelaskan bahwa estimasi disesuaikan dengan kategori pemohon (UMKM/Umum), jumlah kelas merek, dan jenis layanan, lalu arahkan langsung ke WhatsApp Konsultan Merek BrandConnect (https://wa.me/6281234567890).
+3. Tegaskan bahwa BrandConnect fokus khusus pada Merek (pendaftaran merek, cek merek, monitoring, sanggahan, oposisi, perpanjangan, pengalihan/lisensi merek) dan tidak mengurus BPOM atau sertifikasi Halal.
+4. Selalu rujuk UU No. 20 Tahun 2016 (Pasal 20, Pasal 21, Pasal 24 batas 30 hari kerja untuk sanggahan, Pasal 14 & 16 untuk BRM 2 bulan, Pasal 35 masa berlaku 10 tahun) dan sertakan link WhatsApp [💬 Konsultasi via WhatsApp →](https://wa.me/6281234567890) untuk tindak lanjut.
 
 ${faqContext}
 ${groundingSummary}

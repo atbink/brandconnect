@@ -189,7 +189,7 @@
           </div>
           <div style="overflow-x:auto;">
             <table class="dash-table">
-              <thead><tr><th>No. Order</th><th>Layanan</th><th>Merek &amp; Kelas</th><th>Biaya</th><th>Pembayaran</th><th>Status Order</th></tr></thead>
+              <thead><tr><th>No. Order</th><th>Layanan</th><th>Merek &amp; Kelas</th><th>Kategori</th><th>Konsultasi</th><th>Status Order</th></tr></thead>
               <tbody id="tb-orders"></tbody>
             </table>
           </div>
@@ -341,8 +341,8 @@
             <td style="font-family:var(--font-mono);font-size:0.76rem;"><strong>${o.orderNumber}</strong></td>
             <td>${o.serviceName}</td>
             <td><strong>${o.trademarkName}</strong> (${o.niceClasses})</td>
-            <td>${window.BCStore.formatIDR(o.amount)}</td>
-            <td><span class="badge-ai-intel">${o.paymentStatus.toUpperCase()}</span></td>
+            <td>${(o.applicantType || 'umkm').toUpperCase()}</td>
+            <td><a href="${window.BCStore.getWhatsAppUrl('Halo BrandConnect, saya ingin konsultasi tindak lanjut untuk merek ' + o.trademarkName + ' (' + o.orderNumber + ').')}" target="_blank" rel="noopener noreferrer" class="badge-ai-intel" style="text-decoration:none;">Chat WhatsApp →</a></td>
             <td>${o.orderStatus.toUpperCase()}</td>
           </tr>
         `).join('');

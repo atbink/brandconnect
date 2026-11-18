@@ -65,7 +65,7 @@
       <aside class="adm-sidebar">
         <div style="padding-bottom:0.85rem;margin-bottom:0.85rem;border-bottom:1px dashed rgba(244,241,234,0.2);">
           <span style="font-family:var(--font-mono);font-size:0.65rem;color:#5CD4A5;" id="sb-active-role-badge">ROLE: SUPER ADMIN</span>
-          <div style="font-size:0.75rem;color:var(--pencil-light);margin-top:0.2rem;" id="sb-role-perm-desc">Hak akses penuh ke seluruh 13 modul &amp; konfigurasi harga.</div>
+          <div style="font-size:0.75rem;color:var(--pencil-light);margin-top:0.2rem;" id="sb-role-perm-desc">Hak akses penuh ke seluruh 13 modul &amp; audit sistem.</div>
         </div>
 
         <ul class="adm-nav-list">
@@ -91,7 +91,7 @@
           <div class="adm-kpi-card"><div class="adm-kpi-num" id="adm-kpi-leads">0</div><div class="adm-kpi-label">Handover Leads</div></div>
           <div class="adm-kpi-card"><div class="adm-kpi-num" id="adm-kpi-orders">0</div><div class="adm-kpi-label">Service Orders</div></div>
           <div class="adm-kpi-card"><div class="adm-kpi-num" id="adm-kpi-cases">0</div><div class="adm-kpi-label">Active DJKI Cases</div></div>
-          <div class="adm-kpi-card"><div class="adm-kpi-num" id="adm-kpi-rev">Rp 0</div><div class="adm-kpi-label">Total Nilai Order</div></div>
+          <div class="adm-kpi-card"><div class="adm-kpi-num" id="adm-kpi-monitors">0</div><div class="adm-kpi-label">Active BRM Monitors</div></div>
         </div>
 
         <!-- 01. DASHBOARD -->
@@ -120,14 +120,14 @@
           <div id="adm-leads-list" style="display:flex;flex-direction:column;gap:1rem;"></div>
         </div>
 
-        <!-- 04. SERVICE CATALOG (CONFIGURABLE PRICING) -->
+        <!-- 04. SERVICE CATALOG (CONSULTATION DIRECTORY) -->
         <div class="adm-panel" id="adm-panel-catalog">
-          <span class="eyebrow">MODULE 04 // CONFIGURABLE SERVICE CATALOG</span>
-          <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin-bottom:1rem;">Manajemen 8 Layanan &amp; Konfigurasi Harga</h2>
-          <p style="font-size:0.84rem;color:var(--pencil);margin-bottom:1rem;">Ubah harga Tarif UMKM atau Tarif Umum di bawah ini dan klik Simpan—harga baru otomatis berlaku di seluruh halaman publik dan form pemesanan.</p>
+          <span class="eyebrow">MODULE 04 // TRADEMARK &amp; HAKI SERVICE CATALOG</span>
+          <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin-bottom:1rem;">Manajemen 8 Layanan Merek &amp; HAKI</h2>
+          <p style="font-size:0.84rem;color:var(--pencil);margin-bottom:1rem;">Seluruh layanan pendaftaran dan perlindungan merek diarahkan ke konsultasi langsung bersama Spesialis Merek via WhatsApp.</p>
           <div style="overflow-x:auto;">
             <table class="adm-table">
-              <thead><tr><th>Kode</th><th>Nama Layanan</th><th>Tarif UMKM (Rp)</th><th>Tarif Umum (Rp)</th><th>Durasi</th><th>Aksi</th></tr></thead>
+              <thead><tr><th>Kode</th><th>Nama Layanan</th><th>Kategori</th><th>Estimasi Durasi</th><th>Konsultasi</th></tr></thead>
               <tbody id="adm-tb-catalog"></tbody>
             </table>
           </div>
@@ -139,7 +139,7 @@
           <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin-bottom:1rem;">Manajemen Pesanan Layanan</h2>
           <div style="overflow-x:auto;">
             <table class="adm-table">
-              <thead><tr><th>No. Order</th><th>Pelanggan</th><th>Layanan</th><th>Merek &amp; Kelas</th><th>Nominal</th><th>Pembayaran</th><th>Status Order</th></tr></thead>
+              <thead><tr><th>No. Order</th><th>Pelanggan</th><th>Layanan</th><th>Merek &amp; Kelas</th><th>Jalur Pemohon</th><th>Status Order</th></tr></thead>
               <tbody id="adm-tb-orders"></tbody>
             </table>
           </div>
@@ -264,7 +264,7 @@
       const roleSwitcher = document.getElementById('adm-role-switcher');
 
       const ROLE_PERMS = {
-        'Super Admin': 'Hak akses penuh ke seluruh 13 modul, pengaturan harga, dan audit sistem.',
+        'Super Admin': 'Hak akses penuh ke seluruh 13 modul, manajemen kasus merek, dan audit sistem.',
         'Admin': 'Mengelola operasional harian, pesanan layanan, penugasan tim, dan laporan.',
         'Customer Relations': 'Mengelola CRM pelanggan, menindaklanjuti Handover Leads, dan komunikasi.',
         'Trademark Specialist': 'Mengelola evaluasi kemiripan merek, pemetaan kelas, dan tahapan kasus DJKI.',
@@ -309,8 +309,7 @@
         document.getElementById('adm-kpi-leads').textContent = state.consultationLeads.length;
         document.getElementById('adm-kpi-orders').textContent = state.serviceOrders.length;
         document.getElementById('adm-kpi-cases').textContent = state.trademarkCases.length;
-        const totalRev = state.serviceOrders.reduce((acc, o) => acc + Number(o.amount || 0), 0);
-        document.getElementById('adm-kpi-rev').textContent = window.BCStore.formatIDR(totalRev);
+        document.getElementById('adm-kpi-monitors').textContent = state.monitors.length;
 
         // 01 & 12 Logs
         const logRows = state.activityLogs.map((l) => `
@@ -360,14 +359,13 @@
         `).join('');
 
         // 04 Service Catalog
-        document.getElementById('adm-tb-catalog').innerHTML = state.services.map((s, idx) => `
+        document.getElementById('adm-tb-catalog').innerHTML = state.services.map((s) => `
           <tr>
             <td style="font-family:var(--font-mono);font-size:0.74rem;"><strong>${s.code}</strong></td>
             <td><strong>${s.name}</strong><br/><span style="font-size:0.76rem;color:var(--pencil);">${s.nameId}</span></td>
-            <td><input type="number" class="adm-input-sm" style="width:125px;" id="srv-umkm-${idx}" value="${s.umkmPrice}" /></td>
-            <td><input type="number" class="adm-input-sm" style="width:125px;" id="srv-base-${idx}" value="${s.basePrice}" /></td>
+            <td><span class="badge-ai-intel">${s.category}</span></td>
             <td style="font-size:0.76rem;">${s.duration}</td>
-            <td><button type="button" class="btn btn-primary btn-sm" onclick="window.saveServicePrice(${idx})">Simpan Harga</button></td>
+            <td><a href="${window.BCStore.getWhatsAppUrl('Halo BrandConnect, saya ingin konsultasi layanan ' + s.nameId)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" style="text-decoration:none;">WhatsApp →</a></td>
           </tr>
         `).join('');
 
@@ -378,13 +376,7 @@
             <td>${o.customerName}</td>
             <td>${o.serviceName}</td>
             <td><strong>${o.trademarkName}</strong> (${o.niceClasses})</td>
-            <td>${window.BCStore.formatIDR(o.amount)}</td>
-            <td>
-              <select class="adm-input-sm" onchange="window.updateOrderPayment(${idx}, this.value)">
-                <option value="unpaid" ${o.paymentStatus === 'unpaid' ? 'selected' : ''}>UNPAID</option>
-                <option value="paid" ${o.paymentStatus === 'paid' ? 'selected' : ''}>PAID</option>
-              </select>
-            </td>
+            <td><span class="badge-ai-intel">${(o.applicantType || 'umkm').toUpperCase()}</span></td>
             <td>
               <select class="adm-input-sm" onchange="window.updateOrderStatus(${idx}, this.value)">
                 <option value="pending_review" ${o.orderStatus === 'pending_review' ? 'selected' : ''}>PENDING REVIEW</option>
@@ -503,25 +495,6 @@
         const note = document.getElementById(`lead-note-${idx}`).value;
         state.consultationLeads[idx].specialistNotes = note;
         window.BCStore.logActivity(actor.name, actor.role, 'LEAD_NOTE_SAVED', state.consultationLeads[idx].leadNumber, `Memperbarui catatan spesialis pada lead ${state.consultationLeads[idx].trademarkName}.`);
-        renderAdmin();
-      };
-
-      window.saveServicePrice = (idx) => {
-        const state = window.BCStore.getState();
-        const actor = getCurrentActor();
-        const umkm = Number(document.getElementById(`srv-umkm-${idx}`).value);
-        const base = Number(document.getElementById(`srv-base-${idx}`).value);
-        state.services[idx].umkmPrice = umkm;
-        state.services[idx].basePrice = base;
-        window.BCStore.logActivity(actor.name, actor.role, 'SERVICE_PRICE_UPDATED', state.services[idx].code, `Memperbarui konfigurasi harga layanan ${state.services[idx].name} (UMKM: Rp ${umkm.toLocaleString('id-ID')}, Umum: Rp ${base.toLocaleString('id-ID')}).`);
-        renderAdmin();
-      };
-
-      window.updateOrderPayment = (idx, val) => {
-        const state = window.BCStore.getState();
-        const actor = getCurrentActor();
-        state.serviceOrders[idx].paymentStatus = val;
-        window.BCStore.logActivity(actor.name, actor.role, 'ORDER_PAYMENT_UPDATED', state.serviceOrders[idx].orderNumber, `Mengubah status pembayaran order menjadi ${val.toUpperCase()}.`);
         renderAdmin();
       };
 

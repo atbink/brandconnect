@@ -533,8 +533,14 @@
     saveState();
   }
 
-  function formatIDR(num) {
-    return 'Rp ' + Number(num || 0).toLocaleString('id-ID');
+  function getWhatsAppUrl(customText) {
+    const rawNum = String(state?.settings?.whatsappNumber || '6281234567890').replace(/[^0-9]/g, '') || '6281234567890';
+    const text = customText || 'Halo BrandConnect, saya ingin konsultasi mengenai pendaftaran dan perlindungan merek.';
+    return `https://wa.me/${rawNum}?text=${encodeURIComponent(text)}`;
+  }
+
+  function formatIDR() {
+    return 'Konsultasi via WhatsApp';
   }
 
   // =========================================================================
@@ -1873,7 +1879,8 @@
       'saya', 'kami', 'kita', 'ini', 'itu', 'baru', 'umkm', 'kelas', 'biaya', 'biayanya',
       'harga', 'harganya', 'tolak', 'ditolak', 'caranya', 'cara', 'daftar', 'daftarnya',
       'pendaftaran', 'syarat', 'syaratnya', 'dokumen', 'berkas', 'sendiri', 'ketersediaan',
-      'proses', 'prosesnya', 'disini', 'sini', 'brandconnect', 'resmi', 'online', 'lama'
+      'proses', 'prosesnya', 'disini', 'sini', 'brandconnect', 'resmi', 'online', 'lama',
+      'bpom', 'halal', 'bpjph', 'sertifikasi', 'pirt', 'sni', 'nie', 'izin', 'edar'
     ]);
 
     const explicitLookup = msg.match(/(?:cek|periksa|analisis)\s+(?:ketersediaan\s+)?(?:merek|merk|nama|brand)?\s*([a-zA-Z0-9\s&.'\-]{2,35}?)(?:\s+(?:di|pada|untuk|bisa|aman|itu|ini|sudah|terdaftar|kelas|kosong)|\?|,|\.|$)/i);
@@ -1884,7 +1891,7 @@
 
     const isProceduralFaq =
       /^(?:gimana|bagaimana|cara|langkah|prosedur|alur|berapa|apa\s+saja|apa\s+itu|kapan|dimana|di\s+mana|mau\s+tanya|tanya|info)\b/i.test(lower) ||
-      /\b(?:gimana\s+(?:cara|mau)|cara\s+(?:daftar|mendaftar|order|pesan|cek)|mau\s+daftar\s*(?:merek|merk)?\s*(?:gimana|bagaimana)?|berapa\s+(?:biaya|harga|tarif|lama)|syarat\s+(?:daftar|pendaftaran|dokumen))\b/i.test(lower);
+      /\b(?:gimana\s+(?:cara|mau)|cara\s+(?:daftar|mendaftar|order|pesan|cek)|mau\s+daftar\s*(?:merek|merk)?\s*(?:gimana|bagaimana)?|berapa\s+(?:biaya|harga|tarif|lama)|syarat\s+(?:daftar|pendaftaran|dokumen)|bpom|halal|bpjph|izin\s+edar|pirt|sni|sertifikasi\s+halal|daftar\s+bpom|nie)\b/i.test(lower);
     if (isProceduralFaq) return '';
 
     const pat = msg.match(/(?:daftar|daftarkan|merek|merk|brand)\s+([a-zA-Z0-9\s&.'\-]{2,35}?)(?:\s+(?:di|pada|untuk|bisa|aman|itu|ini|sudah|terdaftar|kelas|kosong)|\?|,|\.|$)/i);
@@ -1901,12 +1908,14 @@
   function generateAiAssistantReply(userMessage, trademarkContext) {
     const q = (userMessage || '').toLowerCase();
     const candidateBrand = extractLocalChatBrand(userMessage, trademarkContext);
+    const isNonTrademarkScope = /\b(bpom|halal|bpjph|izin\s+edar|pirt|sni|sertifikasi\s+halal|daftar\s+bpom|nie)\b/i.test(q);
     const isHowToRegister = /\b(gimana\s+(?:mau\s+|cara\s+)?daftar|bagaimana\s+(?:cara\s+)?(?:daftar|mendaftar)|cara\s+(?:daftar|mendaftar|pendaftaran|order|pesan)|mau\s+daftar|ingin\s+daftar|langkah\s+(?:daftar|pendaftaran)|alur\s+pendaftaran|prosedur\s+pendaftaran|daftar\s+merek\s+gimana|daftarnya\s+gimana)\b/i.test(q);
     const isFee = /\b(biaya|biayanya|harga|harganya|tarif|ongkos|bayar|pnbp|berapa\s+biaya|berapa\s+harga|paket\s+harga|pricelist)\b/i.test(q);
     const isRequirements = /\b(syarat|syaratnya|persyaratan|dokumen|berkas|lampiran|butuh\s+apa\s+saja)\b/i.test(q);
     const isLegalRejection = /\b(ditolak|penolakan|sanggahan|usulan penolakan|oposisi|brm|pasal 20|pasal 21|pasal 24|banding|keberatan)\b/i.test(q);
     const isOtherServices = /\b(perpanjang|perpanjangan|expired|masa\s+berlaku|pengalihan|balik\s+nama|akuisisi|lisensi|waralaba|franchise|royalti|hak\s+cipta|copyright)\b/i.test(q);
     const isTimeline = /\b(berapa\s+lama|lama\s+proses|durasi|kapan\s+terbit|tahapan)\b/i.test(q);
+    const waBase = getWhatsAppUrl('Halo BrandConnect, saya ingin konsultasi mengenai pendaftaran dan perlindungan merek.');
 
     if (candidateBrand) {
       const checkRes = searchPdkiDirectory(candidateBrand, {});
@@ -1918,43 +1927,47 @@
       if (exactOrFamous || checkRes.total > 0) {
         const owner = exactOrFamous?.owner || 'Pemilik Terdaftar DJKI';
         const cls = exactOrFamous?.niceClass || 'Terkait';
-        return `⚠️ **PERINGATAN RISIKO TINGGI — POTENSI DITOLAK MUTLAK (PASAL 21 UU MEREK)**\n\nPengecekan lokal untuk merek **"${candidateBrand.toUpperCase()}"** mendeteksi adanya kesamaan dengan merek terdaftar:\n• **Pemilik Terdaftar**: ${owner}\n• **Kelas Terdaftar**: Kelas ${cls}\n\nBerdasarkan **Pasal 21 ayat (1) huruf a & b UU No. 20 Tahun 2016**, permohonan baru yang identik atau memiliki persamaan pada pokoknya hampir pasti **ditolak oleh DJKI**. Disarankan memodifikasi nama merek dengan daya pembeda orisinal atau klik **Handover ke Spesialis →**.`;
+        return `⚠️ **PERINGATAN RISIKO TINGGI — POTENSI DITOLAK MUTLAK (PASAL 21 UU MEREK)**\n\nPengecekan lokal untuk merek **"${candidateBrand.toUpperCase()}"** mendeteksi adanya kesamaan dengan merek terdaftar:\n• **Pemilik Terdaftar**: ${owner}\n• **Kelas Terdaftar**: Kelas ${cls}\n\nBerdasarkan **Pasal 21 ayat (1) huruf a & b UU No. 20 Tahun 2016**, permohonan baru yang identik atau memiliki persamaan pada pokoknya hampir pasti **ditolak oleh DJKI**. Disarankan memodifikasi nama merek dengan daya pembeda orisinal:\n[💬 Konsultasi Merek via WhatsApp →](${waBase})`;
       }
-      return `✅ **BELUM TERDETEKSI KONFLIK PADA CACHE LOKAL UNTUK "${candidateBrand.toUpperCase()}"**\n\nPastikan verifikasi *real-time* via halaman **Cek Merek** atau klik **Handover ke Spesialis →** agar konsultan kami mengunci Tanggal Penerimaan (*Filing Date*) sesuai asas **First-to-File**.`;
+      const waBrandUrl = getWhatsAppUrl(`Halo BrandConnect, saya ingin mendaftarkan merek ${candidateBrand.toUpperCase()}.`);
+      return `✅ **BELUM TERDETEKSI KONFLIK PADA CACHE LOKAL UNTUK "${candidateBrand.toUpperCase()}"**\n\nPastikan verifikasi *real-time* via halaman **Cek Merek** atau konsultasi langsung bersama Spesialis Merek kami untuk mengunci Tanggal Penerimaan (*Filing Date*) sesuai asas **First-to-File**:\n[💬 Daftarkan Merek Ini via WhatsApp →](${waBrandUrl})`;
+    }
+
+    if (isNonTrademarkScope) {
+      return `📌 **Fokus Layanan BrandConnect: Khusus Merek & Perlindungan HKI**\n\nSaat ini **BrandConnect berfokus khusus pada layanan Merek** (cek merek AI, pemetaan Kelas Nice 1–45, pendaftaran merek DJKI, monitoring BRM, sanggahan, oposisi, perpanjangan, pengalihan hak, & lisensi merek). Kami tidak melayani pengurusan BPOM maupun sertifikasi Halal.\n\nIngin mengamankan merek dagang produk Anda lebih dulu? Hubungi tim kami:\n[💬 Konsultasi Merek via WhatsApp →](${waBase})`;
     }
 
     if (isHowToRegister && !(isFee && !/\b(gimana|cara|langkah|alur|prosedur)\b/i.test(q))) {
-      return `📝 **Panduan Cara Daftar Merek di BrandConnect (4 Langkah Praktis)**\n\n1. **Cek Ketersediaan & Kelas Merek**: Telusuri nama merek Anda di halaman **Cek Merek** atau ketik *"Cek merek [Nama Merek Anda]"*.\n2. **Siapkan Berkas Persyaratan**: KTP Pemohon, NPWP (bila ada), Etiket Logo (JPG/PNG), & Tanda Tangan (+ Surat Keterangan UMKM untuk tarif UMKM atau Akta/NIB untuk PT/CV).\n3. **Pilih Layanan & Buat Pesanan**: Klik tombol **Handover ke Spesialis →** atau buka menu **Layanan** (UMKM ${formatIDR(state.services[0].umkmPrice)}/kelas atau Umum ${formatIDR(state.services[0].basePrice)}/kelas).\n4. **E-Filing Resmi DJKI (1–3 Hari Kerja)**: Tim kami mengurus pengajuan resmi hingga terbit *Filing Date* dan memantau proses BRM sampai sertifikat terbit.`;
+      return `📝 **Panduan Cara Daftar Merek di BrandConnect (4 Langkah Praktis)**\n\n1. **Cek Ketersediaan & Kelas Merek**: Telusuri nama merek Anda di halaman **Cek Merek** atau ketik *"Cek merek [Nama Merek Anda]"*.\n2. **Siapkan Berkas Persyaratan**: KTP Pemohon, NPWP (bila ada), Etiket Logo (JPG/PNG), & Tanda Tangan (+ Surat Keterangan UMKM untuk kategori UMKM atau Akta/NIB untuk PT/CV).\n3. **Konsultasi & Pengajuan Layanan**: Hubungi Spesialis Merek BrandConnect melalui WhatsApp untuk validasi akhir nama merek, kelas Nice (1–45), dan kelengkapan dokumen.\n4. **E-Filing Resmi DJKI (1–3 Hari Kerja)**: Tim kami mengurus pengajuan resmi hingga terbit *Filing Date* dan memantau proses BRM sampai sertifikat terbit.\n\n[💬 Hubungi Spesialis Merek via WhatsApp →](${getWhatsAppUrl('Halo BrandConnect, saya ingin mendaftarkan merek saya.')})`;
     }
 
     if (isFee) {
-      const s = state.services;
-      return `💳 **Daftar Biaya Resmi Layanan Merek & HAKI BrandConnect**\n• **Pendaftaran Merek Baru**: **${formatIDR(s[0].umkmPrice)}** *(UMKM)* | **${formatIDR(s[0].basePrice)}** *(Umum/PT)* — *all-in termasuk PNBP DJKI*\n• **Perpanjangan Merek (10 Tahun)**: **${formatIDR(s[1].umkmPrice)}** *(UMKM)* | **${formatIDR(s[1].basePrice)}** *(Umum)*\n• **Tanggapan Usulan Penolakan**: **${formatIDR(s[5].umkmPrice)}** *(UMKM)* | **${formatIDR(s[5].basePrice)}** *(Umum)*\n• **Pengajuan Oposisi BRM**: **${formatIDR(s[4].basePrice)}**\n• **Pengalihan Hak / Lisensi Merek**: **${formatIDR(s[2].basePrice)} – ${formatIDR(s[3].basePrice)}**\n• **Pencatatan Hak Cipta Logo**: **${formatIDR(s[6].umkmPrice)}** *(UMKM)* | **${formatIDR(s[6].basePrice)}** *(Umum)*\n• **Konsultasi Hukum (60 Menit)**: **${formatIDR(s[7].umkmPrice)}** *(UMKM)* | **${formatIDR(s[7].basePrice)}** *(Umum)*\n\nKlik **Handover ke Spesialis →** untuk estimasi sesuai jumlah kelas usaha Anda.`;
+      return `💬 **Konsultasi Estimasi & Pendaftaran Merek via WhatsApp**\n\nEstimasi pengurusan pendaftaran maupun perlindungan merek disesuaikan secara personal berdasarkan:\n• **Kategori Pemohon**: Jalur UMKM atau Jalur Umum (Perorangan / PT / CV).\n• **Jumlah Kelas Merek**: Mengacu pada Klasifikasi Nice (Kelas 1–45).\n• **Jenis Layanan**: Pendaftaran Merek Baru, Perpanjangan 10 Tahun, Sanggahan, Oposisi BRM, Pengalihan Hak, atau Lisensi Merek.\n\nSilakan konsultasikan langsung kebutuhan merek Anda melalui WhatsApp Spesialis Merek kami:\n[💬 Tanya Estimasi & Konsultasi via WhatsApp →](${getWhatsAppUrl('Halo BrandConnect, saya ingin menanyakan estimasi dan konsultasi pendaftaran merek.')})`;
     }
 
     if (isRequirements) {
-      return `📂 **Syarat & Dokumen Pendaftaran Merek DJKI**\n1. **Jalur UMKM**: KTP Pemilik, Etiket Logo (JPG/PNG), Tanda Tangan di kertas putih, & Surat Keterangan/Rekomendasi UMKM dari Dinas terkait.\n2. **Jalur Umum — Perorangan**: KTP, NPWP, Etiket Logo, & Tanda Tangan Pemohon.\n3. **Jalur Umum — Badan Usaha (PT/CV)**: Akta Pendirian + SK Kemenkumham, NIB & NPWP Perusahaan, KTP & Tanda Tangan Direktur + Stempel.\n\nSeluruh pengecekan berkas dibantu oleh tim BrandConnect. Klik **Handover ke Spesialis →** untuk memulai.`;
+      return `📂 **Syarat & Dokumen Pendaftaran Merek DJKI**\n1. **Jalur UMKM**: KTP Pemilik, Etiket Logo (JPG/PNG), Tanda Tangan di kertas putih, & Surat Keterangan/Rekomendasi UMKM dari Dinas terkait.\n2. **Jalur Umum — Perorangan**: KTP, NPWP, Etiket Logo, & Tanda Tangan Pemohon.\n3. **Jalur Umum — Badan Usaha (PT/CV)**: Akta Pendirian + SK Kemenkumham, NIB & NPWP Perusahaan, KTP & Tanda Tangan Direktur + Stempel.\n\n[💬 Konsultasi Berkas via WhatsApp →](${waBase})`;
     }
 
     if (isLegalRejection) {
-      return `⚖️ **Panduan Hukum Penolakan & Sanggahan Merek (UU No. 20/2016)**\n1. **Pasal 20 (Alasan Absolut)**: Ditolak jika tidak berdaya pembeda, generik, atau sekadar mendeskripsikan barang/jasa.\n2. **Pasal 21 (Alasan Relatif)**: Ditolak jika mirip pada pokoknya/keseluruhannya dengan merek terdaftar lebih dulu atau merek terkenal.\n3. **Usulan Penolakan (Pasal 24)**: Anda punya waktu **maksimal 30 hari kerja** untuk mengajukan **Surat Tanggapan / Sanggahan Resmi**.\n4. **Oposisi BRM (Pasal 14 & 16)**: Masa pengumuman 2 bulan untuk mengajukan keberatan bila ada pihak lain meniru merek Anda.\n\nKlik **Handover ke Spesialis →** agar tim Legal BrandConnect menyusun sanggahan untuk Anda.`;
+      return `⚖️ **Panduan Hukum Penolakan & Sanggahan Merek (UU No. 20/2016)**\n1. **Pasal 20 (Alasan Absolut)**: Ditolak jika tidak berdaya pembeda, generik, atau sekadar mendeskripsikan barang/jasa.\n2. **Pasal 21 (Alasan Relatif)**: Ditolak jika mirip pada pokoknya/keseluruhannya dengan merek terdaftar lebih dulu atau merek terkenal.\n3. **Usulan Penolakan (Pasal 24)**: Anda punya waktu **maksimal 30 hari kerja** untuk mengajukan **Surat Tanggapan / Sanggahan Resmi**.\n4. **Oposisi BRM (Pasal 14 & 16)**: Masa pengumuman 2 bulan untuk mengajukan keberatan bila ada pihak lain meniru merek Anda.\n\n[💬 Konsultasi Penolakan via WhatsApp →](${getWhatsAppUrl('Halo BrandConnect, saya ingin konsultasi mengenai penolakan atau oposisi merek.')})`;
     }
 
     if (isOtherServices) {
-      return `🛡️ **Layanan Lanjutan Merek & Hak Cipta (DJKI)**\n1. **Perpanjangan Merek (Pasal 35)**: Berlaku 10 tahun dan dapat diperpanjang mulai 6 bulan sebelum hingga 6 bulan setelah masa berlaku habis.\n2. **Pengalihan Hak / Lisensi**: Pencatatan balik nama atau kontrak waralaba/franchise resmi di DJKI.\n3. **Pencatatan Hak Cipta Logo**: Perlindungan e-HakCipta dalam 1–3 hari kerja.\n\nKlik **Handover ke Spesialis →** untuk bantuan lebih lanjut.`;
+      return `🛡️ **Layanan Perlindungan & Pengelolaan Merek Lanjutan (DJKI)**\n1. **Perpanjangan Merek (Pasal 35)**: Berlaku 10 tahun dan dapat diperpanjang mulai 6 bulan sebelum hingga 6 bulan setelah masa berlaku habis.\n2. **Pengalihan Hak / Lisensi**: Pencatatan balik nama atau kontrak waralaba/franchise resmi di DJKI.\n3. **Pencatatan Hak Cipta Logo**: Perlindungan e-HakCipta dalam 1–3 hari kerja.\n\n[💬 Konsultasi Layanan Merek via WhatsApp →](${waBase})`;
     }
 
     if (q.includes('kelas') || q.includes('nice') || q.includes('kopi') || q.includes('skincare') || q.includes('baju') || q.includes('toko') || q.includes('restoran') || q.includes('software') || q.includes('jualan') || q.includes('produk')) {
       const recs = recommendClasses(userMessage);
       const listStr = recs.map((c) => `• **Kelas ${c.num} (${c.type})**: ${c.title}`).join('\n');
-      return `📋 **Rekomendasi Klasifikasi Nice (DJKI RI)**\n\nBerikut kelas merek yang relevan dengan pertanyaan Anda:\n\n${listStr}\n\n*Catatan Hukum:* Hak eksklusif merek hanya berlaku di kelas yang didaftarkan. Kombinasikan kelas barang utama dengan **Kelas 35** (jasa toko/ritel) bila menjual langsung ke konsumen.`;
+      return `📋 **Rekomendasi Klasifikasi Nice (DJKI RI)**\n\nBerikut kelas merek yang relevan dengan pertanyaan Anda:\n\n${listStr}\n\n*Catatan Hukum:* Hak eksklusif merek hanya berlaku di kelas yang didaftarkan. Kombinasikan kelas barang utama dengan **Kelas 35** (jasa toko/ritel) bila menjual langsung ke konsumen.\n[💬 Validasi Kelas via WhatsApp →](${waBase})`;
     }
 
     if (isTimeline) {
       return `⏱️ **Alur & Durasi Resmi DJKI (UU No. 20/2016)**\n1. **Filing Date**: 1–3 hari kerja setelah berkas lengkap.\n2. **Pemeriksaan Formalitas**: ±15 hari kerja.\n3. **Pengumuman BRM**: 2 bulan.\n4. **Pemeriksaan Substantif & Sertifikat**: ±150 hari kerja (total estimasi ±6–12 bulan di DJKI).`;
     }
 
-    return `Halo! Saya **BrandConnect AI Assistant**. Anda bisa langsung menanyakan:\n• **Cara Daftar**: *"Gimana mau daftar merek?"* atau *"Apa saja syarat dokumen?"*\n• **Biaya Layanan**: *"Berapa biaya daftar merek UMKM?"*\n• **Kelas Nice**: *"Bagaimana cara menentukan kelas merek?"*\n• **Cek Merek**: *"Cek merek [Nama Merek Anda]"*`;
+    return `Halo! Saya **BrandConnect AI Assistant** khusus **Pendaftaran & Perlindungan Merek**. Anda bisa menanyakan:\n• **Cara Daftar**: *"Gimana mau daftar merek?"* atau *"Apa saja syarat dokumen?"*\n• **Kelas Nice**: *"Bagaimana cara menentukan kelas merek?"*\n• **Cek Merek**: *"Cek merek [Nama Merek Anda]"*\n• **Konsultasi Langsung**:\n[💬 Konsultasi Merek via WhatsApp →](${waBase})`;
   }
 
   // 4. Create Service Order & Case
@@ -2097,13 +2110,13 @@
           <div id="bc-ai-chat-messages" style="padding:1rem;height:290px;overflow-y:auto;display:flex;flex-direction:column;gap:0.75rem;background:var(--ivory-elevated);font-size:0.84rem;line-height:1.55;">
             <div style="background:#FFF;border:1px solid var(--border-sketch-strong);padding:0.75rem 0.9rem;border-radius:4px;">
               <strong style="color:var(--green);display:block;font-size:0.74rem;font-family:var(--font-mono);margin-bottom:0.25rem;">AI TRADEMARK ASSISTANT // LIVE DJKI &amp; FAQ</strong>
-              Halo! Saya asisten hukum merek BrandConnect yang terhubung ke pangkalan data <strong>DJKI RI</strong> dan pusat FAQ. Tanyakan seputar <strong>cara pendaftaran, biaya &amp; paket layanan, syarat dokumen, rekomendasi Kelas Nice (1–45), solusi penolakan</strong>, atau cek ketersediaan nama merek Anda.
+              Halo! Saya asisten hukum merek BrandConnect yang terhubung ke pangkalan data <strong>DJKI RI</strong> dan pusat FAQ. Tanyakan seputar <strong>cara pendaftaran, syarat dokumen, rekomendasi Kelas Nice (1–45), proteksi &amp; solusi penolakan merek</strong>, atau cek ketersediaan nama merek Anda.
             </div>
           </div>
 
           <div id="bc-ai-quick-chips" style="padding:0.45rem 0.75rem;background:#F7F6F0;border-top:1px solid var(--border-sketch);display:flex;gap:0.35rem;overflow-x:auto;white-space:nowrap;">
             <button type="button" class="bc-chat-chip" data-q="Gimana cara daftar merek?" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Gimana cara daftar?</button>
-            <button type="button" class="bc-chat-chip" data-q="Berapa biaya pendaftaran merek?" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Berapa biaya daftar?</button>
+            <button type="button" class="bc-chat-chip" data-q="Berapa lama proses daftar merek sampai sertifikat?" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Alur &amp; Lama Proses</button>
             <button type="button" class="bc-chat-chip" data-q="Apa saja syarat dokumen pendaftaran merek?" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Syarat dokumen</button>
             <button type="button" class="bc-chat-chip" data-q="Bagaimana cara menentukan kelas merek?" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Pilih kelas merek</button>
             <button type="button" class="bc-chat-chip" data-q="Bagaimana solusi jika merek terkena usulan penolakan?" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Solusi merek ditolak</button>
@@ -2112,7 +2125,7 @@
           <div style="padding:0.5rem 0.85rem;background:rgba(49,91,76,0.08);border-top:1px solid var(--border-sketch);display:flex;justify-content:space-between;align-items:center;gap:0.5rem;">
             <span style="font-size:0.72rem;color:var(--charcoal);font-weight:500;">Butuh validasi hukum Konsultan?</span>
             <button type="button" id="bc-ai-handover-trigger" style="background:var(--green);color:var(--ivory);border:none;border-radius:3px;padding:0.35rem 0.7rem;font-family:var(--font-heading);font-size:0.72rem;font-weight:700;cursor:pointer;">
-              Handover ke Spesialis →
+              💬 Konsultasi via WhatsApp →
             </button>
           </div>
 
@@ -2193,16 +2206,16 @@
               <label>CATATAN / DETAIL PRODUK &amp; DOKUMEN</label>
               <textarea id="bc-ord-notes" rows="3" placeholder="Jelaskan secara singkat produk/jasa atau nomor permohonan terkait..."></textarea>
             </div>
-            <div style="padding:0.9rem 1.1rem;background:var(--ivory-subtle);border:1px solid var(--border-sketch-strong);border-radius:4px;display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-              <div>
-                <span style="font-family:var(--font-mono);font-size:0.68rem;color:var(--pencil);display:block;">ESTIMASI BIAYA LAYANAN TERKONFIGURASI:</span>
-                <strong id="bc-ord-price-display" style="font-family:var(--font-heading);font-size:1.25rem;color:var(--green);">Rp 1.850.000</strong>
+            <div style="padding:0.9rem 1.1rem;background:var(--ivory-subtle);border:1px solid var(--border-sketch-strong);border-radius:4px;display:flex;justify-content:space-between;align-items:center;gap:0.75rem;flex-wrap:wrap;margin-bottom:1rem;">
+              <div style="max-width:440px;">
+                <span style="font-family:var(--font-mono);font-size:0.68rem;color:var(--green);font-weight:700;display:block;margin-bottom:0.2rem;">KONSULTASI LANGSUNG VIA WHATSAPP:</span>
+                <span style="font-size:0.82rem;color:var(--charcoal);line-height:1.45;display:block;">Tim Spesialis Merek BrandConnect akan mendampingi pengecekan kelas, berkas, dan pendaftaran merek Anda.</span>
               </div>
-              <span id="bc-ord-duration-display" style="font-family:var(--font-mono);font-size:0.72rem;color:var(--charcoal);">1–3 Hari Kerja</span>
+              <span id="bc-ord-duration-display" style="font-family:var(--font-mono);font-size:0.72rem;color:var(--charcoal);font-weight:600;">1–3 Hari Kerja</span>
             </div>
             <div class="form-footer">
-              <p class="form-privacy-note">Order ini otomatis membuat berkas kasus di Customer Dashboard &amp; Admin Panel.</p>
-              <button type="submit" class="btn btn-primary"><span>Buat Pesanan Layanan</span><span class="btn-arrow">→</span></button>
+              <p class="form-privacy-note">Formulir ini mencatat berkas &amp; menghubungkan Anda langsung ke WhatsApp Spesialis Merek.</p>
+              <button type="submit" class="btn btn-primary"><span>Konsultasi &amp; Daftar via WhatsApp</span><span class="btn-arrow">→</span></button>
             </div>
           </form>
           <div id="bc-ord-success" hidden style="padding:2rem;text-align:center;">
@@ -2284,11 +2297,7 @@
     const updateOrderPricePreview = () => {
       if (!ordSelect) return;
       const srv = state.services.find((s) => s.code === ordSelect.value) || state.services[0];
-      const appType = document.getElementById('bc-ord-applicant')?.value || 'umkm';
-      const price = appType === 'umkm' && srv.umkmPrice ? srv.umkmPrice : srv.basePrice;
-      const priceEl = document.getElementById('bc-ord-price-display');
       const durEl = document.getElementById('bc-ord-duration-display');
-      if (priceEl) priceEl.textContent = formatIDR(price);
       if (durEl) durEl.textContent = srv.duration;
     };
 
@@ -2343,6 +2352,7 @@
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
       return escaped
+        .replace(/\[([^\]]+)\]\((https:\/\/wa\.me\/[^\s)"'<]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:0.35rem;padding:0.4rem 0.75rem;background:#0D472B;color:#FFF;border-radius:4px;text-decoration:none;font-weight:700;font-size:0.78rem;">$1</a>')
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/_(.*?)_/g, '<em>$1</em>')
         .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
@@ -2442,15 +2452,18 @@
 
     if (handoverTrigger) {
       handoverTrigger.addEventListener('click', () => {
-        if (chatPanel) {
-          chatPanel.hidden = true;
-          chatPanel.style.display = 'none';
-        }
-        openHandoverModal();
+        const latestBrand = state.searchLogs[0]?.trademarkName || '';
+        const lastUserMsg = [...chatHistory].reverse().find((m) => m.role === 'user')?.content || '';
+        const waMsg = [
+          'Halo Tim Spesialis Merek BrandConnect, saya ingin konsultasi mengenai pendaftaran & perlindungan merek.',
+          latestBrand ? `Merek terakhir dicek: ${latestBrand}` : '',
+          lastUserMsg ? `Pertanyaan saya: ${lastUserMsg}` : ''
+        ].filter(Boolean).join('\n');
+        window.open(getWhatsAppUrl(waMsg), '_blank', 'noopener,noreferrer');
       });
     }
 
-    // Order form submission
+    // Order form submission -> Record & direct to WhatsApp Consultation
     const orderForm = document.getElementById('bc-global-order-form');
     if (orderForm) {
       orderForm.addEventListener('submit', (e) => {
@@ -2465,17 +2478,21 @@
           niceClasses: document.getElementById('bc-ord-class').value,
           notes: document.getElementById('bc-ord-notes').value
         });
+        const waText = `Halo BrandConnect, saya ingin konsultasi & mengajukan layanan:\n• Nama: ${res.order.customerName}\n• Kontak: ${res.order.customerPhone}\n• Layanan: ${res.order.serviceName}\n• Kategori Pemohon: ${res.order.applicantType.toUpperCase()}\n• Nama Merek: ${res.order.trademarkName}\n• Kelas Merek: ${res.order.niceClasses}${res.order.notes ? `\n• Catatan: ${res.order.notes}` : ''}`;
+        const waUrl = getWhatsAppUrl(waText);
+        window.open(waUrl, '_blank', 'noopener,noreferrer');
+
         orderForm.hidden = true;
         const succ = document.getElementById('bc-ord-success');
         if (succ) {
           succ.hidden = false;
           document.getElementById('bc-ord-success-badge').textContent = `${res.order.orderNumber} // ${res.trademarkCase.caseNumber}`;
-          document.getElementById('bc-ord-success-msg').textContent = `Pesanan layanan "${res.order.serviceName}" untuk merek "${res.order.trademarkName}" (${res.order.niceClasses}) sebesar ${formatIDR(res.order.amount)} telah berhasil dicatat.`;
+          document.getElementById('bc-ord-success-msg').innerHTML = `Permohonan konsultasi layanan <strong>"${res.order.serviceName}"</strong> untuk merek <strong>"${res.order.trademarkName}"</strong> (${res.order.niceClasses}) telah dicatat dan diarahkan ke WhatsApp Spesialis Merek kami. <br/><a href="${waUrl}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:0.75rem;color:var(--green);font-weight:700;text-decoration:underline;">Buka WhatsApp Konsultasi Sekarang →</a>`;
         }
       });
     }
 
-    // Handover form submission
+    // Handover form submission -> Record & direct to WhatsApp Consultation
     const hoForm = document.getElementById('bc-handover-form');
     if (hoForm) {
       hoForm.addEventListener('submit', (e) => {
@@ -2488,12 +2505,16 @@
           requestedService: document.getElementById('bc-ho-service').value,
           conversationSummary: document.getElementById('bc-ho-summary').value
         });
+        const waText = `Halo BrandConnect, saya ingin konsultasi Spesialis Merek:\n• Nama: ${lead.customerName}\n• Kontak: ${lead.customerPhone}\n• Nama Merek: ${lead.trademarkName}\n• Bidang Usaha: ${lead.productCategory}\n• Layanan: ${lead.requestedService}\n• Catatan: ${lead.conversationSummary}`;
+        const waUrl = getWhatsAppUrl(waText);
+        window.open(waUrl, '_blank', 'noopener,noreferrer');
+
         hoForm.hidden = true;
         const succ = document.getElementById('bc-ho-success');
         if (succ) {
           succ.hidden = false;
           document.getElementById('bc-ho-success-badge').textContent = `HANDOVER BERHASIL // ${lead.leadNumber}`;
-          document.getElementById('bc-ho-success-msg').textContent = `Permintaan konsultasi merek "${lead.trademarkName}" beserta riwayat analisis AI telah ditugaskan ke ${lead.assignedTo}.`;
+          document.getElementById('bc-ho-success-msg').innerHTML = `Permintaan konsultasi merek <strong>"${lead.trademarkName}"</strong> telah diteruskan ke ${lead.assignedTo} dan diarahkan ke WhatsApp. <br/><a href="${waUrl}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:0.75rem;color:var(--green);font-weight:700;text-decoration:underline;">Buka WhatsApp Konsultasi Sekarang →</a>`;
         }
       });
     }
@@ -3204,6 +3225,7 @@
     getState: () => state,
     saveState,
     logActivity,
+    getWhatsAppUrl,
     formatIDR,
     NICE_CLASSES_DB,
     PDKI_DIRECTORY_DB,
