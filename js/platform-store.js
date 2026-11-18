@@ -1846,29 +1846,81 @@
     return record;
   }
 
-  // 3. AI Assistant RAG Response Engine
+  // 3. AI Assistant RAG Response Engine (Smart Brand & Legal Fallback)
+  function extractLocalChatBrand(userMessage, trademarkContext) {
+    const msg = (userMessage || '').trim();
+    const lower = msg.toLowerCase();
+    const knownFamous = [
+      'onitsuka tiger', 'kopi kenangan', 'janji jiwa', 'fore coffee', 'louis vuitton',
+      'new balance', 'make over', 'le minerale', 'batik keris', 'kapal api', 'teh botol',
+      'pocari sweat', 'ultra milk', 'tolak angin', 'ms glow', 'msglow', 'kahf', 'paragon',
+      'somethinc', 'scarlett', 'wardah', 'emina', 'avoskin', 'erha', 'onitsuka', 'asics',
+      'adidas', 'nike', 'puma', 'converse', 'vans', 'reebok', 'zara', 'uniqlo', 'gucci',
+      'chanel', 'dior', 'prada', 'hermes', 'apple', 'samsung', 'xiaomi', 'indomie',
+      'starbucks', 'chatime', 'mixue', 'mebiso', 'gojek', 'tokopedia', 'shopee', 'lazada',
+      'grab', 'traveloka', 'pertamina', 'aqua', 'erigo', 'eiger', 'cimory', 'sidomuncul'
+    ];
+    for (const kw of knownFamous) {
+      if (new RegExp(`\\b${kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(lower)) {
+        return kw.toUpperCase();
+      }
+    }
+    const qMatch = msg.match(/["'“”]([^"'“”]{2,40})["'“”]/);
+    if (qMatch) return qMatch[1].trim();
+    const pat = msg.match(/(?:cek|periksa|daftar|daftarkan|merek|merk|brand)\s+([a-zA-Z0-9\s&.'\-]{2,35}?)(?:\s+(?:di|pada|untuk|bisa|aman|itu|ini|sudah|terdaftar|kelas|kosong)|\?|,|\.|$)/i);
+    if (pat && pat[1]) {
+      const noise = ['saya', 'kami', 'kita', 'ini', 'itu', 'baru', 'umkm', 'kelas', 'biaya', 'harga', 'tolak', 'ditolak'];
+      const cleaned = pat[1].trim();
+      if (!noise.includes(cleaned.toLowerCase()) && cleaned.length >= 2) return cleaned;
+    }
+    if (trademarkContext && /\b(merek ini|merek tersebut|nama ini|nama itu|risikonya)\b/i.test(lower)) {
+      return trademarkContext;
+    }
+    return '';
+  }
+
   function generateAiAssistantReply(userMessage, trademarkContext) {
     const q = (userMessage || '').toLowerCase();
-    let reply = '';
+    const candidateBrand = extractLocalChatBrand(userMessage, trademarkContext);
+    const isLegalRejection = /\b(ditolak|penolakan|sanggahan|usulan penolakan|oposisi|brm|pasal 20|pasal 21|pasal 24|banding)\b/i.test(q);
+    const isFee = /\b(biaya|harga|tarif|umkm|pnbp|syarat|dokumen)\b/i.test(q);
+    const isTimeline = /\b(lama|proses|berapa bulan|sertifikat|alur|tahapan)\b/i.test(q);
 
-    if (q.includes('kelas') || q.includes('nice') || q.includes('kopi') || q.includes('skincare') || q.includes('baju') || q.includes('toko') || q.includes('restoran')) {
-      const recs = recommendClasses(userMessage);
-      const listStr = recs.map((c) => `• **Kelas ${c.num} (${c.type})**: ${c.title}`).join('\n');
-      reply = `Berdasarkan standar **Klasifikasi Nice (Kelas 1–45)** yang digunakan DJKI, berikut adalah rekomendasi kelas yang relevan dengan pertanyaan Anda:\n\n${listStr}\n\n*Catatan Hukum:* Perlindungan merek hanya berlaku pada kelas yang didaftarkan. Anda dapat mengklik tombol **Handover ke Spesialis** di bawah agar Konsultan Merek kami memvalidasi cakupan kelas Anda.`;
-    } else if (q.includes('ditolak') || q.includes('penolakan') || q.includes('sanggahan') || q.includes('pasal 20') || q.includes('pasal 21')) {
-      reply = `Mengacu pada **UU No. 20 Tahun 2016 tentang Merek dan Indikasi Geografis**:\n1. **Pasal 20 (Alasan Absolut)**: Merek ditolak jika tidak memiliki daya pembeda, merupakan nama umum, atau hanya mendeskripsikan jenis produk.\n2. **Pasal 21 (Alasan Relatif)**: Merek ditolak jika memiliki *persamaan pada pokoknya atau keseluruhannya* dengan merek terdaftar lebih dulu atau merek terkenal.\n\nJika Anda menerima **Surat Usulan Penolakan** dari DJKI, Anda memiliki waktu **maksimal 30 hari kerja** (Pasal 24) untuk mengajukan **Tanggapan/Sanggahan Resmi**. Tim Legal Counsel BrandConnect dapat menyusun surat sanggahan untuk Anda.`;
-    } else if (q.includes('oposisi') || q.includes('brm') || q.includes('meniru') || q.includes('monitoring')) {
-      reply = `Berdasarkan **Pasal 14 & Pasal 16 UU Merek No. 20/2016**, setiap permohonan merek diumumkan dalam **Berita Resmi Merek (BRM)** selama **2 (dua) bulan**. Apabila ada pihak lain yang mendaftarkan merek mirip dengan milik Anda, Anda berhak mengajukan **Surat Keberatan (Oposisi)** sebelum masa 2 bulan tersebut habis.`;
-    } else if (q.includes('biaya') || q.includes('harga') || q.includes('umkm') || q.includes('tarif')) {
-      const regSrv = state.services[0];
-      reply = `Di BrandConnect, biaya layanan transparan dan mendukung tarif khusus UMKM:\n• **Pendaftaran Merek Baru (Jalur UMKM)**: ${formatIDR(regSrv.umkmPrice)}\n• **Pendaftaran Merek Baru (Jalur Umum / PT)**: ${formatIDR(regSrv.basePrice)}\n• **Tanggapan Penolakan / Sanggahan**: Mulai ${formatIDR(state.services[5].umkmPrice)}\n• **Perpanjangan Merek 10 Tahun**: Mulai ${formatIDR(state.services[1].umkmPrice)}\n\nIngin kami bantu hitungkan estimasi resmi sesuai jumlah kelas merek Anda? Klik tombol **Teruskan ke Spesialis Merek**.`;
-    } else if (q.includes('lama') || q.includes('proses') || q.includes('berapa bulan') || q.includes('sertifikat')) {
-      reply = `Alur resmi pendaftaran merek di DJKI (UU No. 20/2016):\n1. **Pengajuan & Terbit Bukti Permohonan (Filing Date)**: 1–3 hari kerja setelah dokumen lengkap.\n2. **Pemeriksaan Formalitas**: ±15 hari kerja.\n3. **Masa Pengumuman Berita Resmi Merek (BRM)**: 2 bulan.\n4. **Pemeriksaan Substantif & Penerbitan Sertifikat**: ±150 hari kerja (total keseluruhan umumnya 6–12 bulan di DJKI).`;
-    } else {
-      reply = `Terima kasih atas pertanyaan Anda mengenai perlindungan merek${trademarkContext ? ' **' + trademarkContext + '**' : ''}. Berdasarkan **UU No. 20 Tahun 2016 (Prinsip First-to-File)**, langkah terpenting adalah:\n1. Memastikan nama merek memiliki daya pembeda (Pasal 20) dan tidak mirip merek terdaftar (Pasal 21).\n2. Menentukan kelas barang/jasa (Nice Classification 1–45) yang tepat.\n3. Mengamankan Tanggal Penerimaan (*Filing Date*) sedini mungkin.\n\nAnda dapat mengklik tombol **"Handover ke Spesialis Merek"** di bawah untuk meneruskan ringkasan percakapan ini langsung kepada Konsultan Merek BrandConnect.`;
+    if (candidateBrand) {
+      const checkRes = searchPdkiDirectory(candidateBrand, {});
+      const exactOrFamous = (checkRes.items || []).find((item) => {
+        const b = (item.brand || '').toLowerCase();
+        const t = candidateBrand.toLowerCase();
+        return b === t || b.includes(t) || t.includes(b);
+      });
+      if (exactOrFamous || checkRes.total > 0) {
+        const owner = exactOrFamous?.owner || 'Pemilik Terdaftar DJKI';
+        const cls = exactOrFamous?.niceClass || 'Terkait';
+        return `⚠️ **PERINGATAN RISIKO TINGGI — POTENSI DITOLAK MUTLAK (PASAL 21 UU MEREK)**\n\nPengecekan lokal untuk merek **"${candidateBrand.toUpperCase()}"** mendeteksi adanya kesamaan dengan merek terdaftar:\n• **Pemilik Terdaftar**: ${owner}\n• **Kelas Terdaftar**: Kelas ${cls}\n\nBerdasarkan **Pasal 21 ayat (1) huruf a & b UU No. 20 Tahun 2016**, permohonan baru yang identik atau memiliki persamaan pada pokoknya hampir pasti **ditolak oleh DJKI**. Disarankan memodifikasi nama merek dengan daya pembeda orisinal atau klik **Handover ke Spesialis →**.`;
+      }
+      return `✅ **BELUM TERDETEKSI KONFLIK PADA CACHE LOKAL UNTUK "${candidateBrand.toUpperCase()}"**\n\nPastikan verifikasi *real-time* via halaman **Cek Merek** atau klik **Handover ke Spesialis →** agar konsultan kami mengunci Tanggal Penerimaan (*Filing Date*) sesuai asas **First-to-File**.`;
     }
 
-    return reply;
+    if (isLegalRejection) {
+      return `⚖️ **Panduan Hukum Penolakan & Sanggahan Merek (UU No. 20/2016)**\n1. **Pasal 20 (Alasan Absolut)**: Ditolak jika tidak berdaya pembeda, generik, atau sekadar mendeskripsikan barang/jasa.\n2. **Pasal 21 (Alasan Relatif)**: Ditolak jika mirip pada pokoknya/keseluruhannya dengan merek terdaftar lebih dulu atau merek terkenal.\n3. **Usulan Penolakan (Pasal 24)**: Anda punya waktu **maksimal 30 hari kerja** untuk mengajukan **Surat Tanggapan / Sanggahan Resmi**.\n4. **Oposisi BRM (Pasal 14 & 16)**: Masa pengumuman 2 bulan untuk mengajukan keberatan bila ada pihak lain meniru merek Anda.\n\nKlik **Handover ke Spesialis →** agar tim Legal BrandConnect menyusun sanggahan untuk Anda.`;
+    }
+
+    if (q.includes('kelas') || q.includes('nice') || q.includes('kopi') || q.includes('skincare') || q.includes('baju') || q.includes('toko') || q.includes('restoran') || q.includes('software') || q.includes('jualan') || q.includes('produk')) {
+      const recs = recommendClasses(userMessage);
+      const listStr = recs.map((c) => `• **Kelas ${c.num} (${c.type})**: ${c.title}`).join('\n');
+      return `📋 **Rekomendasi Klasifikasi Nice (DJKI RI)**\n\nBerikut kelas merek yang relevan dengan pertanyaan Anda:\n\n${listStr}\n\n*Catatan Hukum:* Hak eksklusif merek hanya berlaku di kelas yang didaftarkan. Kombinasikan kelas barang utama dengan **Kelas 35** (jasa toko/ritel) bila menjual langsung ke konsumen.`;
+    }
+
+    if (isFee) {
+      const regSrv = state.services[0];
+      return `💳 **Estimasi Biaya & Syarat Pendaftaran Merek**\n• **Jalur UMKM (Subsidi)**: ${formatIDR(regSrv.umkmPrice)} *(syarat KTP, Etiket Logo & Surat Keterangan UMKM)*\n• **Jalur Umum / Perusahaan**: ${formatIDR(regSrv.basePrice)}\n• **Tanggapan Usulan Penolakan**: Mulai ${formatIDR(state.services[5].umkmPrice)}\n• **Perpanjangan 10 Tahun**: Mulai ${formatIDR(state.services[1].umkmPrice)}\n\nKetik nama merek Anda di sini untuk cek ketersediaan terlebih dahulu!`;
+    }
+
+    if (isTimeline) {
+      return `⏱️ **Alur & Durasi Resmi DJKI (UU No. 20/2016)**\n1. **Filing Date**: 1–3 hari kerja setelah berkas lengkap.\n2. **Pemeriksaan Formalitas**: ±15 hari kerja.\n3. **Pengumuman BRM**: 2 bulan.\n4. **Pemeriksaan Substantif & Sertifikat**: ±150 hari kerja (total estimasi ±6–12 bulan di DJKI).`;
+    }
+
+    return `Halo! Saya **BrandConnect AI Assistant**. Anda bisa langsung menanyakan:\n• **Cek Merek**: *"Cek merek Kahf"* atau *"Apakah merek Kopi Awan aman?"*\n• **Kelas Nice**: *"Saya jualan skincare dan buka klinik, masuk kelas berapa?"*\n• **Hukum & Penolakan**: *"Merek saya kena usulan penolakan, gimana solusinya?"*\n• **Biaya UMKM**: *"Berapa biaya daftar merek UMKM?"*`;
   }
 
   // 4. Create Service Order & Case
@@ -2010,9 +2062,17 @@
 
           <div id="bc-ai-chat-messages" style="padding:1rem;height:290px;overflow-y:auto;display:flex;flex-direction:column;gap:0.75rem;background:var(--ivory-elevated);font-size:0.84rem;line-height:1.55;">
             <div style="background:#FFF;border:1px solid var(--border-sketch-strong);padding:0.75rem 0.9rem;border-radius:4px;">
-              <strong style="color:var(--green);display:block;font-size:0.74rem;font-family:var(--font-mono);margin-bottom:0.25rem;">AI TRADEMARK ASSISTANT</strong>
-              Halo! Saya asisten pintar BrandConnect. Tanyakan seputar <strong>ketersediaan merek, rekomendasi kelas (1–45), alasan penolakan Pasal 20 &amp; 21, oposisi BRM, atau biaya pendaftaran</strong>. Anda juga bisa meneruskan chat ini ke Spesialis Merek kami kapan saja.
+              <strong style="color:var(--green);display:block;font-size:0.74rem;font-family:var(--font-mono);margin-bottom:0.25rem;">AI TRADEMARK ASSISTANT // LIVE DJKI</strong>
+              Halo! Saya asisten hukum merek BrandConnect yang terhubung langsung ke pangkalan data <strong>DJKI RI</strong>. Ketik nama merek untuk cek konflik, tanyakan rekomendasi <strong>Kelas Nice (1–45)</strong>, solusi penolakan <strong>Pasal 20/21/24</strong>, atau biaya UMKM.
             </div>
+          </div>
+
+          <div id="bc-ai-quick-chips" style="padding:0.45rem 0.75rem;background:#F7F6F0;border-top:1px solid var(--border-sketch);display:flex;gap:0.35rem;overflow-x:auto;white-space:nowrap;">
+            <button type="button" class="bc-chat-chip" data-q="Cek merek Kahf" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Cek merek Kahf</button>
+            <button type="button" class="bc-chat-chip" data-q="Daftar MS Glow di kelas 3?" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Daftar MS Glow di kelas 3?</button>
+            <button type="button" class="bc-chat-chip" data-q="Kelas untuk bisnis kopi" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Kelas untuk bisnis kopi</button>
+            <button type="button" class="bc-chat-chip" data-q="Solusi usulan penolakan" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Solusi usulan penolakan</button>
+            <button type="button" class="bc-chat-chip" data-q="Biaya & syarat UMKM" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Biaya &amp; syarat UMKM</button>
           </div>
 
           <div style="padding:0.5rem 0.85rem;background:rgba(49,91,76,0.08);border-top:1px solid var(--border-sketch);display:flex;justify-content:space-between;align-items:center;gap:0.5rem;">
@@ -2242,71 +2302,107 @@
       });
     }
 
+    const chatHistory = [];
+    const formatChatMarkdown = (raw) => {
+      const escaped = String(raw || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+      return escaped
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/_(.*?)_/g, '<em>$1</em>')
+        .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
+        .replace(/`([^`\n]+)`/g, '<code style="background:#F3F4F6;padding:0.1rem 0.35rem;border-radius:3px;font-family:var(--font-mono);font-size:0.78em;">$1</code>')
+        .replace(/\n\n+/g, '<div style="height:0.5rem;"></div>')
+        .replace(/\n/g, '<br/>');
+    };
+
+    const submitChatQuery = async (text) => {
+      if (!text || !chatMessages) return;
+
+      // Append user bubble
+      const uDiv = document.createElement('div');
+      uDiv.style.cssText = 'background:var(--charcoal);color:var(--ivory);padding:0.65rem 0.85rem;border-radius:4px;align-self:flex-end;max-width:85%;';
+      uDiv.textContent = text;
+      chatMessages.appendChild(uDiv);
+
+      const latestBrand = state.searchLogs[0]?.trademarkName || '';
+
+      // Typing indicator
+      const aDiv = document.createElement('div');
+      aDiv.style.cssText = 'background:#FFF;border:1px solid var(--border-sketch-strong);padding:0.75rem 0.9rem;border-radius:4px;align-self:flex-start;max-width:94%;';
+      aDiv.innerHTML = `<strong style="color:var(--green);display:block;font-size:0.7rem;font-family:var(--font-mono);margin-bottom:0.25rem;">AI TRADEMARK ASSISTANT</strong><span style="color:#6B7280;font-size:0.85rem;display:inline-flex;align-items:center;gap:4px;"><span>Mengecek DJKI &amp; UU Merek</span><span style="animation:pulse 1.2s infinite;">...</span></span>`;
+      chatMessages.appendChild(aDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      let aiReply = '';
+      try {
+        const resp = await fetch('/api/ai-chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: text,
+            brand: latestBrand,
+            history: chatHistory.slice(-6)
+          })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data && data.reply) {
+            aiReply = data.reply;
+          }
+        }
+      } catch (err) {
+        console.warn('AI chat api offline/fallback:', err);
+      }
+
+      if (!aiReply) {
+        aiReply = generateAiAssistantReply(text, latestBrand);
+      }
+
+      chatHistory.push({ role: 'user', content: text });
+      chatHistory.push({ role: 'assistant', content: aiReply });
+
+      // Save to AI Conversations store
+      if (!state.aiConversations[0]) {
+        state.aiConversations.unshift({
+          id: Date.now(),
+          sessionCode: 'AI-CONV-' + Date.now().toString().slice(-5),
+          customerName: state.customerProfile.name,
+          trademarkContext: latestBrand || 'Umum',
+          messages: [],
+          summary: '',
+          status: 'active_ai',
+          updatedAt: new Date().toISOString().slice(0, 16).replace('T', ' ') + ' WIB'
+        });
+      }
+      state.aiConversations[0].messages.push({ sender: 'user', text });
+      state.aiConversations[0].messages.push({ sender: 'ai', text: aiReply });
+      state.aiConversations[0].summary = `Pertanyaan terakhir: "${text}"`;
+      saveState();
+
+      // Update AI bubble
+      aDiv.innerHTML = `<strong style="color:var(--green);display:block;font-size:0.7rem;font-family:var(--font-mono);margin-bottom:0.25rem;">AI TRADEMARK ASSISTANT</strong>` +
+        formatChatMarkdown(aiReply);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    };
+
     if (chatForm && chatInput && chatMessages) {
       chatForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const text = chatInput.value.trim();
         if (!text) return;
         chatInput.value = '';
+        await submitChatQuery(text);
+      });
 
-        // Append user bubble
-        const uDiv = document.createElement('div');
-        uDiv.style.cssText = 'background:var(--charcoal);color:var(--ivory);padding:0.65rem 0.85rem;border-radius:4px;align-self:flex-end;max-width:85%;';
-        uDiv.textContent = text;
-        chatMessages.appendChild(uDiv);
-
-        const latestBrand = state.searchLogs[0]?.trademarkName || '';
-
-        // Typing indicator
-        const aDiv = document.createElement('div');
-        aDiv.style.cssText = 'background:#FFF;border:1px solid var(--border-sketch-strong);padding:0.75rem 0.9rem;border-radius:4px;align-self:flex-start;max-width:92%;';
-        aDiv.innerHTML = `<strong style="color:var(--green);display:block;font-size:0.7rem;font-family:var(--font-mono);margin-bottom:0.25rem;">AI TRADEMARK ASSISTANT</strong><span style="color:#6B7280;font-size:0.85rem;display:inline-flex;align-items:center;gap:4px;"><span>BrandConnect AI sedang menganalisis UU Merek</span><span style="animation:pulse 1.2s infinite;">...</span></span>`;
-        chatMessages.appendChild(aDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-
-        let aiReply = '';
-        try {
-          const resp = await fetch('/api/ai-chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: text, brand: latestBrand })
-          });
-          if (resp.ok) {
-            const data = await resp.json();
-            if (data && data.reply) {
-              aiReply = data.reply;
-            }
-          }
-        } catch (err) {
-          console.warn('AI chat api offline/fallback:', err);
-        }
-
-        if (!aiReply) {
-          aiReply = generateAiAssistantReply(text, latestBrand);
-        }
-
-        // Save to AI Conversations store
-        if (!state.aiConversations[0]) {
-          state.aiConversations.unshift({
-            id: Date.now(),
-            sessionCode: 'AI-CONV-' + Date.now().toString().slice(-5),
-            customerName: state.customerProfile.name,
-            trademarkContext: latestBrand || 'Umum',
-            messages: [],
-            summary: '',
-            status: 'active_ai',
-            updatedAt: new Date().toISOString().slice(0, 16).replace('T', ' ') + ' WIB'
-          });
-        }
-        state.aiConversations[0].messages.push({ sender: 'user', text });
-        state.aiConversations[0].messages.push({ sender: 'ai', text: aiReply });
-        state.aiConversations[0].summary = `Pertanyaan terakhir: "${text}"`;
-        saveState();
-
-        // Update AI bubble
-        aDiv.innerHTML = `<strong style="color:var(--green);display:block;font-size:0.7rem;font-family:var(--font-mono);margin-bottom:0.25rem;">AI TRADEMARK ASSISTANT</strong>` +
-          aiReply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br/>');
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+      document.querySelectorAll('.bc-chat-chip').forEach((chip) => {
+        chip.addEventListener('click', async () => {
+          const qText = (chip.getAttribute('data-q') || chip.textContent || '').trim();
+          if (!qText) return;
+          chatInput.value = '';
+          await submitChatQuery(qText);
+        });
       });
     }
 
