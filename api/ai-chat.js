@@ -204,12 +204,18 @@ const GENERIC_TOKENS = new Set([
 const NOISE_WORDS = new Set([
   'saya', 'kami', 'kita', 'aku', 'anda', 'gua', 'gw', 'gue', 'baru', 'ini', 'itu', 'yang',
   'sendiri', 'umkm', 'pribadi', 'perusahaan', 'pt', 'cv', 'lokal', 'indonesia', 'djki', 'pdki',
-  'haki', 'hki', 'merek', 'merk', 'nama', 'brand', 'kelas', 'biaya', 'harga', 'tarif', 'syarat',
-  'cara', 'proses', 'lama', 'ditolak', 'tolak', 'sanggahan', 'oposisi', 'apa', 'apakah', 'bagaimana',
-  'gimana', 'kenapa', 'mengapa', 'berapa', 'tolong', 'coba', 'bisa', 'boleh', 'mau', 'ingin',
-  'bisa didaftarkan', 'didaftarkan', 'daftar', 'daftarkan', 'pakai', 'gunakan', 'cek', 'periksa',
+  'haki', 'hki', 'merek', 'merk', 'nama', 'brand', 'kelas', 'kelasnya', 'biaya', 'biayanya',
+  'harga', 'harganya', 'tarif', 'ongkos', 'syarat', 'syaratnya', 'persyaratan', 'cara', 'caranya',
+  'proses', 'prosesnya', 'lama', 'ditolak', 'tolak', 'penolakan', 'sanggahan', 'oposisi', 'apa',
+  'apakah', 'bagaimana', 'gimana', 'kenapa', 'mengapa', 'berapa', 'tolong', 'coba', 'bisa', 'boleh',
+  'mau', 'ingin', 'bisa didaftarkan', 'didaftarkan', 'daftar', 'daftarkan', 'daftarnya', 'mendaftar',
+  'pendaftaran', 'pendaftarannya', 'pakai', 'gunakan', 'cek', 'periksa', 'ketersediaan', 'status',
   'aman', 'lolos', 'terdaftar', 'ada', 'sudah', 'belum', 'kalau', 'jika', 'untuk', 'tentang', 'soal',
-  'ya', 'dong', 'sih', 'nih', 'kak', 'min', 'bro', 'bos', 'halo', 'hai', 'selamat', 'pagi', 'siang', 'malam'
+  'disini', 'sini', 'brandconnect', 'online', 'resmi', 'langkah', 'langkahnya', 'alur', 'prosedur',
+  'produk', 'usaha', 'bisnis', 'toko', 'barang', 'jasa', 'komoditas', 'orang', 'lain', 'kompetitor',
+  'saja', 'dokumen', 'berkas', 'lampiran', 'nomor', 'permohonan', 'sertifikat', 'perpanjang',
+  'perpanjangan', 'pengalihan', 'lisensi', 'cipta', 'hak', 'copyright', 'milik', 'ya', 'dong', 'sih',
+  'nih', 'kak', 'min', 'bro', 'bos', 'halo', 'hai', 'selamat', 'pagi', 'siang', 'malam'
 ]);
 
 function escapeRegex(str) {
@@ -244,19 +250,43 @@ function extractCandidateBrand(message, brandContext) {
   const msg = (message || '').trim();
   const lower = msg.toLowerCase();
 
-  // 1. Check quoted brand explicitly first: "Kahf", 'MS Glow'
+  // 1. Check quoted brand explicitly first: "Zenova", 'Kopi Awan'
   const quoteMatch = msg.match(/["'“”]([^"'“”]{2,40})["'“”]/);
   if (quoteMatch) {
     const cleaned = cleanBrandCandidate(quoteMatch[1]);
     if (cleaned) return cleaned;
   }
 
-  // 2. Check explicit brand phrase patterns
+  // 2. Check direct mention of any known major brand inside message
+  const sortedMajorKeys = Object.keys(MAJOR_BRANDS).sort((a, b) => b.length - a.length);
+  for (const key of sortedMajorKeys) {
+    const regex = new RegExp(`\\b${escapeRegex(key)}\\b`, 'i');
+    if (regex.test(lower)) {
+      return MAJOR_BRANDS[key].brand;
+    }
+  }
+
+  // 3. Explicit lookup command ("cek merek <Name>" / "periksa <Name>")
+  const explicitLookupMatch = msg.match(/(?:cek|periksa|analisis)\s+(?:ketersediaan\s+)?(?:merek|merk|nama\s+merek|nama\s+brand|nama|brand)?\s*([a-zA-Z0-9\s&.'\-]{2,35}?)(?:\s+(?:di\s+kelas|pada\s+kelas|kelas|apakah|bisa|aman|sudah|terdaftar)|\?|,|\.|$)/i);
+  if (explicitLookupMatch && explicitLookupMatch[1]) {
+    const cleaned = cleanBrandCandidate(explicitLookupMatch[1]);
+    if (cleaned) return cleaned;
+  }
+
+  // 4. Guard against general FAQ / procedural questions without a quoted or famous brand
+  const isProceduralFaq =
+    /^(?:gimana|bagaimana|cara|langkah|prosedur|alur|berapa|apa\s+saja|apa\s+itu|kapan|dimana|di\s+mana|mau\s+tanya|tanya|info)\b/i.test(lower) ||
+    /\b(?:gimana\s+(?:cara|mau)|cara\s+(?:daftar|mendaftar|order|pesan|cek)|mau\s+daftar\s*(?:merek|merk)?\s*(?:gimana|bagaimana)?|berapa\s+(?:biaya|harga|tarif|lama)|syarat\s+(?:daftar|pendaftaran|dokumen))\b/i.test(lower);
+
+  if (isProceduralFaq) {
+    return '';
+  }
+
+  // 5. General brand phrase patterns
   const patterns = [
-    /(?:cek|periksa|analisis|carikan|cari|daftar|daftarkan|mendaftarkan|pakai|menggunakan|gunakan|pake)\s+(?:merek|merk|nama\s+merek|nama\s+brand|nama|brand)\s+([a-zA-Z0-9\s&.'\-]{2,40}?)(?:\s+(?:di\s+kelas|pada\s+kelas|di|pada|untuk|bisa|apakah|aman|itu|ini|sudah|terdaftar|masuk|kelas|kosong|ada|gimana|bagaimana|atau|dan|yang|lolos)|\?|,|\.|$)/i,
+    /(?:daftar|daftarkan|mendaftarkan|pakai|menggunakan|gunakan|pake)\s+(?:merek|merk|nama\s+merek|nama\s+brand|nama|brand)\s+([a-zA-Z0-9\s&.'\-]{2,40}?)(?:\s+(?:di\s+kelas|pada\s+kelas|di|pada|untuk|bisa|apakah|aman|itu|ini|sudah|terdaftar|masuk|kelas|kosong|ada|gimana|bagaimana|atau|dan|yang|lolos)|\?|,|\.|$)/i,
     /(?:merek|merk|nama\s+merek|nama\s+brand|brand)\s+([a-zA-Z0-9\s&.'\-]{2,40}?)(?:\s+(?:apakah|bisa|aman|sudah|terdaftar|di\s+kelas|pada\s+kelas|di|pada|untuk|masuk|kelas|kosong|ada|gimana|bagaimana|itu|ini|milik|punya|lolos|kena)|\?|,|\.|$)/i,
-    /(?:apakah|bisakah|amankah)\s+(?:saya\s+|kami\s+|kita\s+)?(?:bisa\s+)?(?:daftar|daftarkan|pakai|menggunakan)?\s*(?:merek|merk|nama|brand)?\s*([a-zA-Z0-9\s&.'\-]{2,35}?)\s+(?:bisa\s+didaftarkan|aman\s+didaftarkan|bisa\s+dipakai|aman\s+dipakai|sudah\s+terdaftar|sudah\s+ada|aman|bisa\s+daftar|bisa\s+lolos|tersedia)/i,
-    /(?:cek|periksa)\s+([a-zA-Z0-9\s&.'\-]{2,35}?)(?:\s+(?:di\s+kelas|kelas|apakah|bisa|aman)|\?|,|\.|$)/i
+    /(?:apakah|bisakah|amankah)\s+(?:saya\s+|kami\s+|kita\s+)?(?:bisa\s+)?(?:daftar|daftarkan|pakai|menggunakan)?\s*(?:merek|merk|nama|brand)?\s*([a-zA-Z0-9\s&.'\-]{2,35}?)\s+(?:bisa\s+didaftarkan|aman\s+didaftarkan|bisa\s+dipakai|aman\s+dipakai|sudah\s+terdaftar|sudah\s+ada|aman|bisa\s+daftar|bisa\s+lolos|tersedia)/i
   ];
 
   for (const pat of patterns) {
@@ -267,16 +297,7 @@ function extractCandidateBrand(message, brandContext) {
     }
   }
 
-  // 3. Check direct mention of any known major brand inside message
-  const sortedMajorKeys = Object.keys(MAJOR_BRANDS).sort((a, b) => b.length - a.length);
-  for (const key of sortedMajorKeys) {
-    const regex = new RegExp(`\\b${escapeRegex(key)}\\b`, 'i');
-    if (regex.test(lower)) {
-      return MAJOR_BRANDS[key].brand;
-    }
-  }
-
-  // 4. Referential context fallback ("merek ini", "nama tersebut", "peluang lolosnya")
+  // 6. Referential context fallback ("merek ini", "nama tersebut", "peluang lolosnya")
   if (brandContext && /\b(merek ini|merek tersebut|nama ini|nama itu|brand ini|peluangnya|pemiliknya|risikonya)\b/i.test(lower)) {
     return brandContext;
   }
@@ -384,9 +405,12 @@ async function lookupDjkiBrand(brandName) {
 
 function buildRuleBasedReply({ message, brandLookup, classMatches }) {
   const q = (message || '').toLowerCase();
+  const isHowToRegisterFaq = /\b(gimana\s+(?:mau\s+|cara\s+)?daftar|bagaimana\s+(?:cara\s+)?(?:daftar|mendaftar)|cara\s+(?:daftar|mendaftar|pendaftaran|order|pesan)|mau\s+daftar|ingin\s+daftar|langkah\s+(?:daftar|pendaftaran)|alur\s+pendaftaran|prosedur\s+pendaftaran|daftar\s+merek\s+gimana|daftarnya\s+gimana)\b/i.test(q);
+  const isFeeQuery = /\b(biaya|biayanya|harga|harganya|tarif|ongkos|bayar|pnbp|berapa\s+biaya|berapa\s+harga|paket\s+harga|pricelist)\b/i.test(q);
+  const isRequirementsQuery = /\b(syarat|syaratnya|persyaratan|dokumen|berkas|lampiran|butuh\s+apa\s+saja)\b/i.test(q);
   const isLegalRejectionQuery = /\b(ditolak|penolakan|sanggahan|usulan penolakan|oposisi|brm|pasal 20|pasal 21|pasal 24|banding|keberatan)\b/i.test(q);
-  const isFeeQuery = /\b(biaya|harga|tarif|bayar|pnbp|berapa biaya|paket|jasa|syarat|dokumen)\b/i.test(q);
-  const isTimelineQuery = /\b(berapa lama|lama proses|durasi|sertifikat|prosedur|alur|tahapan)\b/i.test(q);
+  const isOtherServicesQuery = /\b(perpanjang|perpanjangan|expired|masa\s+berlaku|pengalihan|balik\s+nama|akuisisi|lisensi|waralaba|franchise|royalti|hak\s+cipta|copyright)\b/i.test(q);
+  const isTimelineQuery = /\b(berapa\s+lama|lama\s+proses|durasi|kapan\s+terbit|tahapan)\b/i.test(q);
   const isClassQuery = /\b(kelas|nice|klasifikasi|kategori|jualan|bisnis|usaha|produk)\b/i.test(q) || classMatches.length > 0;
 
   // PRIORITY 1: Specific Brand Check or Conflict Analysis
@@ -445,7 +469,62 @@ Hasil penelusuran pangkalan data resmi **DJKI RI** untuk **"${brand}"**:
 Di Indonesia, siapa yang mendaftar lebih dulu dialah pemilik sah. Segera amankan **Tanggal Penerimaan (*Filing Date*)** dengan menyiapkan KTP, etiket logo, dan menentukan kelas barang/jasa. Klik **Handover ke Spesialis →** jika Anda ingin langsung mendaftarkan **"${brand}"**.`;
   }
 
-  // PRIORITY 2: Rejection, Sanggahan, BRM Opposition
+  // PRIORITY 2: FAQ Cara Daftar / Gimana Mau Daftar
+  if (isHowToRegisterFaq && !(isFeeQuery && !/\b(gimana|cara|langkah|alur|prosedur)\b/i.test(q))) {
+    return `📝 **Panduan Cara Daftar Merek di BrandConnect (4 Langkah Praktis)**
+
+1. **Cek Ketersediaan & Kelas Merek**: Telusuri nama merek Anda di halaman **Cek Merek** atau ketik *"Cek merek [Nama Merek Anda]"* di chat ini untuk memastikan bebas konflik Pasal 20 & 21.
+2. **Siapkan Berkas Persyaratan**:
+   • Scan/foto **KTP Pemohon** & **NPWP** (jika ada).
+   • **Etiket / Logo Merek** beresolusi baik (format JPG/PNG).
+   • **Tanda Tangan Pemohon** di atas kertas putih.
+   • *Tambahan*: **Surat Rekomendasi/Keterangan UMKM** dari Dinas terkait (untuk tarif subsidi UMKM) atau **Akta & NIB** (jika atas nama PT/CV).
+3. **Pilih Layanan & Buat Pesanan**: Klik tombol **Handover ke Spesialis →** di bawah atau pesan melalui menu **Layanan** (pilih Jalur UMKM Rp 1.850.000/kelas atau Jalur Umum Rp 3.200.000/kelas).
+4. **E-Filing Resmi DJKI & Terbit Filing Date (1–3 Hari Kerja)**: Tim Konsultan HKI BrandConnect memproses pengajuan resmi ke sistem DJKI, menyerahkan Bukti Penerimaan Permohonan (*Filing Date*), dan memantau masa pengumuman BRM 2 bulan hingga sertifikat merek terbit.
+
+Butuh bantuan langsung atau ingin konsultasi terlebih dahulu? Klik **Handover ke Spesialis →** sekarang.`;
+  }
+
+  // PRIORITY 3: FAQ Biaya & Tarif Layanan
+  if (isFeeQuery) {
+    return `💳 **Daftar Biaya Resmi Layanan Merek & HAKI BrandConnect**
+
+Semua biaya transparan tanpa biaya tersembunyi (untuk pendaftaran baru sudah **all-in** termasuk PNBP resmi DJKI & jasa pendampingan konsultan):
+• **Pendaftaran Merek Baru (DJKI)**:
+  - Jalur **UMKM**: **Rp 1.850.000 / kelas**
+  - Jalur **Umum (Perorangan / PT / CV)**: **Rp 3.200.000 / kelas**
+• **Perpanjangan Sertifikat Merek (10 Tahun)**: **Rp 2.400.000** *(UMKM)* | **Rp 3.800.000** *(Umum)*
+• **Tanggapan Usulan Penolakan (Sanggahan)**: **Rp 2.500.000** *(UMKM)* | **Rp 3.200.000** *(Umum)*
+• **Pengajuan Oposisi (Keberatan BRM)**: **Rp 4.500.000**
+• **Pengalihan Hak / Lisensi Merek**: **Rp 2.900.000 – Rp 3.500.000**
+• **Pencatatan Hak Cipta Logo/Karya**: **Rp 1.250.000** *(UMKM)* | **Rp 1.750.000** *(Umum)*
+• **Konsultasi Hukum 1-on-1 (60 Menit)**: **Rp 450.000** *(UMKM)* | **Rp 750.000** *(Umum)*
+
+Klik **Handover ke Spesialis →** untuk dibuatkan estimasi resmi sesuai jumlah kelas usaha Anda.`;
+  }
+
+  // PRIORITY 4: FAQ Syarat Dokumen
+  if (isRequirementsQuery) {
+    return `📂 **Syarat & Dokumen Pendaftaran Merek DJKI**
+
+Berikut kelengkapan berkas yang perlu disiapkan sesuai kategori pemohon:
+1. **Jalur UMKM (Tarif Subsidi)**:
+   • KTP Pemilik Usaha (Perorangan/Direktur).
+   • File **Etiket Logo / Nama Merek** (JPG/PNG).
+   • **Surat Keterangan / Rekomendasi Binaan UMKM** (dari Dinas Koperasi/UMKM, Perindustrian, atau Kementerian terkait).
+   • Tanda tangan pemohon di atas kertas putih & daftar jenis barang/jasa.
+2. **Jalur Umum — Perorangan**:
+   • KTP & NPWP Pemohon.
+   • File Etiket Logo / Nama Merek & Tanda Tangan Pemohon.
+3. **Jalur Umum — Badan Usaha (PT / CV)**:
+   • Akta Pendirian & Perubahan + SK Kemenkumham.
+   • NIB & NPWP Badan Usaha.
+   • KTP Direktur/Penanggung Jawab, Logo, & Tanda Tangan Direktur + Stempel perusahaan.
+
+Seluruh pengecekan berkas dan formulir pernyataan dibantu penuh oleh tim BrandConnect. Klik **Handover ke Spesialis →** untuk memulai.`;
+  }
+
+  // PRIORITY 5: FAQ Rejection, Sanggahan, BRM Opposition
   if (isLegalRejectionQuery) {
     return `⚖️ **Panduan Hukum Penolakan & Sanggahan Merek (UU No. 20/2016)**
 
@@ -458,7 +537,19 @@ Jika merek mengalami kendala atau menerima surat dari DJKI, berikut dasar hukum 
 Klik **Handover ke Spesialis →** untuk pendampingan penyusunan *Legal Drafting* Tanggapan/Oposisi oleh Konsultan HKI BrandConnect.`;
   }
 
-  // PRIORITY 3: Nice Classification Inquiry
+  // PRIORITY 6: FAQ Perpanjangan, Pengalihan, Lisensi, Hak Cipta
+  if (isOtherServicesQuery) {
+    return `🛡️ **Layanan Lanjutan Merek & Hak Cipta (DJKI)**
+
+1. **Perpanjangan Sertifikat Merek (Pasal 35)**: Perlindungan merek berlaku **10 tahun** dan dapat diperpanjang mulai **6 bulan sebelum** habis masa berlaku hingga masa tenggang **6 bulan setelahnya**. Biaya: **Rp 2.400.000** *(UMKM)* | **Rp 3.800.000** *(Umum)*.
+2. **Pengalihan Hak Atas Merek**: Pencatatan resmi balik nama kepemilikan (jual-beli brand, hibah, waris, atau perorangan ke PT) agar sah tercatat di BRM (**Rp 2.900.000**).
+3. **Perjanjian & Pencatatan Lisensi**: Kontrak penggunaan merek untuk waralaba/*franchise*, distributor, atau royalti beserta pencatatannya di DJKI (**Rp 3.500.000**).
+4. **Pencatatan Hak Cipta Logo & Karya**: Melindungi karya seni logo, ilustrasi, kemasan, atau software melalui e-HakCipta dalam **1–3 hari kerja** (**Rp 1.250.000** UMKM | **Rp 1.750.000** Umum).
+
+Ingin konsultasi layanan spesifik di atas? Klik **Handover ke Spesialis →**.`;
+  }
+
+  // PRIORITY 7: FAQ Nice Classification Inquiry
   if (isClassQuery) {
     if (classMatches.length > 0) {
       const listStr = classMatches.map((c) => `• **Kelas ${c.num} (${c.type}) — ${c.title}**\n  _${c.strategy}_`).join('\n');
@@ -481,37 +572,26 @@ Sistem pendaftaran merek di Indonesia membagi perlindungan ke dalam **45 kelas**
 Silakan sebutkan **jenis produk atau layanan bisnis Anda**, nanti saya hitungkan nomor kelas yang paling tepat!`;
   }
 
-  // PRIORITY 4: Fees & Requirements
-  if (isFeeQuery) {
-    return `💳 **Estimasi Biaya & Syarat Pendaftaran Merek (DJKI RI)**
-
-BrandConnect menyediakan layanan transparan mencakup penelusuran mendalam, penyiapan etiket, e-filing resmi, hingga pemantauan masa BRM:
-• **Jalur UMKM (Tarif Subsidi)**: **Rp 1.850.000 / kelas** *(sudah termasuk PNBP resmi DJKI & jasa pengurusan)*. Syarat: KTP, Etiket Logo, dan Surat Keterangan/Rekomendasi UMKM dari Dinas terkait.
-• **Jalur Umum / Perusahaan (PT/CV/Perorangan)**: **Rp 3.500.000 / kelas** *(termasuk PNBP resmi umum Rp 1.800.000 & jasa konsultan)*.
-• **Layanan Tanggapan Penolakan / Oposisi**: Mulai **Rp 1.500.000 – Rp 2.500.000** per kasus.
-
-Ingin cek ketersediaan merek dulu sebelum bayar PNBP? Ketik saja nama merek yang ingin Anda daftarkan di sini (misal: *"Cek merek Kopi Senja"*).`;
-  }
-
-  // PRIORITY 5: Timeline / Procedure
+  // PRIORITY 8: FAQ Timeline / Procedure Duration
   if (isTimelineQuery) {
     return `⏱️ **Alur & Estimasi Waktu Pendaftaran Merek DJKI (UU No. 20/2016)**
 
-1. **Pengecekan & Pengajuan (*Filing Date*)**: 1–3 hari kerja. Anda langsung mendapat Nomor Permohonan resmi sebagai bukti hak prioritas *First-to-File*.
+1. **Pengecekan & Pengajuan (*Filing Date*)**: **1–3 hari kerja**. Anda langsung mendapat Nomor Permohonan resmi sebagai bukti hak prioritas *First-to-File*.
 2. **Pemeriksaan Formalitas**: ±15 hari kerja untuk verifikasi kelengkapan berkas dan etiket.
 3. **Masa Pengumuman (BRM)**: **2 bulan** publikasi terbuka di Berita Resmi Merek untuk memberi kesempatan sanggahan pihak ketiga.
 4. **Pemeriksaan Substantif & Sertifikat**: ±150 hari kerja hingga terbit Sertifikat Merek Elektronik (total estimasi proses DJKI berkisar **6–12 bulan**; merek tetap boleh digunakan komersial sejak tanggal pengajuan dengan simbol ™).`;
   }
 
-  // PRIORITY 6: Conversational Greeting / General Guide
-  return `Halo! Saya **BrandConnect AI Assistant** yang terhubung langsung ke pangkalan data merek DJKI RI. Supaya tidak salah langkah dan menghindari penolakan, Anda bisa langsung tanyakan hal berikut:
+  // PRIORITY 9: Conversational Greeting / General FAQ Menu
+  return `Halo! Saya **BrandConnect AI Assistant** yang terhubung ke pangkalan data resmi **DJKI RI** dan pusat bantuan FAQ BrandConnect. Anda bisa langsung menanyakan topik berikut:
 
-• **Cek Konflik Merek**: Ketik *"Cek merek Kahf"* atau *"Apakah merek Kopi Awan aman didaftarkan?"*
-• **Rekomendasi Kelas Nice**: Ketik *"Saya jualan skincare dan buka klinik, masuk kelas berapa?"*
-• **Kendala Hukum DJKI**: Ketik *"Merek saya kena usulan penolakan, gimana solusinya?"*
-• **Biaya & Syarat**: Ketik *"Berapa biaya daftar merek UMKM?"*
+• **Cara Pendaftaran**: *"Gimana mau daftar merek?"* atau *"Apa saja syarat dokumen?"*
+• **Biaya & Paket**: *"Berapa biaya daftar merek UMKM dan Umum?"*
+• **Rekomendasi Kelas Nice**: *"Usaha saya [produk/jasa Anda], masuk kelas berapa?"*
+• **Cek Konflik Merek**: *"Cek merek [Nama Merek Anda]"*
+• **Kendala Hukum & Layanan Lain**: *"Solusi usulan penolakan"*, *"Berapa lama prosesnya?"*, *"Perpanjangan / Hak Cipta"*
 
-Silakan ketik nama merek atau kebutuhan bisnis Anda sekarang!`;
+Silakan tulis pertanyaan atau nama merek Anda sekarang!`;
 }
 
 module.exports = async (req, res) => {
@@ -544,10 +624,10 @@ module.exports = async (req, res) => {
   const classMatches = mapCommoditiesToClasses(message);
   const brandLookup = candidateBrand ? await lookupDjkiBrand(candidateBrand) : null;
 
-  // Build authoritative rule-based response backed by live DJKI search & UU Merek
+  // Build authoritative rule-based response backed by live DJKI search & UU Merek / FAQ
   const factualReply = buildRuleBasedReply({ message, brandLookup, classMatches });
 
-  // 2. If Gemini API Key is configured, use Gemini grounded on live DJKI facts (never hallucinating!)
+  // 2. If Gemini API Key is configured, use Gemini grounded on live DJKI facts & BrandConnect FAQ
   const geminiApiKey = process.env.GEMINI_API_KEY;
   if (geminiApiKey) {
     const modelsToTry = ['gemini-2.5-flash', 'gemini-2.0-flash'];
@@ -558,7 +638,18 @@ module.exports = async (req, res) => {
 - Pemilik Terdaftar: ${brandLookup.uniqueOwners.join(', ') || brandLookup.famousEntry?.owner || '-'}
 - Kelas Terdaftar: ${brandLookup.uniqueClasses.join(', ') || brandLookup.famousEntry?.classes || '-'}
 - Indikasi Kata Generik Pasal 20: ${brandLookup.isGenericDescriptive ? 'YA' : 'TIDAK'}`
-      : 'Tidak ada nama merek spesifik dalam pertanyaan; fokus jawab pertanyaan kelas Nice, regulasi UU No. 20/2016, biaya, atau prosedur.';
+      : 'Tidak ada nama merek spesifik dalam pertanyaan; fokus jawab pertanyaan FAQ pendaftaran, biaya, syarat dokumen, kelas Nice, regulasi UU No. 20/2016, atau layanan BrandConnect.';
+
+    const faqContext = `DATA FAQ RESMI BRANDCONNECT (WAJIB KONSISTEN):
+- Cara Daftar (4 langkah): 1) Cek Merek & Kelas; 2) Siapkan KTP, NPWP (bila ada), Etiket Logo JPG/PNG, Tanda Tangan (+ Surat Rekomendasi UMKM untuk tarif UMKM atau Akta & NIB untuk PT/CV); 3) Order via tombol "Handover ke Spesialis →" / menu Layanan; 4) E-Filing DJKI & terbit Filing Date 1-3 hari kerja, lalu pantau BRM 2 bulan sampai sertifikat terbit (±6-12 bulan total proses DJKI).
+- Biaya Layanan (All-in termasuk PNBP resmi DJKI & pendampingan):
+  * Pendaftaran Merek Baru: UMKM Rp 1.850.000/kelas | Umum Rp 3.200.000/kelas
+  * Perpanjangan Merek (10 Tahun): UMKM Rp 2.400.000 | Umum Rp 3.800.000
+  * Tanggapan Usulan Penolakan: UMKM Rp 2.500.000 | Umum Rp 3.200.000
+  * Pengajuan Oposisi BRM: Rp 4.500.000
+  * Pengalihan Hak: Rp 2.900.000 | Lisensi Merek: Rp 3.500.000
+  * Pencatatan Hak Cipta Logo/Karya (1-3 hari kerja): UMKM Rp 1.250.000 | Umum Rp 1.750.000
+  * Konsultasi Hukum 60 Menit: UMKM Rp 450.000 | Umum Rp 750.000`;
 
     const classSummary = classMatches.length > 0
       ? `REKOMENDASI KELAS NICE RELEVAN:\n${classMatches.map((c) => `- Kelas ${c.num} (${c.type}): ${c.title} -> ${c.strategy}`).join('\n')}`
@@ -567,10 +658,12 @@ module.exports = async (req, res) => {
     const prompt = `Anda adalah Konsultan HKI & BrandConnect AI Assistant di Indonesia.
 ATURAN KETAT (ANTI-HALUSINASI):
 1. DILARANG KERAS menyatakan suatu merek "aman" atau "berpotensi diterima" jika data DJKI di bawah menunjukkan KONFLIK LANGSUNG = YA. Anda wajib memberi peringatan tegas Risiko Tinggi ditolak di bawah Pasal 21 UU No. 20 Tahun 2016 dan menyebutkan nama pemilik terdaftarnya.
-2. Selalu rujuk UU No. 20 Tahun 2016 (Pasal 20, Pasal 21, Pasal 24 batas 30 hari kerja untuk sanggahan, Pasal 14 & 16 untuk BRM 2 bulan).
-3. Jawab dengan bahasa Indonesia yang jelas, terstruktur (markdown **bold** dan poin-poin), ringkas namun padat solusi hukum praktis.
-4. Akhiri dengan ajakan mengklik tombol "Handover ke Spesialis →" bila perlu pendampingan langsung.
+2. Untuk pertanyaan FAQ (cara daftar, biaya, syarat dokumen, durasi, layanan), gunakan angka dan prosedur persis sesuai DATA FAQ RESMI BRANDCONNECT di bawah. Jangan menyebut merek pihak ketiga sebagai contoh bila tidak ditanyakan user.
+3. Selalu rujuk UU No. 20 Tahun 2016 (Pasal 20, Pasal 21, Pasal 24 batas 30 hari kerja untuk sanggahan, Pasal 14 & 16 untuk BRM 2 bulan, Pasal 35 masa berlaku 10 tahun).
+4. Jawab dengan bahasa Indonesia yang jelas, terstruktur (markdown **bold** dan poin-poin), ringkas namun padat solusi praktis.
+5. Akhiri dengan ajakan mengklik tombol "Handover ke Spesialis →" bila perlu pendampingan langsung.
 
+${faqContext}
 ${groundingSummary}
 ${classSummary}
 

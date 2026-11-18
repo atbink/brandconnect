@@ -1846,10 +1846,13 @@
     return record;
   }
 
-  // 3. AI Assistant RAG Response Engine (Smart Brand & Legal Fallback)
+  // 3. AI Assistant RAG Response Engine (Smart Brand, FAQ & Legal Fallback)
   function extractLocalChatBrand(userMessage, trademarkContext) {
     const msg = (userMessage || '').trim();
     const lower = msg.toLowerCase();
+    const qMatch = msg.match(/["'“”]([^"'“”]{2,40})["'“”]/);
+    if (qMatch) return qMatch[1].trim();
+
     const knownFamous = [
       'onitsuka tiger', 'kopi kenangan', 'janji jiwa', 'fore coffee', 'louis vuitton',
       'new balance', 'make over', 'le minerale', 'batik keris', 'kapal api', 'teh botol',
@@ -1865,13 +1868,29 @@
         return kw.toUpperCase();
       }
     }
-    const qMatch = msg.match(/["'“”]([^"'“”]{2,40})["'“”]/);
-    if (qMatch) return qMatch[1].trim();
-    const pat = msg.match(/(?:cek|periksa|daftar|daftarkan|merek|merk|brand)\s+([a-zA-Z0-9\s&.'\-]{2,35}?)(?:\s+(?:di|pada|untuk|bisa|aman|itu|ini|sudah|terdaftar|kelas|kosong)|\?|,|\.|$)/i);
+
+    const noise = new Set([
+      'saya', 'kami', 'kita', 'ini', 'itu', 'baru', 'umkm', 'kelas', 'biaya', 'biayanya',
+      'harga', 'harganya', 'tolak', 'ditolak', 'caranya', 'cara', 'daftar', 'daftarnya',
+      'pendaftaran', 'syarat', 'syaratnya', 'dokumen', 'berkas', 'sendiri', 'ketersediaan',
+      'proses', 'prosesnya', 'disini', 'sini', 'brandconnect', 'resmi', 'online', 'lama'
+    ]);
+
+    const explicitLookup = msg.match(/(?:cek|periksa|analisis)\s+(?:ketersediaan\s+)?(?:merek|merk|nama|brand)?\s*([a-zA-Z0-9\s&.'\-]{2,35}?)(?:\s+(?:di|pada|untuk|bisa|aman|itu|ini|sudah|terdaftar|kelas|kosong)|\?|,|\.|$)/i);
+    if (explicitLookup && explicitLookup[1]) {
+      const cleaned = explicitLookup[1].trim();
+      if (!noise.has(cleaned.toLowerCase()) && cleaned.length >= 2) return cleaned;
+    }
+
+    const isProceduralFaq =
+      /^(?:gimana|bagaimana|cara|langkah|prosedur|alur|berapa|apa\s+saja|apa\s+itu|kapan|dimana|di\s+mana|mau\s+tanya|tanya|info)\b/i.test(lower) ||
+      /\b(?:gimana\s+(?:cara|mau)|cara\s+(?:daftar|mendaftar|order|pesan|cek)|mau\s+daftar\s*(?:merek|merk)?\s*(?:gimana|bagaimana)?|berapa\s+(?:biaya|harga|tarif|lama)|syarat\s+(?:daftar|pendaftaran|dokumen))\b/i.test(lower);
+    if (isProceduralFaq) return '';
+
+    const pat = msg.match(/(?:daftar|daftarkan|merek|merk|brand)\s+([a-zA-Z0-9\s&.'\-]{2,35}?)(?:\s+(?:di|pada|untuk|bisa|aman|itu|ini|sudah|terdaftar|kelas|kosong)|\?|,|\.|$)/i);
     if (pat && pat[1]) {
-      const noise = ['saya', 'kami', 'kita', 'ini', 'itu', 'baru', 'umkm', 'kelas', 'biaya', 'harga', 'tolak', 'ditolak'];
       const cleaned = pat[1].trim();
-      if (!noise.includes(cleaned.toLowerCase()) && cleaned.length >= 2) return cleaned;
+      if (!noise.has(cleaned.toLowerCase()) && cleaned.length >= 2) return cleaned;
     }
     if (trademarkContext && /\b(merek ini|merek tersebut|nama ini|nama itu|risikonya)\b/i.test(lower)) {
       return trademarkContext;
@@ -1882,9 +1901,12 @@
   function generateAiAssistantReply(userMessage, trademarkContext) {
     const q = (userMessage || '').toLowerCase();
     const candidateBrand = extractLocalChatBrand(userMessage, trademarkContext);
-    const isLegalRejection = /\b(ditolak|penolakan|sanggahan|usulan penolakan|oposisi|brm|pasal 20|pasal 21|pasal 24|banding)\b/i.test(q);
-    const isFee = /\b(biaya|harga|tarif|umkm|pnbp|syarat|dokumen)\b/i.test(q);
-    const isTimeline = /\b(lama|proses|berapa bulan|sertifikat|alur|tahapan)\b/i.test(q);
+    const isHowToRegister = /\b(gimana\s+(?:mau\s+|cara\s+)?daftar|bagaimana\s+(?:cara\s+)?(?:daftar|mendaftar)|cara\s+(?:daftar|mendaftar|pendaftaran|order|pesan)|mau\s+daftar|ingin\s+daftar|langkah\s+(?:daftar|pendaftaran)|alur\s+pendaftaran|prosedur\s+pendaftaran|daftar\s+merek\s+gimana|daftarnya\s+gimana)\b/i.test(q);
+    const isFee = /\b(biaya|biayanya|harga|harganya|tarif|ongkos|bayar|pnbp|berapa\s+biaya|berapa\s+harga|paket\s+harga|pricelist)\b/i.test(q);
+    const isRequirements = /\b(syarat|syaratnya|persyaratan|dokumen|berkas|lampiran|butuh\s+apa\s+saja)\b/i.test(q);
+    const isLegalRejection = /\b(ditolak|penolakan|sanggahan|usulan penolakan|oposisi|brm|pasal 20|pasal 21|pasal 24|banding|keberatan)\b/i.test(q);
+    const isOtherServices = /\b(perpanjang|perpanjangan|expired|masa\s+berlaku|pengalihan|balik\s+nama|akuisisi|lisensi|waralaba|franchise|royalti|hak\s+cipta|copyright)\b/i.test(q);
+    const isTimeline = /\b(berapa\s+lama|lama\s+proses|durasi|kapan\s+terbit|tahapan)\b/i.test(q);
 
     if (candidateBrand) {
       const checkRes = searchPdkiDirectory(candidateBrand, {});
@@ -1901,8 +1923,25 @@
       return `✅ **BELUM TERDETEKSI KONFLIK PADA CACHE LOKAL UNTUK "${candidateBrand.toUpperCase()}"**\n\nPastikan verifikasi *real-time* via halaman **Cek Merek** atau klik **Handover ke Spesialis →** agar konsultan kami mengunci Tanggal Penerimaan (*Filing Date*) sesuai asas **First-to-File**.`;
     }
 
+    if (isHowToRegister && !(isFee && !/\b(gimana|cara|langkah|alur|prosedur)\b/i.test(q))) {
+      return `📝 **Panduan Cara Daftar Merek di BrandConnect (4 Langkah Praktis)**\n\n1. **Cek Ketersediaan & Kelas Merek**: Telusuri nama merek Anda di halaman **Cek Merek** atau ketik *"Cek merek [Nama Merek Anda]"*.\n2. **Siapkan Berkas Persyaratan**: KTP Pemohon, NPWP (bila ada), Etiket Logo (JPG/PNG), & Tanda Tangan (+ Surat Keterangan UMKM untuk tarif UMKM atau Akta/NIB untuk PT/CV).\n3. **Pilih Layanan & Buat Pesanan**: Klik tombol **Handover ke Spesialis →** atau buka menu **Layanan** (UMKM ${formatIDR(state.services[0].umkmPrice)}/kelas atau Umum ${formatIDR(state.services[0].basePrice)}/kelas).\n4. **E-Filing Resmi DJKI (1–3 Hari Kerja)**: Tim kami mengurus pengajuan resmi hingga terbit *Filing Date* dan memantau proses BRM sampai sertifikat terbit.`;
+    }
+
+    if (isFee) {
+      const s = state.services;
+      return `💳 **Daftar Biaya Resmi Layanan Merek & HAKI BrandConnect**\n• **Pendaftaran Merek Baru**: **${formatIDR(s[0].umkmPrice)}** *(UMKM)* | **${formatIDR(s[0].basePrice)}** *(Umum/PT)* — *all-in termasuk PNBP DJKI*\n• **Perpanjangan Merek (10 Tahun)**: **${formatIDR(s[1].umkmPrice)}** *(UMKM)* | **${formatIDR(s[1].basePrice)}** *(Umum)*\n• **Tanggapan Usulan Penolakan**: **${formatIDR(s[5].umkmPrice)}** *(UMKM)* | **${formatIDR(s[5].basePrice)}** *(Umum)*\n• **Pengajuan Oposisi BRM**: **${formatIDR(s[4].basePrice)}**\n• **Pengalihan Hak / Lisensi Merek**: **${formatIDR(s[2].basePrice)} – ${formatIDR(s[3].basePrice)}**\n• **Pencatatan Hak Cipta Logo**: **${formatIDR(s[6].umkmPrice)}** *(UMKM)* | **${formatIDR(s[6].basePrice)}** *(Umum)*\n• **Konsultasi Hukum (60 Menit)**: **${formatIDR(s[7].umkmPrice)}** *(UMKM)* | **${formatIDR(s[7].basePrice)}** *(Umum)*\n\nKlik **Handover ke Spesialis →** untuk estimasi sesuai jumlah kelas usaha Anda.`;
+    }
+
+    if (isRequirements) {
+      return `📂 **Syarat & Dokumen Pendaftaran Merek DJKI**\n1. **Jalur UMKM**: KTP Pemilik, Etiket Logo (JPG/PNG), Tanda Tangan di kertas putih, & Surat Keterangan/Rekomendasi UMKM dari Dinas terkait.\n2. **Jalur Umum — Perorangan**: KTP, NPWP, Etiket Logo, & Tanda Tangan Pemohon.\n3. **Jalur Umum — Badan Usaha (PT/CV)**: Akta Pendirian + SK Kemenkumham, NIB & NPWP Perusahaan, KTP & Tanda Tangan Direktur + Stempel.\n\nSeluruh pengecekan berkas dibantu oleh tim BrandConnect. Klik **Handover ke Spesialis →** untuk memulai.`;
+    }
+
     if (isLegalRejection) {
       return `⚖️ **Panduan Hukum Penolakan & Sanggahan Merek (UU No. 20/2016)**\n1. **Pasal 20 (Alasan Absolut)**: Ditolak jika tidak berdaya pembeda, generik, atau sekadar mendeskripsikan barang/jasa.\n2. **Pasal 21 (Alasan Relatif)**: Ditolak jika mirip pada pokoknya/keseluruhannya dengan merek terdaftar lebih dulu atau merek terkenal.\n3. **Usulan Penolakan (Pasal 24)**: Anda punya waktu **maksimal 30 hari kerja** untuk mengajukan **Surat Tanggapan / Sanggahan Resmi**.\n4. **Oposisi BRM (Pasal 14 & 16)**: Masa pengumuman 2 bulan untuk mengajukan keberatan bila ada pihak lain meniru merek Anda.\n\nKlik **Handover ke Spesialis →** agar tim Legal BrandConnect menyusun sanggahan untuk Anda.`;
+    }
+
+    if (isOtherServices) {
+      return `🛡️ **Layanan Lanjutan Merek & Hak Cipta (DJKI)**\n1. **Perpanjangan Merek (Pasal 35)**: Berlaku 10 tahun dan dapat diperpanjang mulai 6 bulan sebelum hingga 6 bulan setelah masa berlaku habis.\n2. **Pengalihan Hak / Lisensi**: Pencatatan balik nama atau kontrak waralaba/franchise resmi di DJKI.\n3. **Pencatatan Hak Cipta Logo**: Perlindungan e-HakCipta dalam 1–3 hari kerja.\n\nKlik **Handover ke Spesialis →** untuk bantuan lebih lanjut.`;
     }
 
     if (q.includes('kelas') || q.includes('nice') || q.includes('kopi') || q.includes('skincare') || q.includes('baju') || q.includes('toko') || q.includes('restoran') || q.includes('software') || q.includes('jualan') || q.includes('produk')) {
@@ -1911,16 +1950,11 @@
       return `📋 **Rekomendasi Klasifikasi Nice (DJKI RI)**\n\nBerikut kelas merek yang relevan dengan pertanyaan Anda:\n\n${listStr}\n\n*Catatan Hukum:* Hak eksklusif merek hanya berlaku di kelas yang didaftarkan. Kombinasikan kelas barang utama dengan **Kelas 35** (jasa toko/ritel) bila menjual langsung ke konsumen.`;
     }
 
-    if (isFee) {
-      const regSrv = state.services[0];
-      return `💳 **Estimasi Biaya & Syarat Pendaftaran Merek**\n• **Jalur UMKM (Subsidi)**: ${formatIDR(regSrv.umkmPrice)} *(syarat KTP, Etiket Logo & Surat Keterangan UMKM)*\n• **Jalur Umum / Perusahaan**: ${formatIDR(regSrv.basePrice)}\n• **Tanggapan Usulan Penolakan**: Mulai ${formatIDR(state.services[5].umkmPrice)}\n• **Perpanjangan 10 Tahun**: Mulai ${formatIDR(state.services[1].umkmPrice)}\n\nKetik nama merek Anda di sini untuk cek ketersediaan terlebih dahulu!`;
-    }
-
     if (isTimeline) {
       return `⏱️ **Alur & Durasi Resmi DJKI (UU No. 20/2016)**\n1. **Filing Date**: 1–3 hari kerja setelah berkas lengkap.\n2. **Pemeriksaan Formalitas**: ±15 hari kerja.\n3. **Pengumuman BRM**: 2 bulan.\n4. **Pemeriksaan Substantif & Sertifikat**: ±150 hari kerja (total estimasi ±6–12 bulan di DJKI).`;
     }
 
-    return `Halo! Saya **BrandConnect AI Assistant**. Anda bisa langsung menanyakan:\n• **Cek Merek**: *"Cek merek Kahf"* atau *"Apakah merek Kopi Awan aman?"*\n• **Kelas Nice**: *"Saya jualan skincare dan buka klinik, masuk kelas berapa?"*\n• **Hukum & Penolakan**: *"Merek saya kena usulan penolakan, gimana solusinya?"*\n• **Biaya UMKM**: *"Berapa biaya daftar merek UMKM?"*`;
+    return `Halo! Saya **BrandConnect AI Assistant**. Anda bisa langsung menanyakan:\n• **Cara Daftar**: *"Gimana mau daftar merek?"* atau *"Apa saja syarat dokumen?"*\n• **Biaya Layanan**: *"Berapa biaya daftar merek UMKM?"*\n• **Kelas Nice**: *"Bagaimana cara menentukan kelas merek?"*\n• **Cek Merek**: *"Cek merek [Nama Merek Anda]"*`;
   }
 
   // 4. Create Service Order & Case
@@ -2062,17 +2096,17 @@
 
           <div id="bc-ai-chat-messages" style="padding:1rem;height:290px;overflow-y:auto;display:flex;flex-direction:column;gap:0.75rem;background:var(--ivory-elevated);font-size:0.84rem;line-height:1.55;">
             <div style="background:#FFF;border:1px solid var(--border-sketch-strong);padding:0.75rem 0.9rem;border-radius:4px;">
-              <strong style="color:var(--green);display:block;font-size:0.74rem;font-family:var(--font-mono);margin-bottom:0.25rem;">AI TRADEMARK ASSISTANT // LIVE DJKI</strong>
-              Halo! Saya asisten hukum merek BrandConnect yang terhubung langsung ke pangkalan data <strong>DJKI RI</strong>. Ketik nama merek untuk cek konflik, tanyakan rekomendasi <strong>Kelas Nice (1–45)</strong>, solusi penolakan <strong>Pasal 20/21/24</strong>, atau biaya UMKM.
+              <strong style="color:var(--green);display:block;font-size:0.74rem;font-family:var(--font-mono);margin-bottom:0.25rem;">AI TRADEMARK ASSISTANT // LIVE DJKI &amp; FAQ</strong>
+              Halo! Saya asisten hukum merek BrandConnect yang terhubung ke pangkalan data <strong>DJKI RI</strong> dan pusat FAQ. Tanyakan seputar <strong>cara pendaftaran, biaya &amp; paket layanan, syarat dokumen, rekomendasi Kelas Nice (1–45), solusi penolakan</strong>, atau cek ketersediaan nama merek Anda.
             </div>
           </div>
 
           <div id="bc-ai-quick-chips" style="padding:0.45rem 0.75rem;background:#F7F6F0;border-top:1px solid var(--border-sketch);display:flex;gap:0.35rem;overflow-x:auto;white-space:nowrap;">
-            <button type="button" class="bc-chat-chip" data-q="Cek merek Kahf" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Cek merek Kahf</button>
-            <button type="button" class="bc-chat-chip" data-q="Daftar MS Glow di kelas 3?" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Daftar MS Glow di kelas 3?</button>
-            <button type="button" class="bc-chat-chip" data-q="Kelas untuk bisnis kopi" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Kelas untuk bisnis kopi</button>
-            <button type="button" class="bc-chat-chip" data-q="Solusi usulan penolakan" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Solusi usulan penolakan</button>
-            <button type="button" class="bc-chat-chip" data-q="Biaya & syarat UMKM" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Biaya &amp; syarat UMKM</button>
+            <button type="button" class="bc-chat-chip" data-q="Gimana cara daftar merek?" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Gimana cara daftar?</button>
+            <button type="button" class="bc-chat-chip" data-q="Berapa biaya pendaftaran merek?" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Berapa biaya daftar?</button>
+            <button type="button" class="bc-chat-chip" data-q="Apa saja syarat dokumen pendaftaran merek?" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Syarat dokumen</button>
+            <button type="button" class="bc-chat-chip" data-q="Bagaimana cara menentukan kelas merek?" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Pilih kelas merek</button>
+            <button type="button" class="bc-chat-chip" data-q="Bagaimana solusi jika merek terkena usulan penolakan?" style="background:#FFF;border:1px solid #D5D3CA;border-radius:999px;padding:0.25rem 0.6rem;font-size:0.7rem;font-weight:600;color:#0D472B;cursor:pointer;flex-shrink:0;">Solusi merek ditolak</button>
           </div>
 
           <div style="padding:0.5rem 0.85rem;background:rgba(49,91,76,0.08);border-top:1px solid var(--border-sketch);display:flex;justify-content:space-between;align-items:center;gap:0.5rem;">
