@@ -79,6 +79,7 @@ module.exports = async (req, res) => {
 
   const sourcesConsulted = [];
   const itemsMap = new Map();
+  const phoneticVariants = generatePhoneticQueryVariants(rawQuery);
 
   // 1. Fetch from Collection Engine VPS
   try {
@@ -106,7 +107,6 @@ module.exports = async (req, res) => {
     }
 
     // Variasi Fonetik & Kemiripan Ejaan (misal "sarimie" -> "sarimi")
-    const phoneticVariants = generatePhoneticQueryVariants(rawQuery);
     for (const v of phoneticVariants) {
       if (!searchQueries.includes(v)) searchQueries.push(v);
     }
