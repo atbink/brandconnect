@@ -1110,11 +1110,63 @@
   }
 
   async function fetchLivePdkiApi(rawQuery) {
-    const apiKey = getPdkiApiKey();
     const clean = (rawQuery || '').trim();
     const lower = clean.toLowerCase();
-    if (!apiKey || !clean) return null;
+    if (!clean) return null;
     if (LIVE_PDKI_CACHE[lower]) return LIVE_PDKI_CACHE[lower];
+
+    // 1. Primary: Query Vercel Serverless Dual-Source Search API (VPS Collection Engine + APIIndonesia)
+    try {
+      const resp = await fetch(`/api/search?q=${encodeURIComponent(clean)}`);
+      if (resp.ok) {
+        const json = await resp.json();
+        if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
+          const mappedItems = json.data.map((r) => {
+            const brand = String(r.brand || clean).toUpperCase();
+            const niceClass = String(r.niceClass || '35');
+            const appNo = String(r.appNo || '-');
+            const owner = String(r.owner || 'Pemohon Terdaftar (DJKI)').trim();
+            const statusLabel = r.status || '(TM) DIDAFTAR';
+            const statusKey = r.statusKey || 'didaftar';
+            const similarityPct = computeBrandSimilarity(brand, clean);
+            const imgUrl = r.logoUrl || '';
+            const etiquetteSvg = imgUrl
+              ? `<img src="${imgUrl}" alt="${brand}" style="max-width:100%;max-height:100%;object-fit:contain;" />`
+              : getOfficialBrandEtiquette(brand, appNo);
+
+            return {
+              brand,
+              niceClass,
+              appNo,
+              owner,
+              status: statusLabel,
+              statusKey,
+              similarityPct,
+              etiquetteSvg,
+              regDate: r.regDate || '-',
+              source: r.source || 'collection_engine'
+            };
+          });
+
+          mappedItems.sort((a, b) => b.similarityPct - a.similarityPct);
+
+          const resultObj = {
+            totalFound: json.total || mappedItems.length,
+            items: mappedItems,
+            fromLiveApi: true,
+            sourcesConsulted: json.sources_consulted || []
+          };
+          LIVE_PDKI_CACHE[lower] = resultObj;
+          return resultObj;
+        }
+      }
+    } catch (apiErr) {
+      console.warn('Backend search API failed, falling back:', apiErr.message);
+    }
+
+    // 2. Fallback to client-side API Indonesia if user has configured custom apiKey
+    const apiKey = getPdkiApiKey();
+    if (!apiKey) return null;
 
     const queryEndpoint = async (q) => {
       try {
@@ -3111,9 +3163,9 @@
 
     rerender();
 
-    // If API key is configured and query is not yet cached, automatically fetch live data!
+    // Automatically fetch live data from Dual-Source VPS / API!
     const qTarget = (rawQuery || logoMeta?.inferredBrand || '').trim();
-    if (getPdkiApiKey() && qTarget && !LIVE_PDKI_CACHE[qTarget.toLowerCase()]) {
+    if (qTarget && !LIVE_PDKI_CACHE[qTarget.toLowerCase()]) {
       fetchLivePdkiApi(qTarget)
         .then(() => rerender())
         .catch((err) => rerender(`Info Live API: ${err.message}`));
