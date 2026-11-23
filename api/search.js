@@ -1,4 +1,55 @@
 // Vercel Serverless Function: Dual-Source Trademark Search (Collection Engine VPS + APIIndonesia)
+
+/**
+ * Menghasilkan variasi fonetik dan ejaan umum merek di Indonesia.
+ * Mendukung variasi 'mie' <-> 'mi' (Sarimi/Sarimie, Indomie/Indomi, Bakmi/Bakmie),
+ * kopi <-> coffee, kafe <-> cafe, pengurangan vokal rangkap (ee -> i, oo -> u, oe -> u),
+ * konsonan serapan (ph -> f, ck -> k, sy/sh -> s), dan typo 1 huruf di akhir kata.
+ */
+function generatePhoneticQueryVariants(raw) {
+  if (!raw) return [];
+  const q = raw.toLowerCase().trim();
+  const variants = new Set();
+
+  // 1. Mie <-> Mi (Sarimi/Sarimie, Indomie/Indomi, Bakmi/Bakmie, Supermi/Supermie)
+  if (/mie\b/i.test(q)) variants.add(q.replace(/mie\b/gi, 'mi'));
+  if (/mi\b/i.test(q) && !/mie\b/i.test(q)) variants.add(q.replace(/mi\b/gi, 'mie'));
+  if (q.includes('mie')) variants.add(q.replace(/mie/g, 'mi'));
+  if (q.includes('mi') && !q.includes('mie')) variants.add(q.replace(/mi/g, 'mie'));
+
+  // 2. Coffe / Coffee / Kopi
+  if (q.includes('coffe') || q.includes('coffee') || q.includes('kopi')) {
+    variants.add(q.replace(/coffe(e)?/g, 'kopi'));
+    variants.add(q.replace(/kopi/g, 'coffee'));
+    variants.add(q.replace(/coffe\b/g, 'coffee'));
+  }
+
+  // 3. Cafe / Kafe
+  if (q.includes('cafe')) variants.add(q.replace(/cafe/g, 'kafe'));
+  if (q.includes('kafe')) variants.add(q.replace(/kafe/g, 'cafe'));
+
+  // 4. Double vowel reductions: ee -> i, oo -> u, oe -> u
+  if (q.includes('ee')) variants.add(q.replace(/ee/g, 'i'));
+  if (q.includes('oo')) variants.add(q.replace(/oo/g, 'u'));
+  if (q.includes('oe')) variants.add(q.replace(/oe/g, 'u'));
+
+  // 5. Consonants: ph -> f, v -> f, ck -> k, sh/sy -> s, dj -> j, tj -> c
+  if (q.includes('ph')) variants.add(q.replace(/ph/g, 'f'));
+  if (q.includes('ck')) variants.add(q.replace(/ck/g, 'k'));
+  if (q.includes('sy')) variants.add(q.replace(/sy/g, 's'));
+  if (q.includes('sh')) variants.add(q.replace(/sh/g, 's'));
+  if (q.includes('dj')) variants.add(q.replace(/dj/g, 'j'));
+  if (q.includes('tj')) variants.add(q.replace(/tj/g, 'c'));
+
+  // 6. Typo 1 huruf di akhir kata (misal sarimie -> sarimi)
+  if (q.length > 4 && q.endsWith('e') && !q.endsWith('ee')) {
+    variants.add(q.slice(0, -1));
+  }
+
+  variants.delete(q);
+  return Array.from(variants);
+}
+
 module.exports = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -52,6 +103,12 @@ module.exports = async (req, res) => {
       if (!searchQueries.includes(w)) searchQueries.push(w);
       const wNoS = w.replace(/s\b/gi, '');
       if (wNoS.length >= 3 && !searchQueries.includes(wNoS)) searchQueries.push(wNoS);
+    }
+
+    // Variasi Fonetik & Kemiripan Ejaan (misal "sarimie" -> "sarimi")
+    const phoneticVariants = generatePhoneticQueryVariants(rawQuery);
+    for (const v of phoneticVariants) {
+      if (!searchQueries.includes(v)) searchQueries.push(v);
     }
 
     for (const qTerm of searchQueries) {
@@ -141,6 +198,11 @@ module.exports = async (req, res) => {
         extTerms.push(strippedS);
       }
 
+      // Variasi Fonetik & Kemiripan Ejaan untuk API Eksternal
+      for (const v of phoneticVariants) {
+        if (!extTerms.includes(v)) extTerms.push(v);
+      }
+
       for (const term of extTerms) {
         if (itemsMap.size >= 15) break;
 
@@ -207,9 +269,36 @@ module.exports = async (req, res) => {
 
   const items = Array.from(itemsMap.values());
 
+  // Deteksi apakah hasil ditemukan melalui variasi fonetik
+  const rawLower = rawQuery.toLowerCase();
+  const directMatch = items.some((it) => {
+    const b = (it.brand || '').toLowerCase();
+    return b.includes(rawLower) || rawLower.includes(b);
+  });
+
+  let suggestedQuery = null;
+  if (!directMatch && items.length > 0 && phoneticVariants.length > 0) {
+    for (const v of phoneticVariants) {
+      const vLower = v.toLowerCase();
+      const matched = items.some((it) => {
+        const b = (it.brand || '').toLowerCase();
+        return b.includes(vLower) || vLower.includes(b);
+      });
+      if (matched) {
+        suggestedQuery = v.toUpperCase();
+        break;
+      }
+    }
+    if (!suggestedQuery && items[0]) {
+      suggestedQuery = items[0].brand;
+    }
+  }
+
   return res.status(200).json({
     success: true,
     query: rawQuery,
+    suggested_query: suggestedQuery,
+    is_phonetic_match: Boolean(suggestedQuery),
     source_mode: sourceMode,
     sources_consulted: sourcesConsulted,
     total: items.length,

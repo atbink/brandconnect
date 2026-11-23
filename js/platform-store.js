@@ -1166,6 +1166,8 @@
             totalFound: json.total || mappedItems.length,
             items: mappedItems,
             fromLiveApi: true,
+            suggestedQuery: json.suggested_query || null,
+            isPhoneticMatch: Boolean(json.is_phonetic_match),
             sourcesConsulted: json.sources_consulted || []
           };
           LIVE_PDKI_CACHE[lower] = resultObj;
@@ -1319,11 +1321,15 @@
     let totalFound = 0;
     let isUnindexedQuery = false;
     let fromLiveApi = false;
+    let suggestedQuery = null;
+    let isPhoneticMatch = false;
 
     if (liveCached) {
       items = liveCached.items.map((it) => Object.assign({}, it));
       totalFound = liveCached.totalFound;
       fromLiveApi = true;
+      suggestedQuery = liveCached.suggestedQuery || null;
+      isPhoneticMatch = Boolean(liveCached.isPhoneticMatch);
     } else if (matchedCluster) {
       items = matchedCluster.items.map((it) => Object.assign({}, it));
       totalFound = matchedCluster.totalFound;
@@ -1347,7 +1353,9 @@
       totalFound: fStatus.length || fClass || fOwner ? filtered.length : totalFound,
       items: filtered,
       isUnindexedQuery,
-      fromLiveApi
+      fromLiveApi,
+      suggestedQuery,
+      isPhoneticMatch
     };
   }
 
@@ -3061,7 +3069,24 @@
       (c) => `<option value="${parseInt(c.num, 10)}" ${String(filters?.niceClass) === String(parseInt(c.num, 10)) ? 'selected' : ''}>Kelas ${parseInt(c.num, 10)} — ${c.title.slice(0, 28)}...</option>`
     ).join('');
 
-    let rightCardsHtml = '';
+    let suggestionBannerHtml = '';
+    if (res.suggestedQuery && res.suggestedQuery.toLowerCase() !== qDisplay) {
+      suggestionBannerHtml = `
+        <div style="background:#FFFBEB;border:1.5px solid #FCD34D;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:flex-start;gap:0.85rem;color:#92400E;box-shadow:0 2px 8px rgba(245,158,11,0.08);">
+          <div style="font-size:1.4rem;line-height:1;margin-top:2px;">💡</div>
+          <div style="flex:1;">
+            <div style="font-weight:800;font-size:0.88rem;color:#78350F;margin-bottom:3px;">
+              Saran Cerdas Fonetik &amp; Ejaan Terdaftar:
+            </div>
+            <div style="font-size:0.84rem;color:#92400E;line-height:1.5;">
+              Tidak ada merek terdaftar dengan ejaan persis "<strong>${qDisplay.toUpperCase()}</strong>". Sistem otomatis menampilkan <strong>${res.totalFound} merek resmi DJKI</strong> yang memiliki <strong>persamaan bunyi pengucapan (fonetik)</strong> dengan kata kunci "<strong>${res.suggestedQuery}</strong>".
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    let rightCardsHtml = suggestionBannerHtml;
     visibleItems.forEach((item, idx) => {
       rightCardsHtml += renderPdkiCardItem(item);
       // Insert the BrandConnect signature CTA banner after the 2nd item
