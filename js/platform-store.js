@@ -2935,7 +2935,7 @@
     `;
   }
 
-  function renderPdkiDirectoryHtml(rawQuery, filters, logoMeta, isUnlocked) {
+  function renderPdkiDirectoryHtml(rawQuery, filters, logoMeta, isUnlocked, isLoading = false) {
     const res = searchPdkiDirectory(rawQuery, filters, logoMeta);
     const qDisplay = (res.query || 'MEREK').toLowerCase();
     const visibleItems = isUnlocked ? res.items : res.items.slice(0, 3);
@@ -3073,12 +3073,18 @@
 
           <!-- RIGHT COLUMN: PDKI SEARCH RESULTS LIST -->
           <div>
+            <style>
+              @keyframes bcSpin { to { transform: rotate(360deg); } }
+              @keyframes bcIndeterminate { 0% { left: -40%; width: 30%; } 50% { left: 40%; width: 50%; } 100% { left: 100%; width: 30%; } }
+            </style>
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.15rem;padding-bottom:0.85rem;border-bottom:1px solid var(--bc-card-border);">
               <div style="font-family:var(--font-heading);font-size:0.95rem;color:var(--bc-text-dark);">
                 ${
-                  res.totalFound === 0 || res.isUnindexedQuery
-                    ? `Hasil Penelusuran untuk <strong style="color:var(--bc-green);">"${qDisplay}"</strong>`
-                    : `Menampilkan <strong>1-${visibleItems.length}</strong> dari <strong style="color:var(--bc-green);">${res.totalFound} Merek</strong> untuk <strong>"${qDisplay}"</strong>`
+                  isLoading
+                    ? `Sedang Menelusuri Pangkalan Data DJKI untuk <strong style="color:var(--bc-green);">"${qDisplay}"</strong>...`
+                    : (res.totalFound === 0 || res.isUnindexedQuery
+                        ? `Hasil Penelusuran untuk <strong style="color:var(--bc-green);">"${qDisplay}"</strong>`
+                        : `Menampilkan <strong>1-${visibleItems.length}</strong> dari <strong style="color:var(--bc-green);">${res.totalFound} Merek</strong> untuk <strong>"${qDisplay}"</strong>`)
                 }
               </div>
               <span style="font-family:var(--font-mono);font-size:0.72rem;padding:4px 12px;border-radius:9999px;background:var(--bc-green-mint);color:var(--bc-green);font-weight:700;border:1px solid rgba(13,59,46,0.12);">
@@ -3088,8 +3094,23 @@
 
             <div>
               ${
-                res.totalFound === 0 || res.isUnindexedQuery
+                isLoading
                   ? `
+                <div class="bc-pdki-loading-container" style="padding:3.5rem 1.5rem;background:#FFFFFF;border:1px solid var(--bc-card-border);border-radius:14px;margin-top:0.5rem;text-align:center;box-shadow:0 2px 12px rgba(13,59,46,0.04);">
+                  <div style="display:inline-block;width:42px;height:42px;border:3px solid #E2E8F0;border-top-color:var(--bc-green);border-radius:50%;animation:bcSpin 0.75s linear infinite;margin-bottom:1.25rem;"></div>
+                  <h4 style="font-family:var(--font-heading);font-size:1.15rem;font-weight:800;color:var(--bc-text-dark);margin:0 0 0.45rem 0;">
+                    Menghubungkan ke Pangkalan Data DJKI...
+                  </h4>
+                  <p style="font-size:0.88rem;color:#64748B;line-height:1.5;max-width:480px;margin:0 auto 1.5rem auto;">
+                    Sedang mencari data merek, status hukum, dan logo resmi untuk "<strong>${qDisplay.toUpperCase()}</strong>"
+                  </p>
+                  <div style="max-width:280px;height:5px;background:#E2E8F0;border-radius:9999px;margin:0 auto;overflow:hidden;position:relative;">
+                    <div style="position:absolute;top:0;left:0;bottom:0;width:40%;background:linear-gradient(90deg, #A7F3D0, var(--bc-green), #A7F3D0);border-radius:9999px;animation:bcIndeterminate 1.2s infinite ease-in-out;"></div>
+                  </div>
+                </div>
+              `
+                  : (res.totalFound === 0 || res.isUnindexedQuery
+                      ? `
                 <div style="padding:2.5rem 1.5rem;background:#FAF8F5;border:1.5px dashed var(--bc-card-border);border-radius:14px;margin-top:0.85rem;text-align:center;">
                   <div style="font-size:2.2rem;margin-bottom:0.6rem;">🎉</div>
                   <h4 style="font-family:var(--font-heading);font-size:1.15rem;font-weight:800;color:var(--bc-text-dark);margin:0 0 0.45rem 0;">
@@ -3108,11 +3129,11 @@
                   </div>
                 </div>
               `
-                  : rightCardsHtml || '<div style="padding:2rem;text-align:center;color:#64748B;">Tidak ada merek yang sesuai dengan filter yang dipilih.</div>'
+                      : rightCardsHtml || '<div style="padding:2rem;text-align:center;color:#64748B;">Tidak ada merek yang sesuai dengan filter yang dipilih.</div>')
               }
             </div>
 
-            ${blurredGateHtml}
+            ${isLoading ? '' : blurredGateHtml}
           </div>
         </div>
       </div>
@@ -3123,12 +3144,17 @@
     if (!containerEl) return;
     let currentFilters = { statuses: [], niceClass: 'all', owner: '' };
     let unlocked = false;
+    const qTarget = (rawQuery || logoMeta?.inferredBrand || '').trim();
+    const isCached = Boolean(qTarget && LIVE_PDKI_CACHE[qTarget.toLowerCase()]);
+    let isLoading = !isCached && Boolean(qTarget);
 
     const rerender = (liveErrMsg) => {
-      const logoPart = logoMeta ? renderVisualSimilarityHtml(logoMeta, compLogoMeta, rawQuery) : renderPdkiDirectoryHtml(rawQuery, currentFilters, null, unlocked);
+      const logoPart = logoMeta
+        ? renderVisualSimilarityHtml(logoMeta, compLogoMeta, rawQuery)
+        : renderPdkiDirectoryHtml(rawQuery, currentFilters, null, unlocked, isLoading);
       if (logoMeta) {
         const headerOnly = renderVisualSimilarityHtml(logoMeta, compLogoMeta, rawQuery).split('<div class="bc-pdki-explorer-root"')[0];
-        containerEl.innerHTML = headerOnly + renderPdkiDirectoryHtml(rawQuery || logoMeta.inferredBrand, currentFilters, logoMeta, unlocked);
+        containerEl.innerHTML = headerOnly + renderPdkiDirectoryHtml(rawQuery || logoMeta.inferredBrand, currentFilters, logoMeta, unlocked, isLoading);
       } else {
         containerEl.innerHTML = logoPart;
       }
@@ -3164,11 +3190,16 @@
     rerender();
 
     // Automatically fetch live data from Dual-Source VPS / API!
-    const qTarget = (rawQuery || logoMeta?.inferredBrand || '').trim();
     if (qTarget && !LIVE_PDKI_CACHE[qTarget.toLowerCase()]) {
       fetchLivePdkiApi(qTarget)
-        .then(() => rerender())
-        .catch((err) => rerender(`Info Live API: ${err.message}`));
+        .then(() => {
+          isLoading = false;
+          rerender();
+        })
+        .catch((err) => {
+          isLoading = false;
+          rerender(`Info Live API: ${err.message}`);
+        });
     }
   }
 
