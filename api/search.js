@@ -31,15 +31,27 @@ module.exports = async (req, res) => {
 
   // 1. Fetch from Collection Engine VPS
   try {
-    // Generate query variants for tolerance (e.g. "barbers daily" -> "barber daily", "barber")
+    // Generate query variants for tolerance:
+    // - Compound words without space: "gym tiger" -> "gymtiger", "mc donald" -> "mcdonald"
+    // - Plurals / typos: "barbers daily" -> "barber daily"
+    // - Word tokens: "gym", "tiger"
     const searchQueries = [rawQuery];
-    const strippedS = rawQuery.replace(/s\b/gi, '').trim();
-    if (strippedS !== rawQuery && strippedS.length > 2) {
+
+    const noSpace = rawQuery.replace(/\s+/g, '').trim();
+    if (noSpace !== rawQuery && noSpace.length >= 3) {
+      searchQueries.push(noSpace);
+    }
+
+    const strippedS = rawQuery.replace(/s\b/gi, '').replace(/\s+/g, ' ').trim();
+    if (strippedS !== rawQuery && strippedS.length >= 3 && !searchQueries.includes(strippedS)) {
       searchQueries.push(strippedS);
     }
-    const firstWord = rawQuery.split(/\s+/)[0];
-    if (firstWord.length > 3 && !searchQueries.includes(firstWord)) {
-      searchQueries.push(firstWord);
+
+    const words = rawQuery.split(/\s+/).filter((w) => w.length >= 3);
+    for (const w of words) {
+      if (!searchQueries.includes(w)) searchQueries.push(w);
+      const wNoS = w.replace(/s\b/gi, '');
+      if (wNoS.length >= 3 && !searchQueries.includes(wNoS)) searchQueries.push(wNoS);
     }
 
     for (const qTerm of searchQueries) {
@@ -107,8 +119,12 @@ module.exports = async (req, res) => {
   if (shouldCallExternal && API_INDONESIA_KEY) {
     try {
       const extTerms = [rawQuery];
+      const extNoSpace = rawQuery.replace(/\s+/g, '').trim();
+      if (extNoSpace !== rawQuery && extNoSpace.length >= 3) {
+        extTerms.push(extNoSpace);
+      }
       const strippedS = rawQuery.replace(/s\b/gi, '').trim();
-      if (strippedS !== rawQuery && strippedS.length > 2) {
+      if (strippedS !== rawQuery && strippedS.length > 2 && !extTerms.includes(strippedS)) {
         extTerms.push(strippedS);
       }
 

@@ -1468,15 +1468,24 @@
 
       function renderAnalysisResults(q, djki, ai) {
         const lower = q.toLowerCase().trim();
+        const lowerNoSpace = lower.replace(/\s+/g, '');
         const items = (djki && Array.isArray(djki.items)) ? djki.items : [];
         const totalFound = djki?.totalFound || items.length;
 
         // Comprehensive conflict check across all search results + AI Vision shape conflicts
-        const exactMatchItem = items.find(it => (it.brand || '').toLowerCase().trim() === lower);
+        const exactMatchItem = items.find(it => {
+          const bLower = (it.brand || '').toLowerCase().trim();
+          return bLower === lower || (lowerNoSpace.length >= 3 && bLower.replace(/\s+/g, '') === lowerNoSpace);
+        });
         const highSimItem = items.find(it => (it.similarityPct && it.similarityPct >= 70));
         const partialConflictItem = items.find(it => {
           const bLower = (it.brand || '').toLowerCase().trim();
-          return lower.length >= 3 && (bLower.includes(lower) || lower.includes(bLower));
+          const bNoSpace = bLower.replace(/\s+/g, '');
+          return lower.length >= 3 && (
+            bLower.includes(lower) ||
+            lower.includes(bLower) ||
+            (bNoSpace.length >= 3 && (bNoSpace.includes(lowerNoSpace) || lowerNoSpace.includes(bNoSpace)))
+          );
         });
 
         const conflictItem = exactMatchItem || highSimItem || partialConflictItem || (items.length > 0 && totalFound > 0 ? items[0] : null);

@@ -1007,6 +1007,7 @@
     const b = (strB || '').toLowerCase().trim();
     if (!a || !b) return 60;
     if (a === b) return 100;
+    if (a.replace(/\s+/g, '') === b.replace(/\s+/g, '')) return 99;
     if (a.replace(/(.)\1+/g, '$1') === b.replace(/(.)\1+/g, '$1')) return 96;
     if (a.includes(b) || b.includes(a)) return 92;
 
