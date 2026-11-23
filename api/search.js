@@ -31,48 +31,67 @@ module.exports = async (req, res) => {
 
   // 1. Fetch from Collection Engine VPS
   try {
-    const vpsResp = await fetch(`${VPS_BASE_URL}/api/trademarks?q=${encodeURIComponent(rawQuery)}`, {
-      headers: {
-        'Authorization': `Bearer ${VPS_API_TOKEN}`,
-        'Accept': 'application/json'
-      },
-      signal: AbortSignal.timeout(5000)
-    });
+    // Generate query variants for tolerance (e.g. "barbers daily" -> "barber daily", "barber")
+    const searchQueries = [rawQuery];
+    const strippedS = rawQuery.replace(/s\b/gi, '').trim();
+    if (strippedS !== rawQuery && strippedS.length > 2) {
+      searchQueries.push(strippedS);
+    }
+    const firstWord = rawQuery.split(/\s+/)[0];
+    if (firstWord.length > 3 && !searchQueries.includes(firstWord)) {
+      searchQueries.push(firstWord);
+    }
 
-    if (vpsResp.ok) {
-      const vpsJson = await vpsResp.json();
-      const rawVpsData = Array.isArray(vpsJson.data) ? vpsJson.data : [];
-      if (rawVpsData.length > 0) {
-        sourcesConsulted.push('collection_engine');
-        for (const item of rawVpsData) {
-          const appNo = item.application_number || '';
-          let logoUrl = null;
-          if (item.primary_image && item.primary_image.file_path) {
-            logoUrl = `/api/logo?path=${encodeURIComponent(item.primary_image.file_path)}`;
-          } else if (item.primary_image && item.primary_image.url) {
-            logoUrl = item.primary_image.url.replace('http://127.0.0.1:8001', VPS_BASE_URL);
+    for (const qTerm of searchQueries) {
+      if (itemsMap.size >= 15) break;
+
+      const vpsResp = await fetch(`${VPS_BASE_URL}/api/trademarks?q=${encodeURIComponent(qTerm)}`, {
+        headers: {
+          'Authorization': `Bearer ${VPS_API_TOKEN}`,
+          'Accept': 'application/json'
+        },
+        signal: AbortSignal.timeout(5000)
+      });
+
+      if (vpsResp.ok) {
+        const vpsJson = await vpsResp.json();
+        const rawVpsData = Array.isArray(vpsJson.data) ? vpsJson.data : [];
+        if (rawVpsData.length > 0) {
+          if (!sourcesConsulted.includes('collection_engine')) {
+            sourcesConsulted.push('collection_engine');
           }
+          for (const item of rawVpsData) {
+            const appNo = item.application_number || '';
+            const key = appNo || `VPS_${item.id}`;
+            if (itemsMap.has(key)) continue;
 
-          const classList = Array.isArray(item.classes)
-            ? item.classes.map(c => String(c.class_number)).filter(Boolean)
-            : [];
-          const niceClassStr = classList.length > 0 ? classList.join(', ') : '35';
+            let logoUrl = null;
+            if (item.primary_image && item.primary_image.file_path) {
+              logoUrl = `/api/logo?path=${encodeURIComponent(item.primary_image.file_path)}`;
+            } else if (item.primary_image && item.primary_image.url) {
+              logoUrl = item.primary_image.url.replace('http://127.0.0.1:8001', VPS_BASE_URL);
+            }
 
-          const mapped = {
-            brand: (item.brand_name || rawQuery).toUpperCase(),
-            niceClass: niceClassStr,
-            appNo: appNo || '-',
-            owner: item.owner?.name || 'Pemohon Terdaftar (DJKI)',
-            ownerAddress: item.owner?.address || null,
-            status: item.status_text || '(TM) DIDAFTAR',
-            statusKey: item.status_key || 'didaftar',
-            regDate: item.registration?.application_date || item.registration?.registration_date || '-',
-            logoUrl: logoUrl,
-            source: 'collection_engine'
-          };
+            const classList = Array.isArray(item.classes)
+              ? item.classes.map(c => String(c.class_number)).filter(Boolean)
+              : [];
+            const niceClassStr = classList.length > 0 ? classList.join(', ') : '35';
 
-          const key = appNo || `VPS_${item.id}`;
-          itemsMap.set(key, mapped);
+            const mapped = {
+              brand: (item.brand_name || rawQuery).toUpperCase(),
+              niceClass: niceClassStr,
+              appNo: appNo || '-',
+              owner: item.owner?.name || 'Pemohon Terdaftar (DJKI)',
+              ownerAddress: item.owner?.address || null,
+              status: item.status_text || '(TM) DIDAFTAR',
+              statusKey: item.status_key || 'didaftar',
+              regDate: item.registration?.application_date || item.registration?.registration_date || '-',
+              logoUrl: logoUrl,
+              source: 'collection_engine'
+            };
+
+            itemsMap.set(key, mapped);
+          }
         }
       }
     }
@@ -87,55 +106,67 @@ module.exports = async (req, res) => {
 
   if (shouldCallExternal && API_INDONESIA_KEY) {
     try {
-      const extResp = await fetch(`https://use.apiindonesia.id/api/v1/merek/search?q=${encodeURIComponent(rawQuery)}&page=1&limit=15`, {
-        headers: {
-          'x-api-key': API_INDONESIA_KEY,
-          'Accept': 'application/json'
-        },
-        signal: AbortSignal.timeout(5000)
-      });
+      const extTerms = [rawQuery];
+      const strippedS = rawQuery.replace(/s\b/gi, '').trim();
+      if (strippedS !== rawQuery && strippedS.length > 2) {
+        extTerms.push(strippedS);
+      }
 
-      if (extResp.ok) {
-        const extJson = await extResp.json();
-        const rawExtData = Array.isArray(extJson.data) ? extJson.data : [];
-        if (rawExtData.length > 0) {
-          sourcesConsulted.push('api_indonesia');
-          for (const item of rawExtData) {
-            const appNo = String(item.app_number || item.nomor_permohonan || item.no_permohonan || '');
-            const key = appNo || `EXT_${item.id || Math.random()}`;
+      for (const term of extTerms) {
+        if (itemsMap.size >= 15) break;
 
-            // Do not overwrite Collection Engine records (Collection Engine has higher priority)
-            if (!itemsMap.has(key)) {
-              const brand = String(item.mark_name || item.nama_merek || item.name || rawQuery).toUpperCase();
-              const rawClass = String(item.class || item.kelas || '35').replace(/[^0-9, ]/g, '').trim() || '35';
-              const rawStatus = String(item.status || item.status_merek || '').toUpperCase();
+        const extResp = await fetch(`https://use.apiindonesia.id/api/v1/merek/search?q=${encodeURIComponent(term)}&page=1&limit=15`, {
+          headers: {
+            'x-api-key': API_INDONESIA_KEY,
+            'Accept': 'application/json'
+          },
+          signal: AbortSignal.timeout(5000)
+        });
 
-              let statusKey = 'didaftar';
-              let statusLabel = '(TM) DIDAFTAR';
-              if (rawStatus) {
-                if (rawStatus.includes('PROSES') || rawStatus.includes('PENGAJUAN') || rawStatus.includes('PENGUMUMAN')) {
-                  statusKey = 'dalam_proses';
-                  statusLabel = 'DALAM PROSES';
-                } else if (rawStatus.includes('TOLAK') || rawStatus.includes('DITOLAK')) {
-                  statusKey = 'ditolak';
-                  statusLabel = '(TM) DITOLAK';
-                } else if (rawStatus.includes('BERAKHIR') || rawStatus.includes('HAPUS')) {
-                  statusKey = 'berakhir';
-                  statusLabel = 'BERAKHIR';
+        if (extResp.ok) {
+          const extJson = await extResp.json();
+          const rawExtData = Array.isArray(extJson.data) ? extJson.data : [];
+          if (rawExtData.length > 0) {
+            if (!sourcesConsulted.includes('api_indonesia')) {
+              sourcesConsulted.push('api_indonesia');
+            }
+            for (const item of rawExtData) {
+              const appNo = String(item.app_number || item.nomor_permohonan || item.no_permohonan || '');
+              const key = appNo || `EXT_${item.id || Math.random()}`;
+
+              // Do not overwrite Collection Engine records (Collection Engine has higher priority)
+              if (!itemsMap.has(key)) {
+                const brand = String(item.mark_name || item.nama_merek || item.name || rawQuery).toUpperCase();
+                const rawClass = String(item.class || item.kelas || '35').replace(/[^0-9, ]/g, '').trim() || '35';
+                const rawStatus = String(item.status || item.status_merek || '').toUpperCase();
+
+                let statusKey = 'didaftar';
+                let statusLabel = '(TM) DIDAFTAR';
+                if (rawStatus) {
+                  if (rawStatus.includes('PROSES') || rawStatus.includes('PENGAJUAN') || rawStatus.includes('PENGUMUMAN')) {
+                    statusKey = 'dalam_proses';
+                    statusLabel = 'DALAM PROSES';
+                  } else if (rawStatus.includes('TOLAK') || rawStatus.includes('DITOLAK')) {
+                    statusKey = 'ditolak';
+                    statusLabel = '(TM) DITOLAK';
+                  } else if (rawStatus.includes('BERAKHIR') || rawStatus.includes('HAPUS')) {
+                    statusKey = 'berakhir';
+                    statusLabel = 'BERAKHIR';
+                  }
                 }
-              }
 
-              itemsMap.set(key, {
-                brand,
-                niceClass: rawClass,
-                appNo: appNo || '-',
-                owner: String(item.owner || item.pemilik || item.nama_pemilik || 'Pemohon Terdaftar (DJKI)').trim(),
-                status: statusLabel,
-                statusKey,
-                regDate: item.reg_date || item.tgl_permohonan || '-',
-                logoUrl: item.logo_url || item.image_url || null,
-                source: 'api_indonesia'
-              });
+                itemsMap.set(key, {
+                  brand,
+                  niceClass: rawClass,
+                  appNo: appNo || '-',
+                  owner: String(item.owner || item.pemilik || item.nama_pemilik || 'Pemohon Terdaftar (DJKI)').trim(),
+                  status: statusLabel,
+                  statusKey,
+                  regDate: item.reg_date || item.tgl_permohonan || '-',
+                  logoUrl: item.logo_url || item.image_url || null,
+                  source: 'api_indonesia'
+                });
+              }
             }
           }
         }
