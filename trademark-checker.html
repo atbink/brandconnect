@@ -2,6 +2,15 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
+  <script>
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    if (window.location.hash) {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+    window.scrollTo(0, 0);
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mulai Penelusuran Merek — BRANDCONNECT | Pangkalan Data Resmi DJKI &amp; Analisis AI</title>
   <meta name="description" content="Penelusuran merek resmi DJKI dan audit analisis AI BrandConnect: data merek terdaftar, status pendaftaran, klasifikasi Nice, etiket logo, dan estimasi risiko penolakan." />

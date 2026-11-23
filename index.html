@@ -2,6 +2,16 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
+  <script>
+    // Enforce scrolling to the very top upon refresh/load and clean any stuck anchor hash
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    if (window.location.hash) {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+    window.scrollTo(0, 0);
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BRANDCONNECT® - AI-Powered Trademark Search & Brand Protection Platform</title>
   <meta name="description" content="Lindungi merek kebanggaan Anda bersama BrandConnect. Pencarian merek dengan teknologi AI, cari kelas merek (Nice 1-45), monitoring merek DJKI, proteksi merek, dan pendaftaran merek resmi." />
@@ -578,22 +588,27 @@
       <div class="container">
         <div class="bc-class-hero-grid">
           <div>
-            <div class="bc-hero-eyebrow">KLASIFIKASI NICE (KELAS 1–45)</div>
+            <div class="bc-hero-eyebrow" style="background:rgba(13,59,46,0.08);color:var(--bc-green);display:inline-block;padding:4px 10px;border-radius:6px;font-weight:800;font-size:0.75rem;letter-spacing:0.04em;margin-bottom:8px;">
+              KAMUS KELAS MEREK (NICE 1–45)
+            </div>
             <h2 class="bc-hero-title">
-              Cari Kelas <span class="serif-accent">Merek Anda.</span>
+              Cari Nomor Kelas <span class="serif-accent">Produk/Jasa.</span>
             </h2>
             <p class="bc-hero-desc">
-              Temukan kelas pendaftaran yang sesuai dengan produk atau layanan bisnis Anda.
+              Temukan nomor kelas perlindungan yang tepat untuk produk atau layanan Anda. <em>(Untuk memeriksa keterdaftaran nama merek dagang, gunakan form di bagian atas).</em>
             </p>
 
             <form class="bc-hero-search-bar" onsubmit="event.preventDefault(); const q = this.querySelector('input').value.toLowerCase().trim(); document.querySelectorAll('#hp-classes-grid .bc-class-card').forEach(c => { c.style.display = (!q || c.textContent.toLowerCase().includes(q)) ? 'flex' : 'none'; });">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-              <input type="text" placeholder="Ketik jenis produk atau jasa (contoh: kopi, skincare, aplikasi)..." />
-              <button type="submit" class="bc-hero-search-btn">
-                <span>Cari Kelas</span>
+              <input type="text" placeholder="Ketik jenis barang/jasa (contoh: kopi, pakaian, software) untuk cari kelas..." />
+              <button type="submit" class="bc-hero-search-btn" style="background:#334155;">
+                <span>Cari Nomor Kelas</span>
                 <span>→</span>
               </button>
             </form>
+            <div style="font-size:0.78rem;color:#64748B;margin-top:8px;">
+              💡 <strong>Ingin mengecek ketersediaan nama merek?</strong> <a href="#cek-merek" style="color:var(--bc-green);font-weight:700;text-decoration:underline;">Gunakan fitur Cek Merek di atas ↑</a>
+            </div>
           </div>
 
           <div style="border-radius:18px;overflow:hidden;box-shadow:0 12px 32px rgba(13,59,46,0.06);">
@@ -1321,6 +1336,8 @@
   <script src="js/main.js?v=2.9"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // Always ensure fresh view starts at top on refresh
+      window.scrollTo(0, 0);
       const searchForm = document.getElementById('tm-search-form');
       const brandInput = document.getElementById('tm-brand-input');
       const queryDisplay = document.getElementById('hp-query-display');
