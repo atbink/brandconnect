@@ -2211,9 +2211,8 @@
             <button type="button" class="modal-close" data-bc-close-modal aria-label="Tutup">✕</button>
           </div>
           <div id="bc-rep-body" style="padding:1.5rem;max-height:70vh;overflow-y:auto;font-size:0.88rem;line-height:1.65;"></div>
-          <div style="padding:1rem 1.5rem;border-top:1px solid var(--border-sketch-strong);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;background:var(--ivory-elevated);">
-            <button type="button" class="btn btn-secondary btn-sm" id="bc-rep-print-btn">🖨️ Cetak / Simpan PDF</button>
-            <div style="display:flex;gap:0.65rem;">
+          <div style="padding:1rem 1.5rem;border-top:1px solid var(--border-sketch-strong);display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:0.75rem;background:var(--ivory-elevated);">
+            <div style="display:flex;gap:0.65rem;flex-wrap:wrap;">
               <button type="button" class="btn btn-secondary btn-sm" id="bc-rep-handover-btn">Konsultasikan Laporan Ini</button>
               <button type="button" class="btn btn-primary btn-sm" id="bc-rep-order-btn">Daftar Merek Ini Sekarang →</button>
             </div>
@@ -3375,7 +3374,8 @@
       </div>
     `;
 
-    document.getElementById('bc-rep-print-btn').onclick = () => window.print();
+    const repPrnBtn = document.getElementById('bc-rep-print-btn');
+    if (repPrnBtn) repPrnBtn.onclick = () => window.print();
     document.getElementById('bc-rep-handover-btn').onclick = () => {
       modal.classList.remove('active');
       openHandoverModal(log.trademarkName);
