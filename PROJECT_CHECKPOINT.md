@@ -128,20 +128,19 @@ Setelah tunnel aktif:
    - Idempotent upsert & multi-class verified.
    - Biner logo asli terverifikasi di VPS disk & database dengan hash SHA-256 dan ukuran byte yang cocok 100%.
 
-2. **Dual-Source Search di BrandConnect (SELESAI & TERUJI 100%):**
+2. **Dual-Source Search di BrandConnect & Live Vercel Integration (SELESAI & TERUJI 100%):**
    - **Tiga Mode Pencarian Aktif:**
      - `internal_only`: Hanya query Local DB & Collection Engine VPS. 0 kuota eksternal, privasi penuh.
      - `internal_priority`: Query internal dulu; jika ada match >= 1, tidak panggil API eksternal sama sekali. Fallback ke API eksternal jika hasil internal 0.
      - `hybrid`: Query internal & eksternal sekaligus, deduplikasi pada `application_number` dengan preferensi data lengkap (logo & 8 kategori) dari Collection Engine.
-   - **Dukungan Klien:**
-     - `CollectionEngineClient` di `E:\dev\BRANDCONNECT\backend\app\Services\Search\CollectionEngineClient.php`.
-     - `ApiIndonesiaClient` di `E:\dev\BRANDCONNECT\backend\app\Services\Search\ApiIndonesiaClient.php`.
-     - `SearchOrchestrator` di `E:\dev\BRANDCONNECT\backend\app\Services\Search\SearchOrchestrator.php`.
-     - Pengontrol `TrademarkSearchController` mendukung parameter `source_mode` dan header `X-Source-Mode`.
-   - **Hasil Pengujian PHPUnit:**
+   - **Vercel Serverless Integration Live:**
+     - `api/search.js`: Serverless dual-source endpoint di `https://brandconnect-virid.vercel.app/api/search`.
+     - `api/logo.js`: Secure HTTPS logo proxy yang menyajikan gambar asli dari VPS tanpa issue mixed-content.
+     - `js/platform-store.js`: `fetchLivePdkiApi()` otomatis memanggil `/api/search` tanpa butuh API key dari pengunjung.
+   - **Hasil Pengujian PHPUnit & Live Vercel:**
      - `tests/Feature/DualSourceTrademarkSearchTest.php`: **5/5 tests PASS (100%)**.
-     - `tests/Feature/TrademarkSearchApiTest.php`: **6/6 tests PASS (100%)**.
      - Full Backend Test Suite: **104/104 tests PASS (0 failures, 0 errors)**.
+     - Live Vercel Test: **Pencarian live di `https://brandconnect-virid.vercel.app` berhasil mengambil data merek & logo dari VPS Collection Engine (HTTP 200)**.
 
 ---
 
