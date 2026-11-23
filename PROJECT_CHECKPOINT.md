@@ -64,7 +64,8 @@ Proyek terdiri dari tiga subsistem terpisah dengan arsitektur standalone yang sa
 | **Database Schema** | VPS Ubuntu | **brandconnect_collection** | 8 tabel relasional termigrasi 100% via `php artisan migrate` |
 | **Framework** | VPS Ubuntu | **Laravel 13.43.0** | App key terpasang, environment `production` |
 | **BrandConnect Dev** | Local PC | **Untouched / Safe** | `E:\dev\BRANDCONNECT` dan database `brandconnect_dev` tidak mengalami perubahan |
-| **IntraBrowser Desktop** | Local PC | **Ready / Tested** | Client batch collection dengan connector API siap pakai |
+| **IntraBrowser Desktop** | Local PC | **Ready / Tested** | Client batch collection dengan target folder otomatis di `E:\BrandConnect-Trademarks` |
+| **Local Storage** | Drive E: | **E:\BrandConnect-Trademarks** | 62 file metadata & logo dipindahkan dari drive C: ke drive E: (drive C: telah dilegakan) |
 
 ---
 

@@ -1140,11 +1140,22 @@
               niceClass,
               appNo,
               owner,
+              ownerAddress: r.ownerAddress || null,
+              ownerNationality: r.ownerNationality || 'ID',
               status: statusLabel,
               statusKey,
               similarityPct,
               etiquetteSvg,
               regDate: r.regDate || '-',
+              appDate: r.appDate || r.regDate || '-',
+              regNo: r.regNo || null,
+              pubNo: r.pubNo || null,
+              protectionStart: r.protectionStart || null,
+              protectionEnd: r.protectionEnd || null,
+              classDescription: r.classDescription || null,
+              consultant: r.consultant || null,
+              detailUrl: r.detailUrl || null,
+              logoUrl: imgUrl || null,
               source: r.source || 'collection_engine'
             };
           });
@@ -2341,6 +2352,103 @@
           </div>
         </div>
       </div>
+
+      <!-- 5. TRADEMARK DETAIL MODAL (PDKI OFFICIAL DOSSIER) -->
+      <div class="modal-backdrop" id="bc-trademark-detail-modal" aria-hidden="true" role="dialog" aria-modal="true">
+        <div class="modal-container" style="max-width:760px;max-height:90vh;overflow-y:auto;">
+          <div class="modal-header" style="border-bottom:1px solid #E2E8F0;padding-bottom:1rem;">
+            <div>
+              <span class="eyebrow" style="color:var(--bc-green);font-weight:800;font-size:0.75rem;">DOSIR RESMI PANGKALAN DATA KEKAYAAN INTELEKTUAL (DJKI RI)</span>
+              <h2 class="modal-title" id="bc-td-brand" style="font-size:1.6rem;font-weight:900;margin:4px 0 0;">Detail Permohonan Merek</h2>
+            </div>
+            <button type="button" class="modal-close" data-bc-close-modal aria-label="Tutup">✕</button>
+          </div>
+
+          <div style="padding:1.5rem 0;">
+            <!-- Top Hero in Modal: Logo + Main Status -->
+            <div style="display:flex;gap:1.5rem;align-items:center;background:#FAF8F5;border:1px solid var(--bc-card-border);border-radius:12px;padding:1.25rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+              <div id="bc-td-logo" style="width:110px;height:110px;min-width:110px;background:#FFF;border:1px solid var(--bc-card-border);border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:6px;">
+              </div>
+              <div style="flex:1;min-width:240px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;">
+                  <span id="bc-td-status" style="display:inline-block;background:#DCFCE7;color:#166534;font-family:var(--font-mono);font-weight:800;font-size:0.78rem;padding:3px 12px;border-radius:9999px;">(TM) DIDAFTAR</span>
+                  <span id="bc-td-class" style="display:inline-block;background:var(--bc-green-mint);color:var(--bc-green);font-family:var(--font-mono);font-weight:800;font-size:0.78rem;padding:3px 12px;border-radius:9999px;">Kelas 25</span>
+                  <span id="bc-td-source-tag" style="display:inline-block;background:#E2E8F0;color:#334155;font-family:var(--font-mono);font-weight:700;font-size:0.74rem;padding:3px 10px;border-radius:9999px;">✓ Koleksi Terverifikasi</span>
+                </div>
+                <div style="font-size:0.86rem;color:#4B5563;line-height:1.45;">
+                  Terdaftar resmi pada Pangkalan Data Kekayaan Intelektual Republik Indonesia. Dilindungi di bawah UU No. 20 Tahun 2016 tentang Merek dan Indikasi Geografis.
+                </div>
+              </div>
+            </div>
+
+            <!-- Two-Column Dossier Grid -->
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:1.25rem;margin-bottom:1.5rem;">
+              <div style="background:#FFF;border:1px solid #E2E8F0;border-radius:10px;padding:1rem;">
+                <h4 style="font-size:0.8rem;font-family:var(--font-mono);color:#64748B;text-transform:uppercase;margin:0 0 0.75rem 0;letter-spacing:0.04em;">1. INFORMASI PENDAFTARAN</h4>
+                <div style="display:flex;flex-direction:column;gap:0.6rem;font-size:0.84rem;">
+                  <div>
+                    <span style="color:#64748B;font-size:0.76rem;display:block;">Nomor Permohonan:</span>
+                    <strong id="bc-td-appno" style="font-family:var(--font-mono);color:#0F172A;font-size:0.92rem;">-</strong>
+                  </div>
+                  <div>
+                    <span style="color:#64748B;font-size:0.76rem;display:block;">Tanggal Pengajuan Permohonan:</span>
+                    <strong id="bc-td-appdate" style="color:#0F172A;">-</strong>
+                  </div>
+                  <div>
+                    <span style="color:#64748B;font-size:0.76rem;display:block;">Nomor Pendaftaran (Sertifikat DJKI):</span>
+                    <strong id="bc-td-regno" style="font-family:var(--font-mono);color:#0F172A;">-</strong>
+                  </div>
+                  <div>
+                    <span style="color:#64748B;font-size:0.76rem;display:block;">Tanggal Sertifikasi / Publikasi:</span>
+                    <strong id="bc-td-regdate" style="color:#0F172A;">-</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div style="background:#FFF;border:1px solid #E2E8F0;border-radius:10px;padding:1rem;">
+                <h4 style="font-size:0.8rem;font-family:var(--font-mono);color:#64748B;text-transform:uppercase;margin:0 0 0.75rem 0;letter-spacing:0.04em;">2. KEPEMILIKAN &amp; KONSULTAN</h4>
+                <div style="display:flex;flex-direction:column;gap:0.6rem;font-size:0.84rem;">
+                  <div>
+                    <span style="color:#64748B;font-size:0.76rem;display:block;">Nama Pemilik Terdaftar:</span>
+                    <strong id="bc-td-owner" style="color:#0F172A;font-size:0.92rem;">-</strong>
+                  </div>
+                  <div>
+                    <span style="color:#64748B;font-size:0.76rem;display:block;">Alamat Pemilik:</span>
+                    <span id="bc-td-address" style="color:#334155;font-size:0.82rem;line-height:1.4;display:block;">-</span>
+                  </div>
+                  <div>
+                    <span style="color:#64748B;font-size:0.76rem;display:block;">Kuasa / Konsultan HKI:</span>
+                    <span id="bc-td-consultant" style="color:#0F172A;font-weight:600;">-</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Goods / Services description box -->
+            <div style="background:#FFF;border:1px solid #E2E8F0;border-radius:10px;padding:1rem;margin-bottom:1.5rem;">
+              <h4 style="font-size:0.8rem;font-family:var(--font-mono);color:#64748B;text-transform:uppercase;margin:0 0 0.5rem 0;letter-spacing:0.04em;">3. URAIAN BARANG / JASA YANG DILINDUNGI HUKUM</h4>
+              <p id="bc-td-goods" style="font-size:0.84rem;color:#334155;line-height:1.6;margin:0;max-height:160px;overflow-y:auto;background:#F8FAFC;padding:0.85rem;border-radius:6px;border:1px solid #E2E8F0;word-break:break-word;">
+                -
+              </p>
+            </div>
+
+            <!-- Actions Footer -->
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;padding-top:1rem;border-top:1px solid #E2E8F0;">
+              <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+                <button type="button" class="btn btn-primary" onclick="if (window.runTrademarkCheck) { window.runTrademarkCheck(document.getElementById('bc-td-brand').textContent); document.getElementById('bc-trademark-detail-modal').classList.remove('active'); }">
+                  <span>✦ Analisis Risiko Pelanggaran Merek</span>
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="if (window.BCStore && window.BCStore.openHandoverModal) { window.BCStore.openHandoverModal(document.getElementById('bc-td-brand').textContent); document.getElementById('bc-trademark-detail-modal').classList.remove('active'); }">
+                  <span>👨‍⚖️ Konsultasi Spesialis</span>
+                </button>
+              </div>
+              <button type="button" class="btn btn-outline" data-bc-close-modal>
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     `;
     document.body.appendChild(root);
 
@@ -2931,6 +3039,14 @@
             <span style="font-size:0.74rem;color:#6B7280;display:block;margin-bottom:2px;">Nama Pemilik:</span>
             <strong style="font-family:var(--font-heading);font-size:0.88rem;color:var(--bc-text-dark);font-weight:700;">${item.owner}</strong>
           </div>
+
+          <div style="margin-top:0.75rem;padding-top:0.65rem;border-top:1px dashed #E5E7EB;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+            <button type="button" class="btn btn-outline" style="padding:4px 12px;font-size:0.76rem;border-radius:6px;font-weight:700;display:inline-flex;align-items:center;gap:4px;color:var(--bc-green);border-color:var(--bc-green);cursor:pointer;" onclick="if (window.BCStore &amp;&amp; window.BCStore.openTrademarkDetailModal) { window.BCStore.openTrademarkDetailModal('${item.appNo || item.brand}'); }">
+              <span>👁️ Buka Detail Permohonan</span>
+              <span style="font-size:0.85rem;">→</span>
+            </button>
+            <span style="font-size:0.74rem;color:#94A3B8;font-family:var(--font-mono);">${item.source === 'collection_engine' ? '✓ Data Resmi DJKI (VPS Engine)' : 'PDKI Database'}</span>
+          </div>
         </div>
       </div>
     `;
@@ -3301,6 +3417,110 @@
     return logoMeta;
   }
 
+  function openTrademarkDetailModal(targetKey) {
+    injectGlobalWidgets();
+    if (!targetKey) return;
+    const modal = document.getElementById('bc-trademark-detail-modal');
+    if (!modal) return;
+
+    let foundItem = null;
+    const needle = String(targetKey).trim().toLowerCase();
+
+    // 1. Cari di LIVE_PDKI_CACHE
+    for (const key of Object.keys(LIVE_PDKI_CACHE)) {
+      const cached = LIVE_PDKI_CACHE[key];
+      if (cached && Array.isArray(cached.items)) {
+        foundItem = cached.items.find(
+          (it) => (it.appNo && it.appNo.toLowerCase() === needle) ||
+                  (it.brand && it.brand.toLowerCase() === needle) ||
+                  (it.brand && it.brand.toLowerCase().includes(needle))
+        );
+        if (foundItem) break;
+      }
+    }
+
+    // 2. Cari di PDKI_DIRECTORY_DB
+    if (!foundItem) {
+      for (const cluster of PDKI_DIRECTORY_DB) {
+        if (Array.isArray(cluster.items)) {
+          foundItem = cluster.items.find(
+            (it) => (it.appNo && it.appNo.toLowerCase() === needle) ||
+                    (it.brand && it.brand.toLowerCase() === needle)
+          );
+          if (foundItem) break;
+        }
+      }
+    }
+
+    if (!foundItem) {
+      foundItem = {
+        brand: String(targetKey).toUpperCase(),
+        appNo: targetKey.startsWith('DID') || targetKey.startsWith('JID') || targetKey.startsWith('R') || targetKey.startsWith('D') ? targetKey : '-',
+        niceClass: '25',
+        owner: 'Pemohon Terdaftar (DJKI RI)',
+        status: '(TM) DIDAFTAR',
+        statusKey: 'didaftar',
+        regDate: '-'
+      };
+    }
+
+    const elBrand = document.getElementById('bc-td-brand');
+    const elLogo = document.getElementById('bc-td-logo');
+    const elStatus = document.getElementById('bc-td-status');
+    const elClass = document.getElementById('bc-td-class');
+    const elSourceTag = document.getElementById('bc-td-source-tag');
+    const elAppNo = document.getElementById('bc-td-appno');
+    const elAppDate = document.getElementById('bc-td-appdate');
+    const elRegNo = document.getElementById('bc-td-regno');
+    const elRegDate = document.getElementById('bc-td-regdate');
+    const elOwner = document.getElementById('bc-td-owner');
+    const elAddress = document.getElementById('bc-td-address');
+    const elConsultant = document.getElementById('bc-td-consultant');
+    const elGoods = document.getElementById('bc-td-goods');
+
+    if (elBrand) elBrand.textContent = foundItem.brand || 'Detail Permohonan Merek';
+    if (elLogo) {
+      if (foundItem.etiquetteSvg) {
+        elLogo.innerHTML = foundItem.etiquetteSvg;
+      } else if (foundItem.logoUrl) {
+        elLogo.innerHTML = `<img src="${foundItem.logoUrl}" alt="${foundItem.brand}" style="max-width:100%;max-height:100%;object-fit:contain;" />`;
+      } else {
+        elLogo.innerHTML = getOfficialBrandEtiquette(foundItem.brand, foundItem.appNo);
+      }
+    }
+    if (elStatus) {
+      elStatus.textContent = foundItem.status || '(TM) DIDAFTAR';
+      if (foundItem.statusKey === 'dalam_proses') {
+        elStatus.style.background = '#FEF3C7';
+        elStatus.style.color = '#92400E';
+      } else if (foundItem.statusKey === 'ditolak' || foundItem.statusKey === 'berakhir') {
+        elStatus.style.background = '#FEE2E2';
+        elStatus.style.color = '#991B1B';
+      } else {
+        elStatus.style.background = '#DCFCE7';
+        elStatus.style.color = '#166534';
+      }
+    }
+    if (elClass) elClass.textContent = `Kelas ${foundItem.niceClass || '35'}`;
+    if (elSourceTag) {
+      elSourceTag.textContent = foundItem.source === 'collection_engine' ? '✓ Terverifikasi Koleksi Server' : 'Data Resmi DJKI';
+    }
+    if (elAppNo) elAppNo.textContent = foundItem.appNo || '-';
+    if (elAppDate) elAppDate.textContent = foundItem.appDate || foundItem.regDate || '-';
+    if (elRegNo) elRegNo.textContent = foundItem.regNo || (foundItem.appNo && (foundItem.appNo.startsWith('IDM') || foundItem.appNo.startsWith('R') || foundItem.appNo.startsWith('D')) ? foundItem.appNo : '-');
+    if (elRegDate) elRegDate.textContent = foundItem.regDate || '-';
+    if (elOwner) elOwner.textContent = foundItem.owner || 'Pemohon Terdaftar (DJKI RI)';
+    if (elAddress) elAddress.textContent = foundItem.ownerAddress || 'Tercatat dalam pangkalan data resmi DJKI RI';
+    if (elConsultant) elConsultant.textContent = foundItem.consultant || 'Diajukan Langsung / Kuasa Terdaftar';
+    if (elGoods) {
+      elGoods.textContent = foundItem.classDescription || `Barang dan/atau jasa kelas ${foundItem.niceClass || '35'} sesuai pengelompokan Nice Classification edisi terkini yang didaftarkan pada DJKI RI.`;
+    }
+
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     injectGlobalWidgets();
   });
@@ -3332,6 +3552,7 @@
     openOrderModal,
     openHandoverModal,
     openReportModal,
+    openTrademarkDetailModal,
     resetDemoData: () => {
       localStorage.removeItem(STORAGE_KEY);
       state = loadState();

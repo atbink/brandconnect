@@ -89,15 +89,28 @@ module.exports = async (req, res) => {
               : [];
             const niceClassStr = classList.length > 0 ? classList.join(', ') : '35';
 
+            const classDescriptions = Array.isArray(item.classes)
+              ? item.classes.map((c) => c.class_description).filter(Boolean).join('; ')
+              : null;
+
             const mapped = {
               brand: (item.brand_name || rawQuery).toUpperCase(),
               niceClass: niceClassStr,
               appNo: appNo || '-',
               owner: item.owner?.name || 'Pemohon Terdaftar (DJKI)',
               ownerAddress: item.owner?.address || null,
+              ownerNationality: item.owner?.nationality || 'ID',
               status: item.status_text || '(TM) DIDAFTAR',
               statusKey: item.status_key || 'didaftar',
-              regDate: item.registration?.application_date || item.registration?.registration_date || '-',
+              regDate: item.registration?.registration_date || item.registration?.application_date || '-',
+              appDate: item.registration?.application_date || '-',
+              regNo: item.registration?.registration_number || null,
+              pubNo: item.registration?.publication_number || null,
+              protectionStart: item.registration?.protection_start_date || null,
+              protectionEnd: item.registration?.protection_end_date || null,
+              classDescription: classDescriptions,
+              consultant: item.consultant?.name || null,
+              detailUrl: item.detail_page_url || item.source_url || null,
               logoUrl: logoUrl,
               source: 'collection_engine'
             };
