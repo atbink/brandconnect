@@ -270,19 +270,19 @@ module.exports = async (req, res) => {
   const items = Array.from(itemsMap.values());
 
   // Deteksi apakah hasil ditemukan melalui variasi fonetik
-  const rawLower = rawQuery.toLowerCase();
-  const directMatch = items.some((it) => {
-    const b = (it.brand || '').toLowerCase();
-    return b.includes(rawLower) || rawLower.includes(b);
+  const rawLower = rawQuery.toLowerCase().trim();
+  const exactDirectMatch = items.some((it) => {
+    const b = (it.brand || '').toLowerCase().trim();
+    return b === rawLower || b.replace(/\s+/g, '') === rawLower.replace(/\s+/g, '');
   });
 
   let suggestedQuery = null;
-  if (!directMatch && items.length > 0 && phoneticVariants.length > 0) {
+  if (!exactDirectMatch && items.length > 0 && phoneticVariants.length > 0) {
     for (const v of phoneticVariants) {
       const vLower = v.toLowerCase();
       const matched = items.some((it) => {
         const b = (it.brand || '').toLowerCase();
-        return b.includes(vLower) || vLower.includes(b);
+        return b === vLower || b.includes(vLower);
       });
       if (matched) {
         suggestedQuery = v.toUpperCase();
