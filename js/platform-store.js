@@ -1114,11 +1114,12 @@
     const clean = (rawQuery || '').trim();
     const lower = clean.toLowerCase();
     if (!clean) return null;
-    if (LIVE_PDKI_CACHE[lower]) return LIVE_PDKI_CACHE[lower];
 
     // 1. Primary: Query Vercel Serverless Dual-Source Search API (VPS Collection Engine + APIIndonesia)
     try {
-      const resp = await fetch(`/api/search?q=${encodeURIComponent(clean)}`);
+      const resp = await fetch(`/api/search?q=${encodeURIComponent(clean)}&_t=${Date.now()}`, {
+        cache: 'no-store'
+      });
       if (resp.ok) {
         const json = await resp.json();
         if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
@@ -1160,11 +1161,17 @@
             };
           });
 
-          mappedItems.sort((a, b) => b.similarityPct - a.similarityPct);
+          // Keep newest manual saves (collection_engine) at the very top in backend newest-first order;
+          // sort external api_indonesia records by similarityPct below them.
+          const internalItems = mappedItems.filter((it) => it.source === 'collection_engine');
+          const externalItems = mappedItems
+            .filter((it) => it.source !== 'collection_engine')
+            .sort((a, b) => b.similarityPct - a.similarityPct);
+          const orderedItems = [...internalItems, ...externalItems];
 
           const resultObj = {
-            totalFound: json.total || mappedItems.length,
-            items: mappedItems,
+            totalFound: json.total || orderedItems.length,
+            items: orderedItems,
             fromLiveApi: true,
             suggestedQuery: json.suggested_query || null,
             isPhoneticMatch: Boolean(json.is_phonetic_match),

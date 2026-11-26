@@ -51,7 +51,7 @@ function generatePhoneticQueryVariants(raw) {
 }
 
 module.exports = async (req, res) => {
-  // Enable CORS
+  // Enable CORS & disable caching so newly saved IntraBrowser items appear immediately
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST');
@@ -59,6 +59,7 @@ module.exports = async (req, res) => {
     'Access-Control-Allow-Headers',
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization'
   );
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
 
   if (req.method === 'OPTIONS') {
     res.status(200).end();
@@ -77,6 +78,7 @@ module.exports = async (req, res) => {
   const VPS_API_TOKEN = process.env.COLLECTION_ENGINE_API_TOKEN || '3440669e55976bc93dfb2f4ff61d221946ec3825de61ed0cfac66f5cd9a3cff1';
   const API_INDONESIA_KEY = process.env.PDKI_API_KEY || 'aip_live_tW5NibLE0C8rjVIF6jOYon3PgdbTsE01';
 
+  const MAX_RESULTS = 50;
   const sourcesConsulted = [];
   const itemsMap = new Map();
   const phoneticVariants = generatePhoneticQueryVariants(rawQuery);
@@ -112,9 +114,9 @@ module.exports = async (req, res) => {
     }
 
     for (const qTerm of searchQueries) {
-      if (itemsMap.size >= 15) break;
+      if (itemsMap.size >= MAX_RESULTS) break;
 
-      const vpsResp = await fetch(`${VPS_BASE_URL}/api/trademarks?q=${encodeURIComponent(qTerm)}`, {
+      const vpsResp = await fetch(`${VPS_BASE_URL}/api/trademarks?q=${encodeURIComponent(qTerm)}&per_page=${MAX_RESULTS}&limit=${MAX_RESULTS}`, {
         headers: {
           'Authorization': `Bearer ${VPS_API_TOKEN}`,
           'Accept': 'application/json'
@@ -169,6 +171,8 @@ module.exports = async (req, res) => {
               consultant: item.consultant?.name || null,
               detailUrl: item.detail_page_url || item.source_url || null,
               logoUrl: logoUrl,
+              updatedAt: item.updated_at || item.collected_at || item.created_at || null,
+              vpsId: Number(item.id) || 0,
               source: 'collection_engine'
             };
 
@@ -204,9 +208,9 @@ module.exports = async (req, res) => {
       }
 
       for (const term of extTerms) {
-        if (itemsMap.size >= 15) break;
+        if (itemsMap.size >= MAX_RESULTS) break;
 
-        const extResp = await fetch(`https://use.apiindonesia.id/api/v1/merek/search?q=${encodeURIComponent(term)}&page=1&limit=15`, {
+        const extResp = await fetch(`https://use.apiindonesia.id/api/v1/merek/search?q=${encodeURIComponent(term)}&page=1&limit=${MAX_RESULTS}`, {
           headers: {
             'x-api-key': API_INDONESIA_KEY,
             'Accept': 'application/json'
@@ -267,7 +271,24 @@ module.exports = async (req, res) => {
     }
   }
 
-  const items = Array.from(itemsMap.values());
+  const items = Array.from(itemsMap.values())
+    .sort((a, b) => {
+      // 1. Prioritize manual saves / Collection Engine records above external API records
+      const aInternal = a.source === 'collection_engine' ? 1 : 0;
+      const bInternal = b.source === 'collection_engine' ? 1 : 0;
+      if (aInternal !== bInternal) return bInternal - aInternal;
+
+      // 2. Within Collection Engine: newest updated/saved first
+      if (aInternal && bInternal) {
+        const aTime = a.updatedAt ? new Date(a.updatedAt).getTime() : 0;
+        const bTime = b.updatedAt ? new Date(b.updatedAt).getTime() : 0;
+        if (aTime !== bTime) return bTime - aTime;
+        return (b.vpsId || 0) - (a.vpsId || 0);
+      }
+
+      return 0;
+    })
+    .slice(0, MAX_RESULTS);
 
   // Deteksi apakah hasil ditemukan melalui variasi fonetik
   const rawLower = rawQuery.toLowerCase().trim();
