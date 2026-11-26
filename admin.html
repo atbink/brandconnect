@@ -153,13 +153,20 @@
             <input id="adm-expiry-search" type="text" placeholder="Cari nama merek, no. permohonan, pemilik..." style="padding:0.55rem 0.85rem;border:1.5px solid #D6D3CD;border-radius:6px;font-size:0.84rem;min-width:260px;background:#FFF;" />
           </div>
 
-          <div style="display:flex;gap:0.45rem;flex-wrap:wrap;margin-bottom:1.15rem;">
-            <button type="button" class="exp-filter-pill" data-filter="all" onclick="window.bcSetExpiryFilter('all')" style="padding:5px 12px;border-radius:999px;border:1px solid #0D3B2E;background:#0D3B2E;color:#FFF;font-size:0.76rem;font-weight:700;cursor:pointer;">Semua</button>
-            <button type="button" class="exp-filter-pill" data-filter="critical" onclick="window.bcSetExpiryFilter('critical')" style="padding:5px 12px;border-radius:999px;border:1px solid #D6D3CD;background:#FFF;color:#1C1D1B;font-size:0.76rem;font-weight:700;cursor:pointer;">🔴 Kritis (≤ 30 Hari)</button>
-            <button type="button" class="exp-filter-pill" data-filter="upcoming" onclick="window.bcSetExpiryFilter('upcoming')" style="padding:5px 12px;border-radius:999px;border:1px solid #D6D3CD;background:#FFF;color:#1C1D1B;font-size:0.76rem;font-weight:700;cursor:pointer;">🟠 Segera Habis (≤ 180 Hari)</button>
-            <button type="button" class="exp-filter-pill" data-filter="expired" onclick="window.bcSetExpiryFilter('expired')" style="padding:5px 12px;border-radius:999px;border:1px solid #D6D3CD;background:#FFF;color:#1C1D1B;font-size:0.76rem;font-weight:700;cursor:pointer;">⚫ Sudah Kedaluwarsa</button>
-            <button type="button" class="exp-filter-pill" data-filter="safe" onclick="window.bcSetExpiryFilter('safe')" style="padding:5px 12px;border-radius:999px;border:1px solid #D6D3CD;background:#FFF;color:#1C1D1B;font-size:0.76rem;font-weight:700;cursor:pointer;">🟢 Aman</button>
-            <button type="button" class="exp-filter-pill" data-filter="no_date" onclick="window.bcSetExpiryFilter('no_date')" style="padding:5px 12px;border-radius:999px;border:1px solid #D6D3CD;background:#FFF;color:#1C1D1B;font-size:0.76rem;font-weight:700;cursor:pointer;">⚪ Belum Ada Tanggal</button>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.15rem;">
+            <div style="display:flex;gap:0.45rem;flex-wrap:wrap;">
+              <button type="button" class="exp-filter-pill" data-filter="all" onclick="window.bcSetExpiryFilter('all')" style="padding:5px 12px;border-radius:999px;border:1px solid #0D3B2E;background:#0D3B2E;color:#FFF;font-size:0.76rem;font-weight:700;cursor:pointer;">Semua</button>
+              <button type="button" class="exp-filter-pill" data-filter="critical" onclick="window.bcSetExpiryFilter('critical')" style="padding:5px 12px;border-radius:999px;border:1px solid #D6D3CD;background:#FFF;color:#1C1D1B;font-size:0.76rem;font-weight:700;cursor:pointer;">🔴 Kritis (≤ 30 Hari)</button>
+              <button type="button" class="exp-filter-pill" data-filter="upcoming" onclick="window.bcSetExpiryFilter('upcoming')" style="padding:5px 12px;border-radius:999px;border:1px solid #D6D3CD;background:#FFF;color:#1C1D1B;font-size:0.76rem;font-weight:700;cursor:pointer;">🟠 Segera Habis (≤ 180 Hari)</button>
+              <button type="button" class="exp-filter-pill" data-filter="expired" onclick="window.bcSetExpiryFilter('expired')" style="padding:5px 12px;border-radius:999px;border:1px solid #D6D3CD;background:#FFF;color:#1C1D1B;font-size:0.76rem;font-weight:700;cursor:pointer;">⚫ Sudah Kedaluwarsa</button>
+              <button type="button" class="exp-filter-pill" data-filter="safe" onclick="window.bcSetExpiryFilter('safe')" style="padding:5px 12px;border-radius:999px;border:1px solid #D6D3CD;background:#FFF;color:#1C1D1B;font-size:0.76rem;font-weight:700;cursor:pointer;">🟢 Aman</button>
+              <button type="button" class="exp-filter-pill" data-filter="no_date" onclick="window.bcSetExpiryFilter('no_date')" style="padding:5px 12px;border-radius:999px;border:1px solid #D6D3CD;background:#FFF;color:#1C1D1B;font-size:0.76rem;font-weight:700;cursor:pointer;">⚪ Belum Ada Tanggal</button>
+            </div>
+
+            <div style="display:flex;gap:0.45rem;flex-wrap:wrap;">
+              <button id="adm-auto-enrich-btn" type="button" onclick="window.bcAutoEnrichDates()" title="Lengkapi tanggal kedaluwarsa otomatis via APIIndonesia (0 CAPTCHA)" style="padding:6px 12px;background:#059669;color:#FFF;border:none;border-radius:6px;font-size:0.76rem;font-weight:700;cursor:pointer;">🔄 Lengkapi Tanggal Otomatis (10 Merek)</button>
+              <button type="button" onclick="window.bcExportExpiryCsv()" style="padding:6px 11px;background:#FFF;color:#1C1D1B;border:1px solid #D6D3CD;border-radius:6px;font-size:0.76rem;font-weight:700;cursor:pointer;">📥 Export CSV</button>
+            </div>
           </div>
 
           <div style="overflow-x:auto;">
@@ -179,6 +186,7 @@
               </tbody>
             </table>
           </div>
+          <div id="adm-expiry-pagination"></div>
         </div>
 
         <!-- LIVE PANEL B: DATABASE MEREK VPS -->
@@ -209,6 +217,7 @@
               </tbody>
             </table>
           </div>
+          <div id="adm-vpsdb-pagination"></div>
         </div>
 
         <!-- 01. DASHBOARD -->

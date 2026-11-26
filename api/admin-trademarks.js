@@ -59,6 +59,15 @@ function toIsoDate(d) {
   return d.toISOString().slice(0, 10);
 }
 
+function extractFilingYearHint(appNo) {
+  if (!appNo || typeof appNo !== 'string') return null;
+  const m = appNo.trim().match(/^[A-Z]{1,3}\d{0,2}?(19\d{2}|20[0-2]\d)\d{4,}$/i);
+  if (!m) return null;
+  const yr = parseInt(m[1], 10);
+  if (yr >= 1980 && yr <= 2030) return yr;
+  return null;
+}
+
 function computeExpiryInfo(item) {
   const reg = item.registration || {};
   let endDateObj = parseFlexibleDate(reg.protection_end_date);
@@ -200,6 +209,9 @@ module.exports = async (req, res) => {
           ? item.classes.map((c) => String(c.class_number)).filter(Boolean)
           : [];
 
+        const filingYearHint = extractFilingYearHint(item.application_number);
+        const estimatedExpiryYear = filingYearHint ? filingYearHint + 10 : null;
+
         return {
           id: item.id,
           brandName: (item.brand_name || '-').toUpperCase(),
@@ -218,6 +230,8 @@ module.exports = async (req, res) => {
           daysUntilExpiry: expiry.daysUntilExpiry,
           expiryStatus: expiry.expiryStatus,
           isEstimatedDate: expiry.isEstimatedDate,
+          filingYearHint,
+          estimatedExpiryYear,
           detailUrl: item.detail_page_url || item.source_url || null,
           logoUrl,
           updatedAt: item.updated_at || item.collected_at || item.created_at || null
