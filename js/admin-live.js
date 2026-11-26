@@ -15,6 +15,7 @@
   let serverQuery = '';
   let activeExpiryFilter = 'all';
   let isEnriching = false;
+  let stopEnrichRequested = false;
   let searchDebounce = null;
 
   function getToken() {
@@ -187,11 +188,18 @@
     }
   };
 
+  window.bcStopAutoEnrich = function () {
+    if (isEnriching) {
+      stopEnrichRequested = true;
+      showToast('Menghentikan proses setelah batch saat ini selesai...');
+    }
+  };
+
   window.bcAutoEnrichDates = async function () {
     if (isEnriching) return;
-    const targets = getFilteredExpiryList()
-      .filter((t) => !t.protectionEndDate && t.applicationNumber && t.applicationNumber !== '-')
-      .slice(0, 10);
+    const targets = allTrademarks.filter(
+      (t) => !t.protectionEndDate && t.applicationNumber && t.applicationNumber !== '-'
+    );
 
     if (targets.length === 0) {
       showToast('Semua merek di halaman ini sudah memiliki tanggal perlindungan!');
@@ -199,13 +207,84 @@
     }
 
     isEnriching = true;
+    stopEnrichRequested = false;
+
     const btn = document.getElementById('adm-auto-enrich-btn');
-    const origText = btn ? btn.textContent : '';
+    const stopBtn = document.getElementById('adm-auto-enrich-stop');
+    const progBox = document.getElementById('adm-enrich-progress');
+
     if (btn) {
       btn.disabled = true;
-      btn.textContent = `⏳ Melengkapi ${targets.length} merek...`;
+      btn.textContent = '⏳ Memproses...';
+    }
+    if (stopBtn) stopBtn.style.display = 'inline-block';
+    if (progBox) {
+      progBox.style.display = 'block';
+      progBox.textContent = `Memulai pengisian tanggal otomatis untuk ${targets.length} merek (batch 8 per request, 0 CAPTCHA)...`;
     }
 
+    const CHUNK_SIZE = 8;
+    let totalProcessed = 0;
+    let totalEnriched = 0;
+    let totalNotFound = 0;
+    let totalFailed = 0;
+
+    try {
+      for (let i = 0; i < targets.length; i += CHUNK_SIZE) {
+        if (stopEnrichRequested) break;
+        const chunk = targets.slice(i, i + CHUNK_SIZE);
+
+        if (progBox) {
+          progBox.textContent = `⏳ Memproses ${Math.min(i + chunk.length, targets.length)} dari ${targets.length} merek... (${totalEnriched} berhasil, ${totalNotFound} belum ada di API)`;
+        }
+
+        const resp = await fetch('/api/admin-enrich-expiry', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${getToken()}`
+          },
+          body: JSON.stringify({ items: chunk })
+        });
+        const json = await resp.json();
+        if (!resp.ok || !json.success) {
+          totalFailed += chunk.length;
+        } else {
+          totalProcessed += json.summary?.processed || chunk.length;
+          totalEnriched += json.summary?.enriched || 0;
+          totalNotFound += json.summary?.notFound || 0;
+          totalFailed += json.summary?.failed || 0;
+        }
+      }
+
+      const finalMsg = stopEnrichRequested
+        ? `Dihentikan: ${totalProcessed}/${targets.length} diproses (${totalEnriched} berhasil dilengkapi, ${totalNotFound} belum tersedia di API).`
+        : `✓ Selesai melengkapi ${targets.length} merek: ${totalEnriched} berhasil, ${totalNotFound} belum tersedia di API, ${totalFailed} gagal.`;
+
+      if (progBox) progBox.textContent = finalMsg;
+      showToast(finalMsg);
+      await loadVpsTrademarks(currentPage, serverQuery);
+    } catch (err) {
+      showToast(`Gagal auto-lengkapi: ${err.message}`, true);
+    } finally {
+      isEnriching = false;
+      stopEnrichRequested = false;
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = '🔄 Lengkapi Semua Tanggal';
+      }
+      if (stopBtn) stopBtn.style.display = 'none';
+    }
+  };
+
+  window.bcEnrichSingle = async function (appNo) {
+    const item = allTrademarks.find((t) => t.applicationNumber === appNo);
+    if (!item) return;
+    const btn = document.getElementById('det-enrich-single-btn');
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = '⏳ Menarik tanggal...';
+    }
     try {
       const resp = await fetch('/api/admin-enrich-expiry', {
         method: 'POST',
@@ -213,23 +292,126 @@
           'Content-Type': 'application/json',
           Authorization: `Bearer ${getToken()}`
         },
-        body: JSON.stringify({ items: targets })
+        body: JSON.stringify({ items: [item] })
       });
       const json = await resp.json();
-      if (!resp.ok || !json.success) {
-        throw new Error(json.message || 'Gagal melengkapi tanggal');
-      }
-      showToast(`✓ ${json.message}`);
+      if (!resp.ok || !json.success) throw new Error(json.message || 'Gagal melengkapi tanggal');
+      showToast(json.message);
       await loadVpsTrademarks(currentPage, serverQuery);
+      window.bcOpenDetailModal(appNo);
     } catch (err) {
-      showToast(`Gagal auto-lengkapi: ${err.message}`, true);
-    } finally {
-      isEnriching = false;
+      showToast(`Gagal: ${err.message}`, true);
       if (btn) {
         btn.disabled = false;
-        btn.textContent = origText || '🔄 Lengkapi Tanggal Otomatis (10 Merek)';
+        btn.textContent = '🔄 Lengkapi Tanggal (APIIndonesia)';
       }
     }
+  };
+
+  window.bcOpenDetailModal = function (appNo) {
+    const modal = document.getElementById('adm-detail-modal');
+    const bodyEl = document.getElementById('adm-detail-modal-body');
+    const titleEl = document.getElementById('det-modal-title');
+    if (!modal || !bodyEl) return;
+
+    const item = allTrademarks.find((t) => t.applicationNumber === appNo);
+    if (!item) return;
+
+    const contacts = getContactsMap()[appNo] || {};
+    const safeApp = escapeHtml(item.applicationNumber);
+
+    if (titleEl) titleEl.textContent = `${item.brandName} (${item.applicationNumber})`;
+
+    const logoBlock = item.logoUrl
+      ? `<img src="${escapeHtml(item.logoUrl)}" alt="${escapeHtml(item.brandName)}" style="max-width:100%;max-height:170px;object-fit:contain;" />`
+      : `<div style="font-size:0.85rem;font-weight:800;color:#9CA3AF;">TIDAK ADA LOGO</div>`;
+
+    const classRows =
+      Array.isArray(item.classDetails) && item.classDetails.length > 0
+        ? item.classDetails
+            .map(
+              (c) => `
+                <tr>
+                  <td style="font-weight:800;width:70px;">Kelas ${escapeHtml(c.classNumber)}</td>
+                  <td style="font-size:0.8rem;color:#374151;">${c.description ? escapeHtml(c.description) : '<span style="color:#9CA3AF;">Uraian barang/jasa belum diambil (tersedia di halaman detail PDKI)</span>'}</td>
+                </tr>`
+            )
+            .join('')
+        : `<tr><td style="font-weight:800;width:70px;">Kelas ${escapeHtml((item.niceClasses || []).join(', '))}</td><td style="font-size:0.8rem;color:#9CA3AF;">Uraian barang/jasa belum tersedia</td></tr>`;
+
+    bodyEl.innerHTML = `
+      <div style="display:grid;grid-template-columns:190px 1fr;gap:1.25rem;align-items:start;margin-bottom:1.25rem;">
+        <div style="background:#FFF;border:1.5px solid #E5E7EB;border-radius:8px;padding:0.85rem;min-height:160px;display:flex;align-items:center;justify-content:center;">
+          ${logoBlock}
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;background:#FFF;border:1px solid #E5E7EB;border-radius:8px;padding:1rem;">
+          <div>
+            <div style="font-family:var(--font-mono);font-size:0.64rem;color:#6B7280;text-transform:uppercase;">No. Permohonan</div>
+            <div style="font-family:var(--font-mono);font-weight:800;color:#1C1D1B;">${safeApp}</div>
+          </div>
+          <div>
+            <div style="font-family:var(--font-mono);font-size:0.64rem;color:#6B7280;text-transform:uppercase;">No. Registrasi</div>
+            <div style="font-family:var(--font-mono);font-weight:700;color:#1C1D1B;">${escapeHtml(item.registrationNumber || '-')}</div>
+          </div>
+          <div>
+            <div style="font-family:var(--font-mono);font-size:0.64rem;color:#6B7280;text-transform:uppercase;">Status Merek</div>
+            <div style="font-weight:800;color:#0D3B2E;">${escapeHtml(item.statusText)}</div>
+          </div>
+          <div>
+            <div style="font-family:var(--font-mono);font-size:0.64rem;color:#6B7280;text-transform:uppercase;">Status Kedaluwarsa</div>
+            <div style="margin-top:2px;">${formatExpiryBadge(item)}</div>
+          </div>
+          <div>
+            <div style="font-family:var(--font-mono);font-size:0.64rem;color:#6B7280;text-transform:uppercase;">Tgl Pengajuan / Mulai</div>
+            <div style="font-family:var(--font-mono);font-weight:700;">${escapeHtml(item.protectionStartDate || item.applicationDate || item.registrationDate || '-')}</div>
+          </div>
+          <div>
+            <div style="font-family:var(--font-mono);font-size:0.64rem;color:#6B7280;text-transform:uppercase;">Tgl Perlindungan Berakhir</div>
+            <div style="font-family:var(--font-mono);font-weight:800;color:${item.protectionEndDate ? '#0D3B2E' : '#9CA3AF'};">${escapeHtml(item.protectionEndDate || (item.estimatedExpiryYear ? `Belum diisi (Est. ~${item.estimatedExpiryYear})` : 'Belum diisi'))}</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;margin-bottom:1.1rem;">
+        <div style="background:#FFF;border:1px solid #E5E7EB;border-radius:8px;padding:0.9rem;">
+          <div style="font-family:var(--font-mono);font-size:0.66rem;color:#0D3B2E;font-weight:700;margin-bottom:0.3rem;">PEMILIK MEREK</div>
+          <div style="font-weight:800;color:#1C1D1B;font-size:0.88rem;">${escapeHtml(item.ownerName)}</div>
+          ${item.ownerAddress ? `<div style="font-size:0.78rem;color:#4B5563;margin-top:0.25rem;">${escapeHtml(item.ownerAddress)}</div>` : ''}
+          ${contacts.phone || contacts.email ? `<div style="font-size:0.76rem;color:#0D3B2E;margin-top:0.35rem;font-weight:600;">${contacts.phone ? `📱 ${escapeHtml(contacts.phone)}` : ''} ${contacts.email ? `✉️ ${escapeHtml(contacts.email)}` : ''}</div>` : ''}
+        </div>
+        <div style="background:#FFF;border:1px solid #E5E7EB;border-radius:8px;padding:0.9rem;">
+          <div style="font-family:var(--font-mono);font-size:0.66rem;color:#0D3B2E;font-weight:700;margin-bottom:0.3rem;">KONSULTAN &amp; TRANSLASI</div>
+          <div style="font-size:0.82rem;color:#1C1D1B;"><strong>Konsultan:</strong> ${escapeHtml(item.consultantName || '-')}</div>
+          <div style="font-size:0.82rem;color:#1C1D1B;margin-top:0.25rem;"><strong>Translasi:</strong> ${escapeHtml(item.translation || '-')}</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.25rem;">
+        <div style="font-family:var(--font-mono);font-size:0.68rem;color:#0D3B2E;font-weight:700;margin-bottom:0.4rem;">KELAS &amp; JENIS BARANG / JASA</div>
+        <table class="adm-table">
+          <tbody>${classRows}</tbody>
+        </table>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.6rem;padding-top:0.9rem;border-top:1px solid #E5E7EB;">
+        <div style="display:flex;gap:0.45rem;flex-wrap:wrap;">
+          <button id="det-enrich-single-btn" type="button" onclick="window.bcEnrichSingle('${safeApp}')" style="padding:0.55rem 0.9rem;background:#059669;color:#FFF;border:none;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;">🔄 Lengkapi Tanggal (APIIndonesia)</button>
+          <button type="button" onclick="window.bcCloseDetailModal(); window.bcOpenExpiryModal('${safeApp}')" style="padding:0.55rem 0.9rem;background:#0D3B2E;color:#FFF;border:none;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;">✏️ Edit / Atur Kedaluwarsa</button>
+          <button type="button" onclick="window.bcSendWaReminder('${safeApp}')" style="padding:0.55rem 0.9rem;background:#16A34A;color:#FFF;border:none;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;">💬 WA Reminder</button>
+        </div>
+        <div style="display:flex;gap:0.45rem;">
+          ${item.detailUrl ? `<a href="${escapeHtml(item.detailUrl)}" target="_blank" rel="noopener" style="padding:0.55rem 0.9rem;background:#FFF;color:#0D3B2E;border:1px solid #0D3B2E;border-radius:6px;font-size:0.78rem;font-weight:700;text-decoration:none;">Buka PDKI ↗</a>` : ''}
+          <button type="button" onclick="window.bcCloseDetailModal()" style="padding:0.55rem 0.9rem;background:#E5E7EB;color:#1F2937;border:none;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;">Tutup</button>
+        </div>
+      </div>
+    `;
+
+    modal.style.display = 'flex';
+  };
+
+  window.bcCloseDetailModal = function () {
+    const modal = document.getElementById('adm-detail-modal');
+    if (modal) modal.style.display = 'none';
   };
 
   window.bcExportExpiryCsv = function () {
@@ -437,9 +619,9 @@
 
         return `
           <tr>
-            <td style="width:52px;">${thumb}</td>
-            <td>
-              <div style="font-weight:800;color:#1C1D1B;">${escapeHtml(item.brandName)}</div>
+            <td style="width:52px;cursor:pointer;" onclick="window.bcOpenDetailModal('${safeApp}')">${thumb}</td>
+            <td style="cursor:pointer;" onclick="window.bcOpenDetailModal('${safeApp}')">
+              <div style="font-weight:800;color:#0D3B2E;text-decoration:underline;text-underline-offset:2px;">${escapeHtml(item.brandName)}</div>
               <div style="font-family:var(--font-mono);font-size:0.72rem;color:#6B7280;">${safeApp} · Kelas ${escapeHtml((item.niceClasses || []).join(', '))}</div>
             </td>
             <td>
@@ -487,19 +669,22 @@
 
         return `
           <tr>
-            <td style="width:54px;">${thumb}</td>
-            <td>
-              <div style="font-weight:800;color:#1C1D1B;">${escapeHtml(item.brandName)}</div>
+            <td style="width:54px;cursor:pointer;" onclick="window.bcOpenDetailModal('${safeApp}')">${thumb}</td>
+            <td style="cursor:pointer;" onclick="window.bcOpenDetailModal('${safeApp}')">
+              <div style="font-weight:800;color:#0D3B2E;text-decoration:underline;text-underline-offset:2px;">${escapeHtml(item.brandName)}</div>
               <div style="font-family:var(--font-mono);font-size:0.72rem;color:#6B7280;">${safeApp}</div>
             </td>
             <td><span class="badge-class" style="background:#ECFDF5;color:#065F46;padding:2px 7px;border-radius:4px;font-weight:700;font-size:0.74rem;">Kelas ${escapeHtml((item.niceClasses || []).join(', '))}</span></td>
             <td style="font-size:0.8rem;">${escapeHtml(item.ownerName)}</td>
             <td>
               <div style="font-size:0.76rem;font-weight:700;">${escapeHtml(item.statusText)}</div>
-              <div style="font-size:0.68rem;color:#6B7280;">Update: ${updatedShort}</div>
+              <div style="margin-top:3px;">${formatExpiryBadge(item)}</div>
             </td>
-            <td>
-              <button type="button" onclick="window.bcOpenExpiryModal('${safeApp}')" style="padding:5px 10px;background:#0D3B2E;color:#FFF;border:none;border-radius:4px;font-size:0.72rem;font-weight:700;cursor:pointer;">📅 Atur Kedaluwarsa</button>
+            <td style="white-space:nowrap;">
+              <div style="display:flex;gap:0.35rem;flex-wrap:wrap;">
+                <button type="button" onclick="window.bcOpenDetailModal('${safeApp}')" style="padding:5px 9px;background:#0D3B2E;color:#FFF;border:none;border-radius:4px;font-size:0.72rem;font-weight:700;cursor:pointer;">👁️ Detail</button>
+                <button type="button" onclick="window.bcOpenExpiryModal('${safeApp}')" style="padding:5px 9px;background:#F3F4F6;color:#1C1D1B;border:1px solid #D1D5DB;border-radius:4px;font-size:0.72rem;font-weight:700;cursor:pointer;">✏️ Atur</button>
+              </div>
             </td>
           </tr>
         `;

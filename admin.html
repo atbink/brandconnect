@@ -164,7 +164,6 @@
             </div>
 
             <div style="display:flex;gap:0.45rem;flex-wrap:wrap;">
-              <button id="adm-auto-enrich-btn" type="button" onclick="window.bcAutoEnrichDates()" title="Lengkapi tanggal kedaluwarsa otomatis via APIIndonesia (0 CAPTCHA)" style="padding:6px 12px;background:#059669;color:#FFF;border:none;border-radius:6px;font-size:0.76rem;font-weight:700;cursor:pointer;">🔄 Lengkapi Tanggal Otomatis (10 Merek)</button>
               <button type="button" onclick="window.bcExportExpiryCsv()" style="padding:6px 11px;background:#FFF;color:#1C1D1B;border:1px solid #D6D3CD;border-radius:6px;font-size:0.76rem;font-weight:700;cursor:pointer;">📥 Export CSV</button>
             </div>
           </div>
@@ -191,14 +190,20 @@
 
         <!-- LIVE PANEL B: DATABASE MEREK VPS -->
         <div class="adm-panel" id="adm-panel-vpsdb">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:1rem;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:0.85rem;">
             <div>
               <span class="eyebrow">LIVE VPS // COLLECTION ENGINE DATABASE (31.59.119.67)</span>
               <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin:0.15rem 0 0;">Database Merek &amp; Logo Terkoleksi</h2>
               <div id="adm-vpsdb-count" style="font-size:0.78rem;color:#6B7280;margin-top:0.2rem;">Memuat...</div>
             </div>
-            <input id="adm-vpsdb-search" type="text" placeholder="Filter merek di VPS..." style="padding:0.55rem 0.85rem;border:1.5px solid #D6D3CD;border-radius:6px;font-size:0.84rem;min-width:240px;background:#FFF;" />
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+              <input id="adm-vpsdb-search" type="text" placeholder="Cari seluruh 2.551+ merek di VPS..." style="padding:0.55rem 0.85rem;border:1.5px solid #D6D3CD;border-radius:6px;font-size:0.84rem;min-width:240px;background:#FFF;" />
+              <button id="adm-auto-enrich-btn" type="button" onclick="window.bcAutoEnrichDates()" title="Lengkapi tanggal kedaluwarsa otomatis secara bertahap untuk seluruh merek di halaman ini (0 CAPTCHA)" style="padding:0.55rem 0.95rem;background:#059669;color:#FFF;border:none;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;">🔄 Lengkapi Semua Tanggal</button>
+              <button id="adm-auto-enrich-stop" type="button" onclick="window.bcStopAutoEnrich()" style="display:none;padding:0.55rem 0.85rem;background:#DC2626;color:#FFF;border:none;border-radius:6px;font-size:0.78rem;font-weight:700;cursor:pointer;">⏹ Stop</button>
+            </div>
           </div>
+
+          <div id="adm-enrich-progress" style="display:none;background:#ECFDF5;border:1.5px solid #059669;color:#065F46;padding:0.7rem 1rem;border-radius:6px;margin-bottom:0.9rem;font-size:0.82rem;font-weight:700;"></div>
 
           <div style="overflow-x:auto;">
             <table class="adm-table">
@@ -208,7 +213,7 @@
                   <th>Merek &amp; No. Permohonan</th>
                   <th>Kelas</th>
                   <th>Pemilik</th>
-                  <th>Status</th>
+                  <th>Status &amp; Tgl Berakhir</th>
                   <th>Aksi</th>
                 </tr>
               </thead>
@@ -781,6 +786,20 @@
           <button id="exp-save-btn" type="submit" style="padding:0.6rem 1.25rem;background:#0D3B2E;color:#FFF;border:none;border-radius:6px;font-size:0.82rem;font-weight:800;cursor:pointer;">Simpan ke VPS</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- TRADEMARK FULL DETAIL MODAL -->
+  <div id="adm-detail-modal" style="display:none;position:fixed;inset:0;z-index:9997;background:rgba(17,24,39,0.7);align-items:center;justify-content:center;padding:1rem;">
+    <div style="width:100%;max-width:720px;max-height:90vh;overflow-y:auto;background:#FAF8F5;border-radius:10px;padding:1.75rem;box-shadow:0 24px 60px rgba(0,0,0,0.4);border:1px solid #D6D3CD;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:0.85rem;margin-bottom:1.15rem;border-bottom:1px solid #E5E7EB;">
+        <div>
+          <div style="font-family:var(--font-mono);font-size:0.66rem;color:#0D3B2E;font-weight:700;text-transform:uppercase;">DETAIL MEREK // LIVE VPS COLLECTION ENGINE</div>
+          <h3 id="det-modal-title" style="font-family:var(--font-heading);font-size:1.3rem;font-weight:800;margin:0.15rem 0 0;color:#1C1D1B;">Detail Merek</h3>
+        </div>
+        <button type="button" onclick="window.bcCloseDetailModal()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#6B7280;line-height:1;">×</button>
+      </div>
+      <div id="adm-detail-modal-body"></div>
     </div>
   </div>
 

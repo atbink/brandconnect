@@ -208,6 +208,16 @@ module.exports = async (req, res) => {
         const classList = Array.isArray(item.classes)
           ? item.classes.map((c) => String(c.class_number)).filter(Boolean)
           : [];
+        const classDetails = Array.isArray(item.classes)
+          ? item.classes.map((c) => ({
+              classNumber: String(c.class_number || ''),
+              description: c.class_description || null
+            }))
+          : [];
+        const translationText =
+          item.translation?.translated_text ||
+          item.translation?.translation ||
+          (typeof item.translation === 'string' ? item.translation : null);
 
         const filingYearHint = extractFilingYearHint(item.application_number);
         const estimatedExpiryYear = filingYearHint ? filingYearHint + 10 : null;
@@ -218,6 +228,8 @@ module.exports = async (req, res) => {
           applicationNumber: item.application_number || '-',
           registrationNumber: item.registration?.registration_number || null,
           niceClasses: classList.length > 0 ? classList : ['35'],
+          classDetails,
+          translation: translationText,
           statusText: item.status_text || '(TM) DIDAFTAR',
           statusKey: item.status_key || 'didaftar',
           ownerName: item.owner?.name || '-',
