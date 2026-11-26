@@ -33,6 +33,35 @@
 <body>
   <div class="paper-grain" aria-hidden="true"></div>
 
+  <!-- ADMIN LOGIN GATE OVERLAY -->
+  <div id="adm-login-overlay" style="position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#0D3B2E 0%,#142822 100%);display:flex;align-items:center;justify-content:center;padding:1.5rem;">
+    <div style="width:100%;max-width:410px;background:#FAF8F5;border-radius:10px;padding:2.2rem 2rem;box-shadow:0 24px 60px rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.12);">
+      <div style="text-align:center;margin-bottom:1.5rem;">
+        <img src="assets/images/brandconnect-logo.png" alt="BRANDCONNECT" style="height:34px;margin-bottom:0.75rem;" />
+        <div style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.12em;color:#0D3B2E;font-weight:700;text-transform:uppercase;">INTERNAL ADMIN ACCESS</div>
+        <h1 style="font-family:var(--font-heading);font-size:1.35rem;font-weight:800;color:#1C1D1B;margin:0.35rem 0 0;">Login Admin BrandConnect</h1>
+      </div>
+
+      <div id="adm-login-error" style="display:none;background:#FEE2E2;color:#991B1B;border:1px solid #FCA5A5;border-radius:6px;padding:0.65rem 0.85rem;font-size:0.8rem;font-weight:600;margin-bottom:1rem;"></div>
+
+      <form id="adm-login-form" style="display:flex;flex-direction:column;gap:0.95rem;">
+        <div>
+          <label for="adm-login-username" style="display:block;font-family:var(--font-mono);font-size:0.68rem;font-weight:700;color:#444;margin-bottom:0.3rem;text-transform:uppercase;">Username</label>
+          <input id="adm-login-username" type="text" required autocomplete="username" placeholder="Masukkan username admin" style="width:100%;padding:0.72rem 0.9rem;border:1.5px solid #D6D3CD;border-radius:6px;font-size:0.9rem;background:#FFF;color:#1C1D1B;box-sizing:border-box;" />
+        </div>
+        <div>
+          <label for="adm-login-password" style="display:block;font-family:var(--font-mono);font-size:0.68rem;font-weight:700;color:#444;margin-bottom:0.3rem;text-transform:uppercase;">Password</label>
+          <input id="adm-login-password" type="password" required autocomplete="current-password" placeholder="Masukkan password" style="width:100%;padding:0.72rem 0.9rem;border:1.5px solid #D6D3CD;border-radius:6px;font-size:0.9rem;background:#FFF;color:#1C1D1B;box-sizing:border-box;" />
+        </div>
+        <button id="adm-login-submit" type="submit" style="margin-top:0.35rem;width:100%;padding:0.8rem 1rem;background:#0D3B2E;color:#FAF8F5;border:none;border-radius:6px;font-family:var(--font-heading);font-size:0.9rem;font-weight:800;cursor:pointer;">Masuk ke Admin Panel →</button>
+      </form>
+
+      <div style="text-align:center;margin-top:1.25rem;">
+        <a href="index.html" style="font-size:0.78rem;color:#6B7280;text-decoration:none;">← Kembali ke Halaman Publik</a>
+      </div>
+    </div>
+  </div>
+
   <header class="site-header" style="background:var(--charcoal);border-bottom:1px solid rgba(244,241,234,0.15);">
     <div class="container nav-container">
       <a href="index.html" class="brand-logo" aria-label="BrandConnect Beranda">
@@ -55,6 +84,8 @@
         </div>
         <a href="dashboard.html" class="btn btn-secondary btn-sm" style="background:rgba(244,241,234,0.12);color:var(--ivory);border-color:rgba(244,241,234,0.25);">Customer View</a>
         <a href="index.html" class="btn btn-primary btn-sm">Public Site ↗</a>
+        <span id="adm-logged-user-label" style="font-family:var(--font-mono);font-size:0.68rem;color:#5CD4A5;padding:0 0.35rem;"></span>
+        <button id="adm-logout-btn" type="button" class="btn btn-sm" style="background:#991B1B;color:#FFF;border:none;cursor:pointer;">Logout</button>
       </div>
     </div>
   </header>
@@ -69,7 +100,9 @@
         </div>
 
         <ul class="adm-nav-list">
-          <li><button type="button" class="adm-nav-btn active" data-adm-tab="dashboard"><span>01. Dashboard</span></button></li>
+          <li><button type="button" class="adm-nav-btn active" data-adm-tab="expiry"><span>🔔 Reminder Kedaluwarsa (Live)</span><span id="sb-expiry-alert-badge" style="display:none;background:#DC2626;color:#FFF;padding:1px 6px;border-radius:999px;font-size:0.68rem;font-weight:800;">0</span></button></li>
+          <li><button type="button" class="adm-nav-btn" data-adm-tab="vpsdb"><span>🗄️ Database Merek VPS (Live)</span></button></li>
+          <li><button type="button" class="adm-nav-btn" data-adm-tab="dashboard"><span>01. Dashboard</span></button></li>
           <li><button type="button" class="adm-nav-btn" data-adm-tab="crm"><span>02. CRM (Pelanggan)</span></button></li>
           <li><button type="button" class="adm-nav-btn" data-adm-tab="leads"><span>03. Lead Management</span></button></li>
           <li><button type="button" class="adm-nav-btn" data-adm-tab="catalog"><span>04. Service Catalog (8)</span></button></li>
@@ -86,16 +119,100 @@
       </aside>
 
       <section>
-        <!-- KPI Row -->
-        <div class="adm-kpi-grid">
+        <!-- LIVE VPS & EXPIRY KPI ROW -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem;">
+          <div style="font-family:var(--font-mono);font-size:0.72rem;color:#0D3B2E;font-weight:700;" id="adm-vps-sync-status">Menunggu sesi admin...</div>
+          <div style="display:flex;gap:0.5rem;">
+            <button type="button" class="adm-vps-refresh-btn" style="padding:5px 11px;background:#FFF;border:1px solid #D6D3CD;border-radius:5px;font-size:0.76rem;font-weight:700;cursor:pointer;color:#1C1D1B;">↻ Refresh VPS</button>
+            <button type="button" onclick="window.bcOpenExpiryModal(null)" style="padding:5px 12px;background:#0D3B2E;color:#FFF;border:none;border-radius:5px;font-size:0.76rem;font-weight:700;cursor:pointer;">+ Tambah / Atur Jadwal</button>
+          </div>
+        </div>
+
+        <div class="adm-kpi-grid" style="margin-bottom:1.1rem;">
+          <div class="adm-kpi-card" style="border-left:4px solid #0D3B2E;"><div class="adm-kpi-num" id="adm-kpi-vps-total" style="color:#0D3B2E;">-</div><div class="adm-kpi-label">Total Merek VPS</div></div>
+          <div class="adm-kpi-card" style="border-left:4px solid #DC2626;"><div class="adm-kpi-num" id="adm-kpi-exp-critical" style="color:#DC2626;">-</div><div class="adm-kpi-label">Kritis (≤ 30 Hari)</div></div>
+          <div class="adm-kpi-card" style="border-left:4px solid #D97706;"><div class="adm-kpi-num" id="adm-kpi-exp-upcoming" style="color:#D97706;">-</div><div class="adm-kpi-label">Segera Habis (≤ 180 Hari)</div></div>
+          <div class="adm-kpi-card" style="border-left:4px solid #1F2937;"><div class="adm-kpi-num" id="adm-kpi-exp-expired" style="color:#1F2937;">-</div><div class="adm-kpi-label">Sudah Kedaluwarsa</div></div>
+        </div>
+
+        <!-- Legacy KPI Row (hidden on live tabs, kept for JS compatibility) -->
+        <div class="adm-kpi-grid" style="display:none;">
           <div class="adm-kpi-card"><div class="adm-kpi-num" id="adm-kpi-leads">0</div><div class="adm-kpi-label">Handover Leads</div></div>
           <div class="adm-kpi-card"><div class="adm-kpi-num" id="adm-kpi-orders">0</div><div class="adm-kpi-label">Service Orders</div></div>
           <div class="adm-kpi-card"><div class="adm-kpi-num" id="adm-kpi-cases">0</div><div class="adm-kpi-label">Active DJKI Cases</div></div>
           <div class="adm-kpi-card"><div class="adm-kpi-num" id="adm-kpi-monitors">0</div><div class="adm-kpi-label">Active BRM Monitors</div></div>
         </div>
 
+        <!-- LIVE PANEL A: REMINDER KEDALUWARSA MEREK -->
+        <div class="adm-panel active" id="adm-panel-expiry">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:1.15rem;">
+            <div>
+              <span class="eyebrow">LIVE VPS // EXPIRY MONITORING &amp; RENEWAL REMINDER</span>
+              <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin:0.15rem 0 0;">Reminder Kedaluwarsa Merek (10 Tahun DJKI)</h2>
+            </div>
+            <input id="adm-expiry-search" type="text" placeholder="Cari nama merek, no. permohonan, pemilik..." style="padding:0.55rem 0.85rem;border:1.5px solid #D6D3CD;border-radius:6px;font-size:0.84rem;min-width:260px;background:#FFF;" />
+          </div>
+
+          <div style="display:flex;gap:0.45rem;flex-wrap:wrap;margin-bottom:1.15rem;">
+            <button type="button" class="exp-filter-pill" data-filter="all" onclick="window.bcSetExpiryFilter('all')" style="padding:5px 12px;border-radius:999px;border:1px solid #0D3B2E;background:#0D3B2E;color:#FFF;font-size:0.76rem;font-weight:700;cursor:pointer;">Semua</button>
+            <button type="button" class="exp-filter-pill" data-filter="critical" onclick="window.bcSetExpiryFilter('critical')" style="padding:5px 12px;border-radius:999px;border:1px solid #D6D3CD;background:#FFF;color:#1C1D1B;font-size:0.76rem;font-weight:700;cursor:pointer;">🔴 Kritis (≤ 30 Hari)</button>
+            <button type="button" class="exp-filter-pill" data-filter="upcoming" onclick="window.bcSetExpiryFilter('upcoming')" style="padding:5px 12px;border-radius:999px;border:1px solid #D6D3CD;background:#FFF;color:#1C1D1B;font-size:0.76rem;font-weight:700;cursor:pointer;">🟠 Segera Habis (≤ 180 Hari)</button>
+            <button type="button" class="exp-filter-pill" data-filter="expired" onclick="window.bcSetExpiryFilter('expired')" style="padding:5px 12px;border-radius:999px;border:1px solid #D6D3CD;background:#FFF;color:#1C1D1B;font-size:0.76rem;font-weight:700;cursor:pointer;">⚫ Sudah Kedaluwarsa</button>
+            <button type="button" class="exp-filter-pill" data-filter="safe" onclick="window.bcSetExpiryFilter('safe')" style="padding:5px 12px;border-radius:999px;border:1px solid #D6D3CD;background:#FFF;color:#1C1D1B;font-size:0.76rem;font-weight:700;cursor:pointer;">🟢 Aman</button>
+            <button type="button" class="exp-filter-pill" data-filter="no_date" onclick="window.bcSetExpiryFilter('no_date')" style="padding:5px 12px;border-radius:999px;border:1px solid #D6D3CD;background:#FFF;color:#1C1D1B;font-size:0.76rem;font-weight:700;cursor:pointer;">⚪ Belum Ada Tanggal</button>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table class="adm-table">
+              <thead>
+                <tr>
+                  <th>Logo</th>
+                  <th>Merek &amp; No. Permohonan</th>
+                  <th>Pemilik &amp; Kontak</th>
+                  <th>Tgl Berakhir</th>
+                  <th>Status Kedaluwarsa</th>
+                  <th>Tindak Lanjut / Reminder</th>
+                </tr>
+              </thead>
+              <tbody id="adm-expiry-tbody">
+                <tr><td colspan="6" style="text-align:center;padding:2rem;color:#6B7280;">Memuat data merek dari VPS...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- LIVE PANEL B: DATABASE MEREK VPS -->
+        <div class="adm-panel" id="adm-panel-vpsdb">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:1rem;">
+            <div>
+              <span class="eyebrow">LIVE VPS // COLLECTION ENGINE DATABASE (31.59.119.67)</span>
+              <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin:0.15rem 0 0;">Database Merek &amp; Logo Terkoleksi</h2>
+              <div id="adm-vpsdb-count" style="font-size:0.78rem;color:#6B7280;margin-top:0.2rem;">Memuat...</div>
+            </div>
+            <input id="adm-vpsdb-search" type="text" placeholder="Filter merek di VPS..." style="padding:0.55rem 0.85rem;border:1.5px solid #D6D3CD;border-radius:6px;font-size:0.84rem;min-width:240px;background:#FFF;" />
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table class="adm-table">
+              <thead>
+                <tr>
+                  <th>Logo</th>
+                  <th>Merek &amp; No. Permohonan</th>
+                  <th>Kelas</th>
+                  <th>Pemilik</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="adm-vpsdb-tbody">
+                <tr><td colspan="6" style="text-align:center;padding:2rem;color:#6B7280;">Memuat data merek dari VPS...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         <!-- 01. DASHBOARD -->
-        <div class="adm-panel active" id="adm-panel-dashboard">
+        <div class="adm-panel" id="adm-panel-dashboard">
           <span class="eyebrow">MODULE 01 // EXECUTIVE OVERVIEW</span>
           <h2 style="font-family:var(--font-heading);font-size:1.45rem;font-weight:800;margin-bottom:1rem;">Ringkasan Operasional Platform &amp; Aktivitas Terbaru</h2>
           <div style="overflow-x:auto;">
@@ -592,5 +709,72 @@
       renderAdmin();
     });
   </script>
+
+  <!-- ADD / EDIT EXPIRY DATE & CONTACT MODAL -->
+  <div id="adm-expiry-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(17,24,39,0.65);align-items:center;justify-content:center;padding:1rem;">
+    <div style="width:100%;max-width:520px;background:#FAF8F5;border-radius:10px;padding:1.75rem;box-shadow:0 20px 50px rgba(0,0,0,0.35);border:1px solid #D6D3CD;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <h3 id="exp-modal-title" style="font-family:var(--font-heading);font-size:1.1rem;font-weight:800;margin:0;color:#1C1D1B;">Atur Jadwal Kedaluwarsa Merek</h3>
+        <button type="button" onclick="window.bcCloseExpiryModal()" style="background:none;border:none;font-size:1.3rem;cursor:pointer;color:#6B7280;">×</button>
+      </div>
+
+      <form id="adm-expiry-form" style="display:flex;flex-direction:column;gap:0.8rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+          <div>
+            <label style="display:block;font-family:var(--font-mono);font-size:0.66rem;font-weight:700;color:#444;margin-bottom:0.25rem;">NO. PERMOHONAN *</label>
+            <input id="exp-appno" type="text" required placeholder="Contoh: DID2023012345" style="width:100%;padding:0.55rem 0.7rem;border:1px solid #D6D3CD;border-radius:5px;font-size:0.84rem;box-sizing:border-box;background:#FFF;" />
+          </div>
+          <div>
+            <label style="display:block;font-family:var(--font-mono);font-size:0.66rem;font-weight:700;color:#444;margin-bottom:0.25rem;">NAMA MEREK *</label>
+            <input id="exp-brand" type="text" required placeholder="Contoh: BRANDCONNECT" style="width:100%;padding:0.55rem 0.7rem;border:1px solid #D6D3CD;border-radius:5px;font-size:0.84rem;box-sizing:border-box;background:#FFF;" />
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+          <div>
+            <label style="display:block;font-family:var(--font-mono);font-size:0.66rem;font-weight:700;color:#444;margin-bottom:0.25rem;">KELAS NICE</label>
+            <input id="exp-classes" type="text" placeholder="Contoh: 35, 42" style="width:100%;padding:0.55rem 0.7rem;border:1px solid #D6D3CD;border-radius:5px;font-size:0.84rem;box-sizing:border-box;background:#FFF;" />
+          </div>
+          <div>
+            <label style="display:block;font-family:var(--font-mono);font-size:0.66rem;font-weight:700;color:#444;margin-bottom:0.25rem;">STATUS MEREK</label>
+            <select id="exp-status" style="width:100%;padding:0.55rem 0.7rem;border:1px solid #D6D3CD;border-radius:5px;font-size:0.84rem;box-sizing:border-box;background:#FFF;">
+              <option value="didaftar">(TM) DIDAFTAR</option>
+              <option value="dalam_proses">DALAM PROSES</option>
+              <option value="berakhir">BERAKHIR / KEDALUWARSA</option>
+              <option value="ditolak">(TM) DITOLAK</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block;font-family:var(--font-mono);font-size:0.66rem;font-weight:700;color:#444;margin-bottom:0.25rem;">NAMA PEMILIK / PERUSAHAAN</label>
+          <input id="exp-owner" type="text" placeholder="Contoh: PT Contoh Maju Bersama" style="width:100%;padding:0.55rem 0.7rem;border:1px solid #D6D3CD;border-radius:5px;font-size:0.84rem;box-sizing:border-box;background:#FFF;" />
+        </div>
+
+        <div style="background:#ECFDF5;border:1.5px solid #0D3B2E;border-radius:6px;padding:0.8rem;">
+          <label style="display:block;font-family:var(--font-mono);font-size:0.68rem;font-weight:800;color:#0D3B2E;margin-bottom:0.3rem;">📅 TANGGAL BERAKHIR PERLINDUNGAN (KEDALUWARSA)</label>
+          <input id="exp-enddate" type="date" style="width:100%;padding:0.55rem 0.7rem;border:1px solid #0D3B2E;border-radius:5px;font-size:0.88rem;box-sizing:border-box;background:#FFF;font-weight:700;" />
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+          <div>
+            <label style="display:block;font-family:var(--font-mono);font-size:0.66rem;font-weight:700;color:#444;margin-bottom:0.25rem;">NO. WHATSAPP PEMILIK</label>
+            <input id="exp-phone" type="text" placeholder="Contoh: 081234567890" style="width:100%;padding:0.55rem 0.7rem;border:1px solid #D6D3CD;border-radius:5px;font-size:0.84rem;box-sizing:border-box;background:#FFF;" />
+          </div>
+          <div>
+            <label style="display:block;font-family:var(--font-mono);font-size:0.66rem;font-weight:700;color:#444;margin-bottom:0.25rem;">EMAIL PEMILIK</label>
+            <input id="exp-email" type="email" placeholder="owner@perusahaan.com" style="width:100%;padding:0.55rem 0.7rem;border:1px solid #D6D3CD;border-radius:5px;font-size:0.84rem;box-sizing:border-box;background:#FFF;" />
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;gap:0.6rem;margin-top:0.5rem;">
+          <button type="button" onclick="window.bcCloseExpiryModal()" style="padding:0.6rem 1rem;background:#E5E7EB;color:#1F2937;border:none;border-radius:6px;font-size:0.82rem;font-weight:700;cursor:pointer;">Batal</button>
+          <button id="exp-save-btn" type="submit" style="padding:0.6rem 1.25rem;background:#0D3B2E;color:#FFF;border:none;border-radius:6px;font-size:0.82rem;font-weight:800;cursor:pointer;">Simpan ke VPS</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/admin-live.js"></script>
 </body>
 </html>
