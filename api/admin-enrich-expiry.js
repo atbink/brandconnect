@@ -39,6 +39,32 @@ function addTenYears(d) {
   return new Date(Date.UTC(d.getUTCFullYear() + 10, d.getUTCMonth(), d.getUTCDate()));
 }
 
+function cleanBrandQuery(name) {
+  return String(name || '')
+    .replace(/\s*[+&]\s*(?:LOGO|LUKISAN|GAMBAR|HURUF\s*KANJI|ETIKET).*$/i, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function findExactMatch(candidates, appNo, isSwapped) {
+  if (!Array.isArray(candidates) || candidates.length === 0) return null;
+  const targetApp = appNo.toUpperCase();
+  const byApp = candidates.find((c) => {
+    const cApp = String(c.app_number || c.nomor_permohonan || c.no_permohonan || '').trim().toUpperCase();
+    return cApp === targetApp;
+  });
+  if (byApp) return byApp;
+
+  if (isSwapped) {
+    const targetName = appNo.toLowerCase();
+    return (
+      candidates.find((c) => String(c.mark_name || c.nama_merek || '').trim().toLowerCase() === targetName) ||
+      candidates[0]
+    );
+  }
+  return null;
+}
+
 async function queryApiIndonesia(q, limit = 10) {
   const url = `https://use.apiindonesia.id/api/v1/merek/search?q=${encodeURIComponent(q)}&page=1&limit=${limit}`;
   const resp = await fetch(url, {
@@ -94,20 +120,24 @@ module.exports = async (req, res) => {
     }
 
     try {
-      // 1. Search APIIndonesia by exact application number first
-      let candidates = await queryApiIndonesia(appNo, 5);
-      let match = candidates.find((c) => {
-        const cApp = String(c.app_number || c.nomor_permohonan || c.no_permohonan || '').trim().toUpperCase();
-        return cApp === appNo.toUpperCase();
-      });
+      const isSwapped = !/\d/.test(appNo) && /^(?:IDM|D00|DID|JID|\d+)/i.test(brandName);
+      let match = null;
 
-      // 2. Fallback: search by brandName and match exact application number
-      if (!match && brandName) {
-        candidates = await queryApiIndonesia(brandName, 15);
-        match = candidates.find((c) => {
-          const cApp = String(c.app_number || c.nomor_permohonan || c.no_permohonan || '').trim().toUpperCase();
-          return cApp === appNo.toUpperCase();
-        });
+      // 1. Search APIIndonesia by application number (or swapped brand name)
+      let candidates = await queryApiIndonesia(appNo, isSwapped ? 10 : 5);
+      match = findExactMatch(candidates, appNo, isSwapped);
+
+      // 2. Fallback: search by raw brandName and cleaned brandName (without "+ LOGO", "& LUKISAN", etc.)
+      if (!match && brandName && !isSwapped) {
+        const queriesToTry = [brandName];
+        const cleaned = cleanBrandQuery(brandName);
+        if (cleaned && cleaned !== brandName) queriesToTry.push(cleaned);
+
+        for (const q of queriesToTry) {
+          candidates = await queryApiIndonesia(q, 15);
+          match = findExactMatch(candidates, appNo, false);
+          if (match) break;
+        }
       }
 
       if (!match) {

@@ -198,11 +198,15 @@
   window.bcAutoEnrichDates = async function () {
     if (isEnriching) return;
     const targets = allTrademarks.filter(
-      (t) => !t.protectionEndDate && t.applicationNumber && t.applicationNumber !== '-'
+      (t) =>
+        !t.protectionEndDate &&
+        t.statusKey !== 'ditolak' &&
+        t.applicationNumber &&
+        t.applicationNumber !== '-'
     );
 
     if (targets.length === 0) {
-      showToast('Semua merek di halaman ini sudah memiliki tanggal perlindungan!');
+      showToast('Semua merek aktif/terdaftar di halaman ini sudah memiliki tanggal perlindungan!');
       return;
     }
 
